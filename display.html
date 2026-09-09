@@ -113,7 +113,6 @@
         const giftCanvas = document.getElementById('giftCanvas');
         const ctx = giftCanvas.getContext('2d', { willReadFrequently: true });
         let renderInterval = null;
-        let giftTimeout = null;
         let iconTimeouts = {};
 
         channel.onmessage = function (event) {
@@ -130,8 +129,6 @@
                 giftVideo.load();
                 giftVideo.currentTime = 0;
                 
-                if (giftTimeout) clearTimeout(giftTimeout);
-
                 if (data.slots) {
                     for (let i = 1; i <= totalSlots; i++) {
                         if (data.slots[i]) {
@@ -146,9 +143,10 @@
                                 
                                 if (iconTimeouts[i]) clearTimeout(iconTimeouts[i]);
                                 
+                                // Ikon muncul hanya selama 3 detik
                                 iconTimeouts[i] = setTimeout(() => {
                                     iconEl.style.display = 'none';
-                                }, 5000);
+                                }, 3000);
                             } else {
                                 iconEl.style.display = 'none';
                             }
@@ -163,6 +161,7 @@
                     
                     if (renderInterval) clearInterval(renderInterval);
                     renderInterval = setInterval(() => {
+                        // Video gift berhenti otomatis sesuai durasi aslinya (ended)
                         if (giftVideo.paused || giftVideo.ended) {
                             clearInterval(renderInterval);
                             giftCanvas.style.display = 'none';
@@ -184,12 +183,6 @@
                         ctx.putImageData(frame, 0, 0);
                     }, 30);
 
-                    giftTimeout = setTimeout(() => {
-                        giftVideo.pause();
-                        clearInterval(renderInterval);
-                        giftCanvas.style.display = 'none';
-                    }, 5000);
-
                 }).catch(err => console.log("Gagal memutar video gift:", err));
             }
 
@@ -207,7 +200,6 @@
 
                 if (slot.username && slot.photo) {
                     box.classList.add('filled');
-                    // Pertahankan tag img ikon di dalam kotak, perbarui foto target
                     let currentIconDisplay = iconEl.style.display;
                     box.innerHTML = ``;
                     box.appendChild(iconEl);
