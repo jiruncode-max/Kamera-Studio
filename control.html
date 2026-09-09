@@ -54,6 +54,7 @@
             font-weight: bold;
             width: 100%;
         }
+        .btn-play { background: #10b981; margin-top: 8px; }
         .preview-img {
             width: 40px;
             height: 40px;
@@ -70,11 +71,21 @@
     <div class="container">
         <h2>Control Panel Live TikTok</h2>
         
+        <!-- Upload & Putar Video Host -->
         <div class="form-group">
             <label for="hostVideoFile">Upload Video untuk Host (Background Full Layar):</label>
-            <input type="file" id="hostVideoFile" accept="video/*">
+            <input type="file" id="hostVideoFile" accept="video/*" style="margin-bottom: 8px;">
+            <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host ke Display</button>
         </div>
 
+        <!-- Upload & Putar Animasi Video Gift -->
+        <div class="form-group">
+            <label for="giftVideoFile">Upload File Animasi Video Gift (Green Screen / Setengah Bawah):</label>
+            <input type="file" id="giftVideoFile" accept="video/*" style="margin-bottom: 8px;">
+            <button class="btn-action btn-play" onclick="playGiftVideo()">Putar Animasi Gift ke Display</button>
+        </div>
+
+        <!-- Kotak Target 1 - 8 -->
         <div class="form-group">
             <label>Pengaturan Kotak Target (1 - 8):</label>
             <div class="grid-slots" id="slotsContainer"></div>
@@ -84,19 +95,42 @@
     <script>
         const channel = new BroadcastChannel('live_control_channel');
         const slotData = {};
+        let hostVideoUrl = '';
+        let giftVideoUrl = '';
 
-        // Kirim file video host via BroadcastChannel
+        // Tangkap file video host
         document.getElementById('hostVideoFile').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                const videoURL = URL.createObjectURL(file);
-                channel.postMessage({ type: 'UPDATE_HOST_VIDEO', url: videoURL });
+                hostVideoUrl = URL.createObjectURL(file);
             }
         });
 
-        const slotsContainer = document.getElementById('slotsContainer');
+        function playHostVideo() {
+            if (!hostVideoUrl) {
+                alert('Silakan pilih file video host terlebih dahulu!');
+                return;
+            }
+            channel.postMessage({ type: 'UPDATE_HOST_VIDEO', url: hostVideoUrl });
+        }
 
-        // Render 8 kotak form target
+        // Tangkap file video gift
+        document.getElementById('giftVideoFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                giftVideoUrl = URL.createObjectURL(file);
+            }
+        });
+
+        function playGiftVideo() {
+            if (!giftVideoUrl) {
+                alert('Silakan pilih file animasi video gift terlebih dahulu!');
+                return;
+            }
+            channel.postMessage({ type: 'TRIGGER_GIFT', url: giftVideoUrl });
+        }
+
+        const slotsContainer = document.getElementById('slotsContainer');
         for (let i = 1; i <= 8; i++) {
             slotData[i] = { username: '', photo: '' };
             const card = document.createElement('div');
@@ -113,7 +147,6 @@
             slotsContainer.appendChild(card);
         }
 
-        // Deteksi profil otomatis secara live saat admin mengetik
         window.autoDetectProfile = function(i) {
             let inputVal = document.getElementById(`input_${i}`).value.trim();
             const statusSpan = document.getElementById(`status_${i}`);
@@ -133,7 +166,6 @@
             }
 
             statusSpan.innerText = "Mendeteksi...";
-            
             let avatarUrl = `https://unavatar.io/tiktok/${username}`;
             let testImg = new Image();
             testImg.src = avatarUrl;
