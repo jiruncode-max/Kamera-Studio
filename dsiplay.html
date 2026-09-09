@@ -11,22 +11,22 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: transparent; /* Transparan agar mudah ditaruh di OBS */
+            background-color: transparent;
             font-family: Arial, sans-serif;
         }
 
-        /* Video Host Full Layar di Background */
+        /* Video Host Full Layar */
         #hostVideo {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             object-fit: cover;
-            z-index: -2;
+            z-index: -10;
         }
 
-        /* Layout Kotak 1-8 Sesuai Referensi Gambar (4 Kiri, 4 Kanan) */
+        /* Layout Kotak 1-8 Sesuai Referensi Gambar */
         .layout-container {
             position: absolute;
             top: 0;
@@ -53,32 +53,33 @@
         .slot-box {
             width: 90px;
             height: 90px;
-            background: rgba(20, 20, 20, 0.75);
-            border: 2px solid rgba(255, 255, 255, 0.15);
+            background: rgba(15, 23, 42, 0.85);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
             overflow: hidden;
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
         }
 
         .slot-box.filled {
             border-color: #38bdf8;
+            background: rgba(15, 23, 42, 0.95);
         }
 
-        /* Foto Bulat Crop (Sesuai Permintaan) */
+        /* Foto Bulat Crop (Fix Error Gambar Tidak Muncul) */
         .slot-photo {
             width: 48px;
             height: 48px;
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 4px;
-            border: 2px solid #fff;
+            border: 2px solid #38bdf8;
+            background-color: #334155;
         }
 
         .slot-username {
@@ -88,6 +89,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             text-align: center;
+            font-weight: bold;
         }
 
         .default-plus {
@@ -102,14 +104,14 @@
             margin-top: 2px;
         }
 
-        /* Area Gift Green Screen di Bagian Bawah Setengah Layar Simetris */
+        /* Area Gift Green Screen di Bagian Bawah Setengah Layar */
         #giftOverlayContainer {
             position: absolute;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 60%; /* Lebar simetris di tengah agar tidak menutupi kotak sisi */
-            height: 50%; /* Setengah kotak video bagian bawah */
+            width: 60%;
+            height: 50%;
             z-index: 5;
             display: flex;
             justify-content: center;
@@ -127,36 +129,27 @@
 </head>
 <body>
 
-    <!-- Background Host Video -->
+    <!-- Background Host Video Full Layar -->
     <video id="hostVideo" autoplay muted loop></video>
 
-    <!-- 8 Kotak Sesuai Referensi Gambar (4 Kiri, 4 Kanan) -->
+    <!-- 8 Kotak Sesuai Layout Referensi (4 Kiri, 4 Kanan) -->
     <div class="layout-container">
-        <!-- Sisi Kiri (Kotak 1 sampai 4) -->
-        <div class="side-column" id="left-column">
-            <!-- Generated via JS -->
-        </div>
-
-        <!-- Sisi Kanan (Kotak 5 sampai 8) -->
-        <div class="side-column" id="right-column">
-            <!-- Generated via JS -->
-        </div>
+        <div class="side-column" id="left-column"></div>
+        <div class="side-column" id="right-column"></div>
     </div>
 
-    <!-- Area Gift Green Screen Setengah Bagian Bawah Simetris -->
+    <!-- Area Gift Green Screen -->
     <div id="giftOverlayContainer">
         <video id="giftVideo" muted></video>
     </div>
 
 <script>
     const channel = new BroadcastChannel('live_control_channel');
-
-    // Inisialisasi Kotak 1-8 di Tampilan Display
     const leftColumn = document.getElementById('left-column');
     const rightColumn = document.getElementById('right-column');
-
     const slotsState = {};
 
+    // Inisialisasi 8 Kotak di Display
     for (let i = 1; i <= 8; i++) {
         slotsState[i] = { username: '', photo: '' };
         
@@ -175,20 +168,19 @@
         }
     }
 
-    // Mendengarkan Perintah dari Control Panel
+    // Penerima Pesan dari Control Panel
     channel.onmessage = function (event) {
         const data = event.data;
 
         if (data.type === 'UPDATE_HOST_VIDEO') {
             const hostVideo = document.getElementById('hostVideo');
             hostVideo.src = data.url;
-            hostVideo.play().catch(e => console.log("Auto-play blocked:", e));
+            hostVideo.play().catch(e => console.log("Auto-play error:", e));
         }
 
         if (data.type === 'UPDATE_SLOT') {
-            const slotIdx = data.slot;
-            slotsState[slotIdx] = data.data;
-            updateSlotDisplay(slotIdx);
+            slotsState[data.slot] = data.data;
+            updateSlotDisplay(data.slot);
         }
 
         if (data.type === 'TRIGGER_GIFT') {
@@ -200,16 +192,12 @@
         const box = document.getElementById(`display_slot_${i}`);
         const slot = slotsState[i];
 
-        if (slot.username || slot.photo) {
+        if (slot.username && slot.photo) {
             box.classList.add('filled');
-            let content = '';
-            if (slot.photo) {
-                content += `<img src="${slot.photo}" class="slot-photo">`;
-            } else {
-                content += `<div class="slot-photo" style="background:#555;"></div>`;
-            }
-            content += `<span class="slot-username">${slot.username || 'User'}</span>`;
-            box.innerHTML = content;
+            box.innerHTML = `
+                <img src="${slot.photo}" class="slot-photo" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${slot.username}'">
+                <span class="slot-username">${slot.username}</span>
+            `;
         } else {
             box.classList.remove('filled');
             box.innerHTML = `
@@ -219,10 +207,9 @@
         }
     }
 
-    // Fungsi Menampilkan Video Gift (Simulasi Green Screen)
     function playGiftAnimation(giftFile) {
         const giftVid = document.getElementById('giftVideo');
-        giftVid.src = giftFile; // Sesuaikan path file video gift Anda
+        giftVid.src = giftFile;
         giftVid.style.display = 'block';
         giftVid.play();
 
