@@ -11,11 +11,9 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: transparent;
+            background: transparent;
             font-family: Arial, sans-serif;
         }
-
-        /* Video Host Full Layar */
         #hostVideo {
             position: fixed;
             top: 0;
@@ -25,8 +23,6 @@
             object-fit: cover;
             z-index: -10;
         }
-
-        /* Layout Kotak 1-8 Sesuai Referensi Gambar */
         .layout-container {
             position: absolute;
             top: 0;
@@ -41,7 +37,6 @@
             z-index: 2;
             pointer-events: none;
         }
-
         .side-column {
             display: flex;
             flex-direction: column;
@@ -49,7 +44,6 @@
             height: 100%;
             justify-content: center;
         }
-
         .slot-box {
             width: 90px;
             height: 90px;
@@ -63,15 +57,11 @@
             color: white;
             box-shadow: 0 4px 10px rgba(0,0,0,0.6);
             overflow: hidden;
-            backdrop-filter: blur(4px);
         }
-
         .slot-box.filled {
             border-color: #38bdf8;
             background: rgba(15, 23, 42, 0.95);
         }
-
-        /* Foto Bulat Crop (Fix Error Gambar Tidak Muncul) */
         .slot-photo {
             width: 48px;
             height: 48px;
@@ -81,7 +71,6 @@
             border: 2px solid #38bdf8;
             background-color: #334155;
         }
-
         .slot-username {
             font-size: 10px;
             max-width: 80px;
@@ -91,20 +80,9 @@
             text-align: center;
             font-weight: bold;
         }
-
-        .default-plus {
-            font-size: 24px;
-            color: #888;
-            font-weight: bold;
-        }
-
-        .default-text {
-            font-size: 10px;
-            color: #888;
-            margin-top: 2px;
-        }
-
-        /* Area Gift Green Screen di Bagian Bawah Setengah Layar */
+        .default-plus { font-size: 24px; color: #888; font-weight: bold; }
+        .default-text { font-size: 10px; color: #888; margin-top: 2px; }
+        
         #giftOverlayContainer {
             position: absolute;
             bottom: 0;
@@ -118,7 +96,6 @@
             align-items: flex-end;
             pointer-events: none;
         }
-
         #giftVideo {
             width: 100%;
             height: 100%;
@@ -129,16 +106,13 @@
 </head>
 <body>
 
-    <!-- Background Host Video Full Layar -->
     <video id="hostVideo" autoplay muted loop></video>
 
-    <!-- 8 Kotak Sesuai Layout Referensi (4 Kiri, 4 Kanan) -->
     <div class="layout-container">
         <div class="side-column" id="left-column"></div>
         <div class="side-column" id="right-column"></div>
     </div>
 
-    <!-- Area Gift Green Screen -->
     <div id="giftOverlayContainer">
         <video id="giftVideo" muted></video>
     </div>
@@ -147,76 +121,49 @@
     const channel = new BroadcastChannel('live_control_channel');
     const leftColumn = document.getElementById('left-column');
     const rightColumn = document.getElementById('right-column');
-    const slotsState = {};
 
-    // Inisialisasi 8 Kotak di Display
     for (let i = 1; i <= 8; i++) {
-        slotsState[i] = { username: '', photo: '' };
-        
         const box = document.createElement('div');
         box.className = 'slot-box';
         box.id = `display_slot_${i}`;
-        box.innerHTML = `
-            <div class="default-plus">+</div>
-            <div class="default-text">Permintaan</div>
-        `;
-
-        if (i <= 4) {
-            leftColumn.appendChild(box);
-        } else {
-            rightColumn.appendChild(box);
-        }
+        box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Permintaan</div>`;
+        if (i <= 4) leftColumn.appendChild(box);
+        else rightColumn.appendChild(box);
     }
 
-    // Penerima Pesan dari Control Panel
     channel.onmessage = function (event) {
         const data = event.data;
 
         if (data.type === 'UPDATE_HOST_VIDEO') {
             const hostVideo = document.getElementById('hostVideo');
             hostVideo.src = data.url;
-            hostVideo.play().catch(e => console.log("Auto-play error:", e));
+            hostVideo.play().catch(err => console.log(err));
         }
 
         if (data.type === 'UPDATE_SLOT') {
-            slotsState[data.slot] = data.data;
-            updateSlotDisplay(data.slot);
+            const box = document.getElementById(`display_slot_${data.slot}`);
+            const slot = data.data;
+
+            if (slot.username && slot.photo) {
+                box.classList.add('filled');
+                box.innerHTML = `
+                    <img src="${slot.photo}" class="slot-photo" crossorigin="anonymous">
+                    <span class="slot-username">${slot.username}</span>
+                `;
+            } else {
+                box.classList.et ? box.classList.remove('filled') : box.classList.remove('filled');
+                box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Permintaan</div>`;
+            }
         }
 
         if (data.type === 'TRIGGER_GIFT') {
-            playGiftAnimation(data.gift);
+            const giftVid = document.getElementById('giftVideo');
+            giftVid.src = data.gift;
+            giftVid.style.display = 'block';
+            giftVid.play().catch(err => console.log(err));
+            giftVid.onended = () => giftVid.style.display = 'none';
         }
     };
-
-    function updateSlotDisplay(i) {
-        const box = document.getElementById(`display_slot_${i}`);
-        const slot = slotsState[i];
-
-        if (slot.username && slot.photo) {
-            box.classList.add('filled');
-            box.innerHTML = `
-                <img src="${slot.photo}" class="slot-photo" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${slot.username}'">
-                <span class="slot-username">${slot.username}</span>
-            `;
-        } else {
-            box.classList.remove('filled');
-            box.innerHTML = `
-                <div class="default-plus">+</div>
-                <div class="default-text">Permintaan</div>
-            `;
-        }
-    }
-
-    function playGiftAnimation(giftFile) {
-        const giftVid = document.getElementById('giftVideo');
-        giftVid.src = giftFile;
-        giftVid.style.display = 'block';
-        giftVid.play();
-
-        giftVid.onended = function() {
-            giftVid.style.display = 'none';
-        };
-    }
 </script>
 
 </body>
