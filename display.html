@@ -10,13 +10,13 @@
             overflow: hidden; background: #000; font-family: Arial, sans-serif;
             display: flex; justify-content: center; align-items: center;
         }
-        /* Kontainer Utama Rasio 9:16 (Vertikal HP / TikTok) */
+        /* Kontainer Utama Pas 9:16 (Standar Live HP / TikTok) */
         #displayScreen {
             position: relative;
-            width: 56.25vh; /* Lebar otomatis berdasarkan tinggi 9:16 */
+            width: 100vw;
             height: 100vh;
-            max-width: 100vw;
-            max-height: 177.78vw;
+            max-width: 56.25vh; /* Menjaga rasio 9:16 persis tanpa terlalu panjang */
+            max-height: 100vw;
             overflow: hidden;
             background: #0f172a;
         }
@@ -33,7 +33,7 @@
             display: flex; flex-direction: column; gap: 8px; height: 100%; justify-content: center;
         }
         .slot-box {
-            width: 75px; height: 75px; background: rgba(15, 23, 42, 0.85);
+            width: 70px; height: 70px; background: rgba(15, 23, 42, 0.85);
             border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.6); overflow: hidden;
@@ -42,19 +42,20 @@
             border-color: #38bdf8; background: rgba(15, 23, 42, 0.95);
         }
         .slot-photo {
-            width: 50px; height: 50px; border-radius: 50%; object-fit: cover;
+            width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
             border: 2px solid #38bdf8; background-color: #334155;
         }
-        .default-plus { font-size: 20px; color: #888; font-weight: bold; }
-        .default-text { font-size: 9px; color: #888; margin-top: 2px; }
+        .default-plus { font-size: 18px; color: #888; font-weight: bold; }
+        .default-text { font-size: 8px; color: #888; margin-top: 2px; }
 
+        /* Overlay Gift Full Layar 9:16 Menyesuaikan Video Host */
         #giftOverlayContainer {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
-            z-index: 5; display: flex; justify-content: center; align-items: flex-end;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5; display: flex; justify-content: center; align-items: center;
             pointer-events: none; overflow: hidden;
         }
         #giftCanvas {
-            width: 100%; height: 100%; object-fit: contain; display: none;
+            width: 100%; height: 100%; object-fit: cover; display: none;
         }
         #giftVideoSource { display: none; }
     </style>
@@ -62,7 +63,7 @@
 <body>
 
     <div id="displayScreen">
-        <!-- Video Background Host Vertikal (9:16) -->
+        <!-- Video Background Host -->
         <video id="hostVideo" autoplay loop></video>
         
         <!-- Kotak 1 - 8 Samping Kiri & Kanan -->
@@ -71,7 +72,7 @@
             <div class="side-column" id="right-column"></div>
         </div>
 
-        <!-- Animasi Gift Green Screen (Setengah Bawah) -->
+        <!-- Animasi Gift Full Layar 9:16 (Green Screen Transparan) -->
         <div id="giftOverlayContainer">
             <video id="giftVideoSource" crossorigin="anonymous" playsinline></video>
             <canvas id="giftCanvas"></canvas>
@@ -92,6 +93,7 @@
             if (i <= 4) leftColumn.appendChild(box); else rightColumn.appendChild(box);
         }
 
+        const hostVideo = document.getElementById('hostVideo');
         const giftVideo = document.getElementById('giftVideoSource');
         const giftCanvas = document.getElementById('giftCanvas');
         const ctx = giftCanvas.getContext('2d', { willReadFrequently: true });
@@ -101,13 +103,14 @@
             const data = event.data;
 
             if (data.type === 'UPDATE_HOST_VIDEO') {
-                const hostVideo = document.getElementById('hostVideo');
                 hostVideo.src = data.url;
-                hostVideo.play().catch(err => console.log(err));
+                hostVideo.load();
+                hostVideo.play().catch(err => console.log("Gagal memutar video host:", err));
             }
 
             if (data.type === 'TRIGGER_GIFT') {
                 giftVideo.src = data.url;
+                giftVideo.load();
                 giftVideo.currentTime = 0;
                 giftVideo.play().then(() => {
                     giftCanvas.style.display = 'block';
@@ -125,19 +128,19 @@
                         let frame = ctx.getImageData(0, 0, giftCanvas.width, giftCanvas.height);
                         let l = frame.data.length;
                         
-                        // Pembersihan Chroma Key Green Screen Real-time
+                        // Menghapus latar hijau (Chroma Key) agar menyatu mulus dengan video host
                         for (let p = 0; p < l; p += 4) {
                             let red = frame.data[p];
                             let green = frame.data[p + 1];
                             let blue = frame.data[p + 2];
                             
-                            if (green > 100 && red < 90 && blue < 90) {
+                            if (green > 95 && red < 90 && blue < 90) {
                                 frame.data[p + 3] = 0;
                             }
                         }
                         ctx.putImageData(frame, 0, 0);
                     }, 30);
-                }).catch(err => console.log(err));
+                }).catch(err => console.log("Gagal memutar video gift:", err));
             }
 
             if (data.type === 'UPDATE_SLOT') {
