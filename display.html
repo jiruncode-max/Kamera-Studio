@@ -29,12 +29,12 @@
             padding: 15px; box-sizing: border-box; z-index: 3; pointer-events: none;
         }
         .side-column {
-            display: flex; flex-direction: column; gap: 8px; height: 100%; justify-content: center;
+            display: flex; flex-direction: column; gap: 12px; height: 100%; justify-content: center;
         }
         .slot-box {
             position: relative;
-            width: 70px; height: 70px; background: rgba(15, 23, 42, 0.85);
-            border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 12px;
+            width: 95px; height: 95px; background: rgba(15, 23, 42, 0.85);
+            border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 14px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.6); overflow: visible;
         }
@@ -42,22 +42,22 @@
             border-color: #38bdf8; background: rgba(15, 23, 42, 0.95);
         }
         .slot-photo {
-            width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+            width: 65px; height: 65px; border-radius: 50%; object-fit: cover;
             border: 2px solid #38bdf8; background-color: #334155;
         }
         .top-badge-icon {
             position: absolute;
             top: -10px;
             right: -10px;
-            width: 26px;
-            height: 26px;
+            width: 32px;
+            height: 32px;
             object-fit: contain;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9));
             z-index: 20;
             display: none;
         }
-        .default-plus { font-size: 18px; color: #888; font-weight: bold; }
-        .default-text { font-size: 7.5px; color: #888; margin-top: 2px; text-align: center; }
+        .default-plus { font-size: 24px; color: #888; font-weight: bold; }
+        .default-text { font-size: 9px; color: #888; margin-top: 4px; text-align: center; }
 
         #giftOverlayContainer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -143,7 +143,6 @@
                                 
                                 if (iconTimeouts[i]) clearTimeout(iconTimeouts[i]);
                                 
-                                // Ikon muncul hanya selama 3 detik
                                 iconTimeouts[i] = setTimeout(() => {
                                     iconEl.style.display = 'none';
                                 }, 3000);
@@ -161,7 +160,6 @@
                     
                     if (renderInterval) clearInterval(renderInterval);
                     renderInterval = setInterval(() => {
-                        // Video gift berhenti otomatis sesuai durasi aslinya (ended)
                         if (giftVideo.paused || giftVideo.ended) {
                             clearInterval(renderInterval);
                             giftCanvas.style.display = 'none';
