@@ -94,7 +94,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            mix-blend-mode: screen; /* Efek tembus pandang green screen sederhana */
+            mix-blend-mode: screen; /* Efek transparan green screen sederhana */
             display: none;
         }
     </style>
@@ -113,7 +113,7 @@
 
         <!-- Animasi Gift di Setengah Bagian Bawah -->
         <div id="giftOverlayContainer">
-            <video id="giftVideo" autoplay muted></video>
+            <video id="giftVideo" muted></video>
         </div>
     </div>
 
@@ -123,7 +123,6 @@
         const rightColumn = document.getElementById('right-column');
         const slotsState = {};
 
-        // Inisialisasi 8 Slot Kosong di Display
         for (let i = 1; i <= 8; i++) {
             slotsState[i] = { username: '', photo: '' };
             const box = document.createElement('div');
@@ -134,7 +133,6 @@
             else rightColumn.appendChild(box);
         }
 
-        // Listener pesan dari control.html
         channel.onmessage = function (event) {
             const data = event.data;
 
@@ -142,9 +140,17 @@
                 const hostVideo = document.getElementById('hostVideo');
                 hostVideo.src = data.url;
                 hostVideo.play().catch(err => console.log(err));
+            }
+
+            if (data.type === 'TRIGGER_GIFT') {
+                const giftVid = document.getElementById('giftVideo');
+                giftVid.src = data.url;
+                giftVid.style.display = 'block';
+                giftVid.play().catch(err => console.log(err));
                 
-                // Memicu video gift otomatis bertabrakan simetris di setengah bawah layar
-                triggerGiftEffect();
+                giftVid.onended = () => {
+                    giftVid.style.display = 'none';
+                };
             }
 
             if (data.type === 'UPDATE_SLOT') {
@@ -154,7 +160,6 @@
 
                 if (slot.username && slot.photo) {
                     box.classList.add('filled');
-                    // Hanya menampilkan foto bulat crop bersih (tanpa teks nama, bintang, atau ikon lain)
                     box.innerHTML = `
                         <img src="${slot.photo}" class="slot-photo" crossorigin="anonymous">
                     `;
@@ -164,18 +169,6 @@
                 }
             }
         };
-
-        function triggerGiftEffect() {
-            const giftVid = document.getElementById('giftVideo');
-            // Menggunakan file video transparan / efek green screen otomatis
-            giftVid.src = "https://www.w3schools.com/html/mov_bbb.mp4"; // Ganti URL video gift Anda di sini
-            giftVid.style.display = 'block';
-            giftVid.play().catch(err => console.log(err));
-            
-            giftVid.onended = () => {
-                giftVid.style.display = 'none';
-            };
-        }
     </script>
 </body>
 </html>
