@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Screen - OBS Vertikal (9:16)</title>
+    <title>Display Screen - OBS Vertikal</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -14,14 +14,14 @@
             position: relative;
             width: 100vw;
             height: 100vh;
-            max-width: 56.25vh; /* Rasio persis 9:16 */
+            max-width: 56.25vh;
             max-height: 100vw;
             overflow: hidden;
             background: #0f172a;
         }
         #hostVideo {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: 1; /* Pastikan di atas background tapi di bawah elemen UI */
+            object-fit: cover; z-index: 1;
         }
         .layout-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -45,7 +45,7 @@
             border: 2px solid #38bdf8; background-color: #334155;
         }
         .default-plus { font-size: 18px; color: #888; font-weight: bold; }
-        .default-text { font-size: 8px; color: #888; margin-top: 2px; }
+        .default-text { font-size: 7.5px; color: #888; margin-top: 2px; text-align: center; }
 
         #giftOverlayContainer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -61,7 +61,6 @@
 <body>
 
     <div id="displayScreen">
-        <!-- Video Background Host dengan atribut wajib untuk autoplay browser/OBS -->
         <video id="hostVideo" autoplay loop playsinline></video>
         
         <div class="layout-container">
@@ -81,12 +80,15 @@
         const rightColumn = document.getElementById('right-column');
         const slotsState = {};
 
-        for (let i = 1; i <= 8; i++) {
+        const totalSlots = 8;
+        const middleSlot = 4;
+
+        for (let i = 1; i <= totalSlots; i++) {
             slotsState[i] = { username: '', photo: '' };
             const box = document.createElement('div');
             box.className = 'slot-box'; box.id = `display_slot_${i}`;
-            box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Kotak ${i}</div>`;
-            if (i <= 4) leftColumn.appendChild(box); else rightColumn.appendChild(box);
+            box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Permintaan</div>`;
+            if (i <= middleSlot) leftColumn.appendChild(box); else rightColumn.appendChild(box);
         }
 
         const hostVideo = document.getElementById('hostVideo');
@@ -99,14 +101,9 @@
             const data = event.data;
 
             if (data.type === 'UPDATE_HOST_VIDEO') {
-                console.log("Menerima video host:", data.url);
                 hostVideo.src = data.url;
                 hostVideo.load();
-                hostVideo.play().then(() => {
-                    console.log("Video host berhasil diputar!");
-                }).catch(err => {
-                    console.log("Gagal memutar video host (perlu interaksi klik):", err);
-                });
+                hostVideo.play().catch(err => console.log("Gagal memutar video host:", err));
             }
 
             if (data.type === 'TRIGGER_GIFT') {
@@ -129,12 +126,15 @@
                         let frame = ctx.getImageData(0, 0, giftCanvas.width, giftCanvas.height);
                         let l = frame.data.length;
                         
+                        const minGreen = 95;
+                        const maxRedBlue = 90;
+
                         for (let p = 0; p < l; p += 4) {
                             let red = frame.data[p];
                             let green = frame.data[p + 1];
                             let blue = frame.data[p + 2];
                             
-                            if (green > 95 && red < 90 && blue < 90) {
+                            if (green > minGreen && red < maxRedBlue && blue < maxRedBlue) {
                                 frame.data[p + 3] = 0;
                             }
                         }
@@ -153,12 +153,11 @@
                     box.innerHTML = `<img src="${slot.photo}" class="slot-photo" crossorigin="anonymous">`;
                 } else {
                     box.classList.remove('filled');
-                    box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Kotak ${data.slot}</div>`;
+                    box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Permintaan</div>`;
                 }
             }
         };
 
-        // Solusi jika browser memblokir autoplay: Klik sekali di layar display untuk mengaktifkan video
         document.body.addEventListener('click', () => {
             if (hostVideo.paused && hostVideo.src) {
                 hostVideo.play().catch(e => console.log(e));
