@@ -43,16 +43,17 @@
             z-index: 5; display: flex; justify-content: center; align-items: flex-end;
             pointer-events: none; overflow: hidden;
         }
-        #giftVideo {
-            width: 100%; height: 100%; object-fit: cover;
-            mix-blend-mode: screen; display: none;
+        #giftCanvas {
+            width: 100%; height: 100%; object-fit: contain; display: none;
         }
+        #giftVideoSource { display: none; }
     </style>
 </head>
 <body>
 
     <div id="displayScreen">
-        <video id="hostVideo" autoplay muted loop></video>
+        <!-- Video Host dengan Audio Aktif -->
+        <video id="hostVideo" autoplay loop></video>
         
         <div class="layout-container">
             <div class="side-column" id="left-column"></div>
@@ -60,7 +61,8 @@
         </div>
 
         <div id="giftOverlayContainer">
-            <video id="giftVideo" muted></video>
+            <video id="giftVideoSource" crossorigin="anonymous" playsinline></video>
+            <canvas id="giftCanvas"></canvas>
         </div>
     </div>
 
@@ -78,6 +80,11 @@
             if (i <= 4) leftColumn.appendChild(box); else rightColumn.appendChild(box);
         }
 
+        const giftVideo = document.getElementById('giftVideoSource');
+        const giftCanvas = document.getElementById('giftCanvas');
+        const ctx = giftCanvas.getContext('2d', { willReadFrequently: true });
+        let renderInterval = null;
+
         channel.onmessage = function (event) {
             const data = event.data;
 
@@ -88,14 +95,38 @@
             }
 
             if (data.type === 'TRIGGER_GIFT') {
-                const giftVid = document.getElementById('giftVideo');
-                giftVid.src = data.url;
-                giftVid.style.display = 'block';
-                giftVid.play().catch(err => console.log(err));
-                
-                giftVid.onended = () => {
-                    giftVid.style.display = 'none';
-                };
+                giftVideo.src = data.url;
+                giftVideo.currentTime = 0;
+                giftVideo.play().then(() => {
+                    giftCanvas.style.display = 'block';
+                    giftCanvas.width = giftVideo.videoWidth || 1280;
+                    giftCanvas.height = giftVideo.videoHeight || 720;
+                    
+                    if (renderInterval) clearInterval(renderInterval);
+                    renderInterval = setInterval(() => {
+                        if (giftVideo.paused || giftVideo.ended) {
+                            clearInterval(renderInterval);
+                            giftCanvas.style.display = 'none';
+                            return;
+                        }
+                        ctx.drawImage(giftVideo, 0, 0, giftCanvas.width, giftCanvas.height);
+                        let frame = ctx.getImageData(0, 0, giftCanvas.width, giftCanvas.height);
+                        let l = frame.data.length;
+                        
+                        // Algoritma Chroma Key (Menghilangkan latar hijau murni)
+                        for (let p = 0; p < l; p += 4) {
+                            let red = frame.data[p];
+                            let green = frame.data[p + 1];
+                            let blue = frame.data[p + 2];
+                            
+                            // Jika dominan hijau, ubah transparansi menjadi 0
+                            if (green > 100 && red < 90 && blue < 90) {
+                                frame.data[p + 3] = 0;
+                            }
+                        }
+                        ctx.putImageData(frame, 0, 0);
+                    }, 30);
+                }).catch(err => console.log(err));
             }
 
             if (data.type === 'UPDATE_SLOT') {
