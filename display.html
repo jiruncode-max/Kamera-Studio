@@ -45,7 +45,7 @@
             width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
             border: 2px solid #38bdf8; background-color: #334155;
         }
-        /* Ikon kecil tanpa latar belakang bulat, posisi di kanan atas */
+        /* Ikon kecil di kanan atas kotak target */
         .top-badge-icon {
             position: absolute;
             top: -8px;
@@ -55,6 +55,7 @@
             object-fit: contain;
             filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8));
             z-index: 10;
+            display: none; /* Default disembunyikan sampai gift diputar */
         }
         .default-plus { font-size: 18px; color: #888; font-weight: bold; }
         .default-text { font-size: 7.5px; color: #888; margin-top: 2px; text-align: center; }
@@ -109,6 +110,7 @@
         const ctx = giftCanvas.getContext('2d', { willReadFrequently: true });
         let renderInterval = null;
         let giftTimeout = null;
+        let iconTimeouts = {};
 
         channel.onmessage = function (event) {
             const data = event.data;
@@ -125,6 +127,40 @@
                 giftVideo.currentTime = 0;
                 
                 if (giftTimeout) clearTimeout(giftTimeout);
+
+                // Perbarui data ikon target dari control panel dan tampilkan ikonnya
+                if (data.slots) {
+                    for (let i = 1; i <= totalSlots; i++) {
+                        if (data.slots[i]) {
+                            slotsState[i].topIcon = data.slots[i].topIcon;
+                            
+                            // Update elemen HTML di layar display agar ikon terpasang
+                            const box = document.getElementById(`display_slot_${i}`);
+                            const slot = slotsState[i];
+                            let iconHtml = slot.topIcon ? `<img src="${slot.topIcon}" class="top-badge-icon" id="icon_badge_${i}" crossorigin="anonymous">` : '';
+
+                            if (slot.username && slot.photo) {
+                                box.classList.add('filled');
+                                box.innerHTML = `${iconHtml}<img src="${slot.photo}" class="slot-photo" crossorigin="anonymous">`;
+                            } else {
+                                box.classList.remove('filled');
+                                box.innerHTML = `${iconHtml}<div class="default-plus">+</div><div class="default-text">Permintaan</div>`;
+                            }
+
+                            // Munculkan ikon
+                            const iconEl = document.getElementById(`icon_badge_${i}`);
+                            if (iconEl) {
+                                iconEl.style.display = 'block';
+                                if (iconTimeouts[i]) clearTimeout(iconTimeouts[i]);
+                                
+                                // Sembunyikan kembali ikon setelah 5 detik
+                                iconTimeouts[i] = setTimeout(() => {
+                                    iconEl.style.display = 'none';
+                                }, 5000);
+                            }
+                        }
+                    }
+                }
 
                 giftVideo.play().then(() => {
                     giftCanvas.style.display = 'block';
@@ -154,7 +190,7 @@
                         ctx.putImageData(frame, 0, 0);
                     }, 30);
 
-                    // Batasi durতার video gift otomatis berhenti dalam 5 detik
+                    // Durasi video gift berhenti otomatis setelah 5 detik
                     giftTimeout = setTimeout(() => {
                         giftVideo.pause();
                         clearInterval(renderInterval);
@@ -169,7 +205,7 @@
                 const box = document.getElementById(`display_slot_${data.slot}`);
                 const slot = slotsState[data.slot];
 
-                let iconHtml = slot.topIcon ? `<img src="${slot.topIcon}" class="top-badge-icon" crossorigin="anonymous">` : '';
+                let iconHtml = slot.topIcon ? `<img src="${slot.topIcon}" class="top-badge-icon" id="icon_badge_${data.slot}" crossorigin="anonymous">` : '';
 
                 if (slot.username && slot.photo) {
                     box.classList.add('filled');
