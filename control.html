@@ -94,22 +94,21 @@
         function playGiftVideo() {
             if (!giftVideoUrl) return alert('Silakan pilih file animasi video gift terlebih dahulu!');
             
-            // Kumpulkan ikon terbaru dari masing-masing dropdown kontrol panel saat tombol putar gift diklik
+            // Ambil pilihan ikon terbaru saat tombol putar gift ditekan
             for (let i = 1; i <= 8; i++) {
-                const currentIcon = document.getElementById(`icon_${i}`).value;
+                const iconVal = document.getElementById(`icon_${i}`).value;
                 if (slotData[i]) {
-                    slotData[i].topIcon = currentIcon;
+                    slotData[i].topIcon = iconVal;
                 }
             }
 
-            // Kirim perintah putar gift beserta data ikon target terbaru ke layar display
             channel.postMessage({ type: 'TRIGGER_GIFT', url: giftVideoUrl, slots: slotData });
         }
 
         const slotsContainer = document.getElementById('slotsContainer');
         for (let i = 1; i <= 8; i++) {
             slotData[i] = { username: '', photo: '', topIcon: '' };
-            pendingData[i] = { username: '', inputVal: '', photo: '', topIcon: '' };
+            pendingData[i] = { username: '', inputVal: '', photo: '' };
 
             const card = document.createElement('div');
             card.className = 'slot-card';
@@ -177,7 +176,7 @@
             slotData[i] = { 
                 username: pendingData[i].username, 
                 photo: pendingData[i].photo, 
-                topIcon: '' // Kosongkan dulu agar ikon tidak muncul di display sebelum video gift diputar
+                topIcon: '' 
             };
             channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
             document.getElementById(`status_${i}`).innerText = "Terpasang di Display!";
@@ -189,7 +188,7 @@
             document.getElementById(`preview_${i}`).style.display = 'none';
             document.getElementById(`status_${i}`).innerText = 'Kosong';
             slotData[i] = { username: '', photo: '', topIcon: '' };
-            pendingData[i] = { username: '', inputVal: '', photo: '', topIcon: '' };
+            pendingData[i] = { username: '', inputVal: '', photo: '' };
             channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
         }
     </script>
