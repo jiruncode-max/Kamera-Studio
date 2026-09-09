@@ -45,17 +45,16 @@
             width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
             border: 2px solid #38bdf8; background-color: #334155;
         }
-        /* Ikon kecil di kanan atas kotak target */
         .top-badge-icon {
             position: absolute;
-            top: -8px;
-            right: -8px;
-            width: 22px;
-            height: 22px;
+            top: -10px;
+            right: -10px;
+            width: 26px;
+            height: 26px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8));
-            z-index: 10;
-            display: none; /* Default disembunyikan sampai gift diputar */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9));
+            z-index: 20;
+            display: none;
         }
         .default-plus { font-size: 18px; color: #888; font-weight: bold; }
         .default-text { font-size: 7.5px; color: #888; margin-top: 2px; text-align: center; }
@@ -99,8 +98,13 @@
         for (let i = 1; i <= totalSlots; i++) {
             slotsState[i] = { username: '', photo: '', topIcon: '' };
             const box = document.createElement('div');
-            box.className = 'slot-box'; box.id = `display_slot_${i}`;
-            box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Permintaan</div>`;
+            box.className = 'slot-box'; 
+            box.id = `display_slot_${i}`;
+            box.innerHTML = `
+                <img class="top-badge-icon" id="icon_badge_${i}" crossorigin="anonymous">
+                <div class="default-plus">+</div>
+                <div class="default-text">Permintaan</div>
+            `;
             if (i <= middleSlot) leftColumn.appendChild(box); else rightColumn.appendChild(box);
         }
 
@@ -128,35 +132,25 @@
                 
                 if (giftTimeout) clearTimeout(giftTimeout);
 
-                // Perbarui data ikon target dari control panel dan tampilkan ikonnya
                 if (data.slots) {
                     for (let i = 1; i <= totalSlots; i++) {
                         if (data.slots[i]) {
                             slotsState[i].topIcon = data.slots[i].topIcon;
                             
-                            // Update elemen HTML di layar display agar ikon terpasang
-                            const box = document.getElementById(`display_slot_${i}`);
-                            const slot = slotsState[i];
-                            let iconHtml = slot.topIcon ? `<img src="${slot.topIcon}" class="top-badge-icon" id="icon_badge_${i}" crossorigin="anonymous">` : '';
-
-                            if (slot.username && slot.photo) {
-                                box.classList.add('filled');
-                                box.innerHTML = `${iconHtml}<img src="${slot.photo}" class="slot-photo" crossorigin="anonymous">`;
-                            } else {
-                                box.classList.remove('filled');
-                                box.innerHTML = `${iconHtml}<div class="default-plus">+</div><div class="default-text">Permintaan</div>`;
-                            }
-
-                            // Munculkan ikon
                             const iconEl = document.getElementById(`icon_badge_${i}`);
-                            if (iconEl) {
+                            const slot = slotsState[i];
+
+                            if (slot.topIcon) {
+                                iconEl.src = slot.topIcon;
                                 iconEl.style.display = 'block';
+                                
                                 if (iconTimeouts[i]) clearTimeout(iconTimeouts[i]);
                                 
-                                // Sembunyikan kembali ikon setelah 5 detik
                                 iconTimeouts[i] = setTimeout(() => {
                                     iconEl.style.display = 'none';
                                 }, 5000);
+                            } else {
+                                iconEl.style.display = 'none';
                             }
                         }
                     }
@@ -190,7 +184,6 @@
                         ctx.putImageData(frame, 0, 0);
                     }, 30);
 
-                    // Durasi video gift berhenti otomatis setelah 5 detik
                     giftTimeout = setTimeout(() => {
                         giftVideo.pause();
                         clearInterval(renderInterval);
@@ -204,15 +197,43 @@
                 slotsState[data.slot] = data.data;
                 const box = document.getElementById(`display_slot_${data.slot}`);
                 const slot = slotsState[data.slot];
+                const iconEl = document.getElementById(`icon_badge_${data.slot}`);
 
-                let iconHtml = slot.topIcon ? `<img src="${slot.topIcon}" class="top-badge-icon" id="icon_badge_${data.slot}" crossorigin="anonymous">` : '';
+                if (slot.topIcon) {
+                    iconEl.src = slot.topIcon;
+                } else {
+                    iconEl.style.display = 'none';
+                }
 
                 if (slot.username && slot.photo) {
                     box.classList.add('filled');
-                    box.innerHTML = `${iconHtml}<img src="${slot.photo}" class="slot-photo" crossorigin="anonymous">`;
+                    // Pertahankan tag img ikon di dalam kotak, perbarui foto target
+                    let currentIconDisplay = iconEl.style.display;
+                    box.innerHTML = ``;
+                    box.appendChild(iconEl);
+                    iconEl.style.display = currentIconDisplay;
+
+                    const photoImg = document.createElement('img');
+                    photoImg.src = slot.photo;
+                    photoImg.className = 'slot-photo';
+                    photoImg.crossOrigin = 'anonymous';
+                    box.appendChild(photoImg);
                 } else {
                     box.classList.remove('filled');
-                    box.innerHTML = `${iconHtml}<div class="default-plus">+</div><div class="default-text">Permintaan</div>`;
+                    let currentIconDisplay = iconEl.style.display;
+                    box.innerHTML = ``;
+                    box.appendChild(iconEl);
+                    iconEl.style.display = currentIconDisplay;
+
+                    const plusDiv = document.createElement('div');
+                    plusDiv.className = 'default-plus';
+                    plusDiv.innerText = '+';
+                    const textDiv = document.createElement('div');
+                    textDiv.className = 'default-text';
+                    textDiv.innerText = 'Permintaan';
+                    
+                    box.appendChild(plusDiv);
+                    box.appendChild(textDiv);
                 }
             }
         };
