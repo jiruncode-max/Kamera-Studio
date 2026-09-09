@@ -3,219 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Live Control Panel</title>
+    <title>Live Control Panel</title>
     <style>
-        :root {
-            --bg-main: #0f172a;
-            --bg-card: #1e293b;
-            --border-color: #334155;
-            --accent: #38bdf8;
-            --accent-hover: #0ea5e9;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-        }
-
         body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
+            background-color: #0f172a;
+            color: #fff;
+            font-family: Arial, sans-serif;
             padding: 20px;
         }
-
         .container {
-            max-width: 900px;
+            max-width: 850px;
             margin: 0 auto;
-        }
-
-        header {
-            background: var(--bg-card);
-            padding: 20px;
+            background: #1e293b;
+            padding: 25px;
             border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-
-        header h2 {
-            margin: 0 0 15px 0;
-            font-size: 20px;
-            color: var(--accent);
-        }
-
-        .section-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-
-        .section-card h3 {
-            margin-top: 0;
-            font-size: 16px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            color: var(--text-main);
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        input[type="file"], input[type="text"], select {
+        h2 { border-bottom: 2px solid #334155; padding-bottom: 10px; margin-top: 0; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        input, select {
             width: 100%;
-            padding: 10px 12px;
-            background: #0b0f19;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: 8px;
+            padding: 10px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            color: white;
+            border-radius: 6px;
             box-sizing: border-box;
-            font-size: 14px;
         }
-
-        input[type="text"]:focus, select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        /* Grid Kotak 1 - 8 */
-        .slots-grid {
+        .grid-slots {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
-
-        .slot-item {
-            background: #111827;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .slot-item label {
-            font-size: 12px;
-            margin-bottom: 2px;
-            color: var(--accent);
-        }
-
-        .preview-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 5px;
-        }
-
-        .crop-preview {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent);
-            display: none;
+        .slot-card {
             background: #334155;
-        }
-
-        .status-text {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        /* Tombol Aksi */
-        button {
-            background: var(--accent);
-            color: #0f172a;
-            border: none;
-            padding: 10px 16px;
+            padding: 15px;
             border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-size: 14px;
+            border: 1px solid #475569;
         }
-
-        button:hover {
-            background: var(--accent-hover);
-        }
-
-        .btn-secondary {
-            background: #334155;
-            color: var(--text-main);
-        }
-
-        .btn-secondary:hover {
-            background: #475569;
-        }
-
-        .btn-danger {
+        .slot-card h4 { margin: 0 0 10px 0; color: #38bdf8; }
+        .btn-action {
             background: #ef4444;
             color: white;
-            font-size: 11px;
-            padding: 6px;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 8px;
+            font-weight: bold;
+            width: 100%;
         }
-
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-
-        .action-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
+        .btn-fetch { background: #3b82f6; margin-bottom: 8px; }
+        .preview-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-top: 5px;
+            display: none;
+            border: 2px solid #38bdf8;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h2>🎮 Control Panel Utama Live TikTok</h2>
-        <p style="margin: 0; font-size: 13px; color: var(--text-muted);">Kelola video host, target kotak 1-8 dengan deteksi foto bulat crop otomatis, serta efek gift green screen.</p>
-    </header>
-
-    <!-- 1. Input Video Host -->
-    <div class="section-card">
-        <h3>📹 Video Host (Background Utama)</h3>
-        <label for="hostVideoFile">Pilih file video untuk latar belakang host:</label>
+    <h2>Control Panel Live TikTok</h2>
+    
+    <!-- Input Video Host -->
+    <div class="form-group">
+        <label>Upload Video untuk Host:</label>
         <input type="file" id="hostVideoFile" accept="video/*">
     </div>
 
-    <!-- 2. Pengaturan Kotak 1 - 8 (Foto Bulat Crop & Username Target) -->
-    <div class="section-card">
-        <h3>👥 Pengaturan Kotak Target (1 - 8)</h3>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 0;">Masukkan username atau link profil TikTok target. Foto akan otomatis ditarik dan di-crop bulat.</p>
-        <div class="slots-grid" id="slotsContainer">
-            <!-- Dibuat otomatis via JavaScript -->
-        </div>
+    <!-- Kotak 1 - 8 (Foto Bulat Crop) -->
+    <div class="form-group">
+        <label>Pengaturan Kotak Target (1 - 8) - Foto Bulat Crop:</label>
+        <div class="grid-slots" id="slotsContainer"></div>
     </div>
 
-    <!-- 3. Pengaturan Video Gift Green Screen -->
-    <div class="section-card">
-        <h3>🎁 Efek Video Gift (Green Screen Simetris Bawah)</h3>
-        <label for="giftSelect">Pilih Animasi Gift:</label>
-        <div style="display: flex; gap: 10px;">
-            <select id="giftSelect">
-                <option value="">-- Pilih Efek Gift --</option>
-                <option value="gift1.mp4">Animasi Gift 1 (Mawar/Paus)</option>
-                <option value="gift2.mp4">Animasi Gift 2 (Singa/Univers)</option>
-            </select>
-            <button id="triggerGift" style="white-space: nowrap;">Tampilkan ke Display</button>
-        </div>
+    <!-- Pilih Opsi Video Gift -->
+    <div class="form-group">
+        <label>Pilih Efek Animasi Gift (Green Screen):</label>
+        <select id="giftSelect">
+            <option value="">-- Pilih Efek Gift --</option>
+            <option value="gift1.mp4">Animasi Gift 1</option>
+            <option value="gift2.mp4">Animasi Gift 2</option>
+        </select>
+        <button class="btn-action" style="background: #10b981; margin-top: 10px;" id="triggerGift">Tampilkan Gift ke Display</button>
     </div>
 </div>
 
 <script>
     const channel = new BroadcastChannel('live_control_channel');
 
-    // 1. Handle Upload Video Host
+    // Handle Upload Video Host
     document.getElementById('hostVideoFile').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -224,40 +107,37 @@
         }
     });
 
-    // 2. Inisialisasi Kotak 1 - 8
+    // Inisialisasi Kotak 1-8
     const slotsContainer = document.getElementById('slotsContainer');
     const slotData = {};
 
     for (let i = 1; i <= 8; i++) {
-        slotData[i] = { username: '', photo: '' };
-
-        const item = document.createElement('div');
-        item.className = 'slot-item';
-        item.innerHTML = `
-            <label>Kotak ${i}</label>
-            <input type="text" placeholder="Username / Link TikTok..." id="userInput_${i}">
-            <button class="btn-secondary" onclick="detectTikTok(${i})">Deteksi Otomatis</button>
-            <div class="preview-container">
-                <img id="previewImg_${i}" class="crop-preview">
-                <span id="statusText_${i}" class="status-text">Kosong</span>
+        slotData[i] = { photo: '' };
+        const card = document.createElement('div');
+        card.className = 'slot-card';
+        card.innerHTML = `
+            <h4>Kotak ${i}</h4>
+            <input type="text" placeholder="Username / Link TikTok..." id="input_${i}" style="margin-bottom:8px;">
+            <button class="btn-action btn-fetch" onclick="fetchTikTokProfile(${i})">Deteksi Foto Otomatis</button>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img id="preview_${i}" class="preview-img">
+                <span id="status_${i}" style="font-size: 11px; color: #94a3b8;">Belum ada data</span>
             </div>
-            <button class="btn-danger" onclick="resetSlot(${i})">Reset Kotak ${i}</button>
+            <button class="btn-action" onclick="clearSlot(${i})" style="background:#64748b;">Reset Kotak ${i}</button>
         `;
-        slotsContainer.appendChild(item);
+        slotsContainer.appendChild(card);
     }
 
-    // Fungsi Deteksi Target TikTok & Crop Bulat Otomatis
-    window.detectTikTok = function(i) {
-        let inputVal = document.getElementById(`userInput_${i}`).value.trim();
-        let statusText = document.getElementById(`statusText_${i}`);
-        let previewImg = document.getElementById(`previewImg_${i}`);
+    window.fetchTikTokProfile = function(i) {
+        let inputVal = document.getElementById(`input_${i}`).value.trim();
+        const statusSpan = document.getElementById(`status_${i}`);
+        const previewImg = document.getElementById(`preview_${i}`);
 
         if (!inputVal) {
-            alert('Silakan masukkan username atau link profil TikTok terlebih dahulu!');
+            alert('Masukkan link atau username terlebih dahulu!');
             return;
         }
 
-        // Ekstrak username jika berupa link lengkap
         let username = inputVal;
         if (inputVal.includes('tiktok.com/@')) {
             const match = inputVal.match(/@([a-zA-Z0-9._]+)/);
@@ -266,54 +146,47 @@
             username = username.replace('@', '');
         }
 
-        statusText.innerText = "Mendeteksi...";
-
-        // Mengambil avatar otomatis (menggunakan layanan terintegrasi avatar publik berbasis username)
+        statusSpan.innerText = "Mendeteksi...";
         let avatarUrl = `https://unavatar.io/tiktok/${username}`;
         
-        let testImage = new Image();
-        testImage.src = avatarUrl;
-        testImage.onload = function() {
-            slotData[i] = { username: '@' + username, photo: avatarUrl };
+        let testImg = new Image();
+        testImg.src = avatarUrl;
+        testImg.onload = function() {
+            slotData[i] = { photo: avatarUrl };
             previewImg.src = avatarUrl;
             previewImg.style.display = 'block';
-            statusText.innerText = "Berhasil (Bulat Crop)";
-            broadcastSlot(i);
+            statusSpan.innerText = "Berhasil (Bulat Crop)";
+            sendSlotUpdate(i);
         };
-        testImage.onerror = function() {
-            // Fallback generator jika gagal terhubung ke unavatar
-            let fallbackUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
-            slotData[i] = { username: '@' + username, photo: fallbackUrl };
-            previewImg.src = fallbackUrl;
+        testImg.onerror = function() {
+            let fallbackAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
+            slotData[i] = { photo: fallbackAvatar };
+            previewImg.src = fallbackAvatar;
             previewImg.style.display = 'block';
-            statusText.innerText = "Terdeteksi (Fallback)";
-            broadcastSlot(i);
+            statusSpan.innerText = "Terdeteksi (Fallback)";
+            sendSlotUpdate(i);
         };
     }
 
-    function broadcastSlot(i) {
-        channel.postMessage({
-            type: 'UPDATE_SLOT',
-            slot: i,
-            data: slotData[i]
-        });
+    function sendSlotUpdate(slotIndex) {
+        channel.postMessage({ type: 'UPDATE_SLOT', slot: slotIndex, data: slotData[slotIndex] });
     }
 
-    window.resetSlot = function(i) {
-        document.getElementById(`userInput_${i}`).value = '';
-        document.getElementById(`previewImg_${i}`).style.display = 'none';
-        document.getElementById(`statusText_${i}`).innerText = 'Kosong';
-        slotData[i] = { username: '', photo: '' };
-        broadcastSlot(i);
+    window.clearSlot = function(i) {
+        document.getElementById(`input_${i}`).value = '';
+        document.getElementById(`preview_${i}`).style.display = 'none';
+        document.getElementById(`status_${i}`).innerText = 'Kosong';
+        slotData[i] = { photo: '' };
+        sendSlotUpdate(i);
     }
 
-    // 3. Trigger Video Gift Green Screen
+    // Trigger Gift
     document.getElementById('triggerGift').addEventListener('click', () => {
         const giftVal = document.getElementById('giftSelect').value;
-        if (giftVal) {
+        if(giftVal) {
             channel.postMessage({ type: 'TRIGGER_GIFT', gift: giftVal });
         } else {
-            alert('Pilih jenis efek gift terlebih dahulu!');
+            alert('Pilih jenis gift terlebih dahulu!');
         }
     });
 </script>
