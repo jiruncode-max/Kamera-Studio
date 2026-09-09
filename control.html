@@ -51,6 +51,8 @@
         <div class="form-group">
             <label for="giftVideoFile">Upload File Animasi Video Gift (Full Layar 9:16):</label>
             <input type="file" id="giftVideoFile" accept="video/*">
+            <!-- Tombol ini sekarang hanya memilih file, belum menampilkan animasi gift ke display -->
+            <button class="btn-action btn-install" onclick="stageGiftVideo()" style="background:#8b5cf6; margin-bottom:8px;">Simpan Pilihan Gift</button>
             <button class="btn-action btn-play" onclick="playGiftVideo()">Putar Animasi Gift ke Display</button>
         </div>
 
@@ -91,6 +93,11 @@
             if (file) giftVideoUrl = URL.createObjectURL(file);
         });
 
+        function stageGiftVideo() {
+            if (!giftVideoUrl) return alert('Silakan pilih file video gift terlebih dahulu!');
+            alert('File gift berhasil disiapkan. Klik "Putar Animasi Gift ke Display" untuk memainkannya.');
+        }
+
         function playGiftVideo() {
             if (!giftVideoUrl) return alert('Silakan pilih file animasi video gift terlebih dahulu!');
             channel.postMessage({ type: 'TRIGGER_GIFT', url: giftVideoUrl });
@@ -99,7 +106,7 @@
         const slotsContainer = document.getElementById('slotsContainer');
         for (let i = 1; i <= 8; i++) {
             slotData[i] = { username: '', photo: '', topIcon: '' };
-            pendingData[i] = { username: '', photo: '', topIcon: '' };
+            pendingData[i] = { username: '', inputVal: '', photo: '', topIcon: '' };
 
             const card = document.createElement('div');
             card.className = 'slot-card';
@@ -133,6 +140,8 @@
             const statusSpan = document.getElementById(`status_${i}`);
             const previewImg = document.getElementById(`preview_${i}`);
 
+            pendingData[i].inputVal = inputVal;
+
             if (!inputVal) {
                 previewImg.style.display = 'none';
                 statusSpan.innerText = 'Kosong';
@@ -148,23 +157,30 @@
             let testImg = new Image();
             testImg.src = avatarUrl;
             testImg.onload = function() {
-                pendingData[i].username = '@' + username;
-                pendingData[i].photo = avatarUrl;
-                previewImg.src = avatarUrl; previewImg.style.display = 'block';
-                statusSpan.innerText = "Siap dipasang!";
+                if (pendingData[i].inputVal === inputVal) {
+                    pendingData[i].username = '@' + username;
+                    pendingData[i].photo = avatarUrl;
+                    previewImg.src = avatarUrl; previewImg.style.display = 'block';
+                    statusSpan.innerText = "Siap dipasang!";
+                }
             };
             testImg.onerror = function() {
-                let fallbackAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
-                pendingData[i].username = '@' + username;
-                pendingData[i].photo = fallbackAvatar;
-                previewImg.src = fallbackAvatar; previewImg.style.display = 'block';
-                statusSpan.innerText = "Siap (Fallback)!";
+                if (pendingData[i].inputVal === inputVal) {
+                    let fallbackAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
+                    pendingData[i].username = '@' + username;
+                    pendingData[i].photo = fallbackAvatar;
+                    previewImg.src = fallbackAvatar; previewImg.style.display = 'block';
+                    statusSpan.innerText = "Siap (Fallback)!";
+                }
             };
         }
 
         window.installSlot = function(i) {
-            slotData[i] = { ...pendingData[i] };
-            slotData[i].topIcon = document.getElementById(`icon_${i}`).value;
+            slotData[i] = { 
+                username: pendingData[i].username, 
+                photo: pendingData[i].photo, 
+                topIcon: document.getElementById(`icon_${i}`).value 
+            };
             channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
             document.getElementById(`status_${i}`).innerText = "Terpasang di Display!";
         }
@@ -175,7 +191,7 @@
             document.getElementById(`preview_${i}`).style.display = 'none';
             document.getElementById(`status_${i}`).innerText = 'Kosong';
             slotData[i] = { username: '', photo: '', topIcon: '' };
-            pendingData[i] = { username: '', photo: '', topIcon: '' };
+            pendingData[i] = { username: '', inputVal: '', photo: '', topIcon: '' };
             channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
         }
     </script>
