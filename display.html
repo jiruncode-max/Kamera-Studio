@@ -32,11 +32,11 @@
             display: flex; flex-direction: column; gap: 8px; height: 100%; justify-content: center;
         }
         .slot-box {
-            position: relative; /* Wajib agar ikon absolut menempel ke kotak ini */
+            position: relative;
             width: 70px; height: 70px; background: rgba(15, 23, 42, 0.85);
             border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.6); overflow: visible; /* Biar ikon tidak terpotong */
+            color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.6); overflow: visible;
         }
         .slot-box.filled {
             border-color: #38bdf8; background: rgba(15, 23, 42, 0.95);
@@ -45,18 +45,15 @@
             width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
             border: 2px solid #38bdf8; background-color: #334155;
         }
-        /* Styling Ikon Kecil di Atas Sebelah Kanan */
+        /* Ikon kecil tanpa latar belakang bulat, posisi di kanan atas */
         .top-badge-icon {
             position: absolute;
-            top: -6px;
-            right: -6px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
+            top: -8px;
+            right: -8px;
+            width: 22px;
+            height: 22px;
             object-fit: contain;
-            background: rgba(15, 23, 42, 0.9);
-            border: 2px solid #38bdf8;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8));
             z-index: 10;
         }
         .default-plus { font-size: 18px; color: #888; font-weight: bold; }
@@ -111,6 +108,7 @@
         const giftCanvas = document.getElementById('giftCanvas');
         const ctx = giftCanvas.getContext('2d', { willReadFrequently: true });
         let renderInterval = null;
+        let giftTimeout = null;
 
         channel.onmessage = function (event) {
             const data = event.data;
@@ -125,6 +123,9 @@
                 giftVideo.src = data.url;
                 giftVideo.load();
                 giftVideo.currentTime = 0;
+                
+                if (giftTimeout) clearTimeout(giftTimeout);
+
                 giftVideo.play().then(() => {
                     giftCanvas.style.display = 'block';
                     giftCanvas.width = giftVideo.videoWidth || 720;
@@ -152,6 +153,14 @@
                         }
                         ctx.putImageData(frame, 0, 0);
                     }, 30);
+
+                    // Batasi durতার video gift otomatis berhenti dalam 5 detik
+                    giftTimeout = setTimeout(() => {
+                        giftVideo.pause();
+                        clearInterval(renderInterval);
+                        giftCanvas.style.display = 'none';
+                    }, 5000);
+
                 }).catch(err => console.log("Gagal memutar video gift:", err));
             }
 
