@@ -30,6 +30,7 @@
             border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%;
         }
         .btn-play { background: #10b981; margin-top: 8px; }
+        .btn-install { background: #3b82f6; margin-top: 8px; }
         .preview-img {
             width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
             margin-top: 5px; display: none; border: 2px solid #38bdf8;
@@ -62,6 +63,7 @@
     <script>
         const channel = new BroadcastChannel('live_control_channel');
         const slotData = {};
+        const pendingData = {};
         let hostVideoUrl = '';
         let giftVideoUrl = '';
 
@@ -97,34 +99,47 @@
         const slotsContainer = document.getElementById('slotsContainer');
         for (let i = 1; i <= 8; i++) {
             slotData[i] = { username: '', photo: '', topIcon: '' };
+            pendingData[i] = { username: '', photo: '', topIcon: '' };
+
             const card = document.createElement('div');
             card.className = 'slot-card';
             
             let optionsHtml = '';
-            iconOptions.forEach((opt, idx) => {
+            iconOptions.forEach((opt) => {
                 optionsHtml += `<option value="${opt.url}">${opt.name}</option>`;
             });
 
             card.innerHTML = `
                 <h4>Target ${i}</h4>
-                <select id="icon_${i}" onchange="updateSlotData(${i})">${optionsHtml}</select>
-                <input type="text" placeholder="Ketik Username/Link TikTok..." id="input_${i}" oninput="autoDetectProfile(${i})">
+                <select id="icon_${i}" onchange="stageIcon(${i})">${optionsHtml}</select>
+                <input type="text" placeholder="Ketik Username/Link TikTok..." id="input_${i}" oninput="stageProfile(${i})">
                 <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
                     <img id="preview_${i}" class="preview-img">
                     <span id="status_${i}" style="font-size: 11px; color: #94a3b8;">Menunggu input...</span>
                 </div>
+                <button class="btn-action btn-install" onclick="installSlot(${i})">Pasang ke Display</button>
                 <button class="btn-action" onclick="clearSlot(${i})" style="background:#64748b; margin-top:8px;">Reset Target ${i}</button>
             `;
             slotsContainer.appendChild(card);
         }
 
-        window.autoDetectProfile = function(i) {
+        window.stageIcon = function(i) {
+            const selectedIcon = document.getElementById(`icon_${i}`).value;
+            pendingData[i].topIcon = selectedIcon;
+        }
+
+        window.stageProfile = function(i) {
             let inputVal = document.getElementById(`input_${i}`).value.trim();
             const statusSpan = document.getElementById(`status_${i}`);
             const previewImg = document.getElementById(`preview_${i}`);
-            const selectedIcon = document.getElementById(`icon_${i}`).value;
 
-            if (!inputVal) { clearSlot(i); return; }
+            if (!inputVal) {
+                previewImg.style.display = 'none';
+                statusSpan.innerText = 'Kosong';
+                pendingData[i].username = '';
+                pendingData[i].photo = '';
+                return;
+            }
 
             let username = inputVal.includes('tiktok.com/@') ? (inputVal.match(/@([a-zA-Z0-9._]+)/)?.[1] || inputVal) : inputVal.replace('@', '');
 
@@ -133,26 +148,25 @@
             let testImg = new Image();
             testImg.src = avatarUrl;
             testImg.onload = function() {
-                slotData[i] = { username: '@' + username, photo: avatarUrl, topIcon: selectedIcon };
+                pendingData[i].username = '@' + username;
+                pendingData[i].photo = avatarUrl;
                 previewImg.src = avatarUrl; previewImg.style.display = 'block';
-                statusSpan.innerText = "Berhasil!"; sendSlotUpdate(i);
+                statusSpan.innerText = "Siap dipasang!";
             };
             testImg.onerror = function() {
                 let fallbackAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
-                slotData[i] = { username: '@' + username, photo: fallbackAvatar, topIcon: selectedIcon };
+                pendingData[i].username = '@' + username;
+                pendingData[i].photo = fallbackAvatar;
                 previewImg.src = fallbackAvatar; previewImg.style.display = 'block';
-                statusSpan.innerText = "Fallback!"; sendSlotUpdate(i);
+                statusSpan.innerText = "Siap (Fallback)!";
             };
         }
 
-        window.updateSlotData = function(i) {
-            const selectedIcon = document.getElementById(`icon_${i}`).value;
-            slotData[i].topIcon = selectedIcon;
-            sendSlotUpdate(i);
-        }
-
-        function sendSlotUpdate(slotIndex) {
-            channel.postMessage({ type: 'UPDATE_SLOT', slot: slotIndex, data: slotData[slotIndex] });
+        window.installSlot = function(i) {
+            slotData[i] = { ...pendingData[i] };
+            slotData[i].topIcon = document.getElementById(`icon_${i}`).value;
+            channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
+            document.getElementById(`status_${i}`).innerText = "Terpasang di Display!";
         }
 
         window.clearSlot = function(i) {
@@ -160,8 +174,9 @@
             document.getElementById(`icon_${i}`).selectedIndex = 0;
             document.getElementById(`preview_${i}`).style.display = 'none';
             document.getElementById(`status_${i}`).innerText = 'Kosong';
-            slotData[i] = { username: '', photo: '', topIcon: '' }; 
-            sendSlotUpdate(i);
+            slotData[i] = { username: '', photo: '', topIcon: '' };
+            pendingData[i] = { username: '', photo: '', topIcon: '' };
+            channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
         }
     </script>
 </body>
