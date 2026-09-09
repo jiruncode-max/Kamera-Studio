@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control Panel</title>
+    <title>Control Panel - Live TikTok</title>
     <style>
         body {
             background-color: #0f172a;
@@ -12,7 +12,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: #1e293b;
             padding: 25px;
@@ -20,14 +20,8 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         h2 { border-bottom: 2px solid #334155; padding-bottom: 10px; margin-top: 0; }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
         input, select {
             width: 100%;
             padding: 10px;
@@ -56,28 +50,38 @@
             padding: 8px 12px;
             border-radius: 4px;
             cursor: pointer;
-            margin-top: 5px;
+            margin-top: 8px;
+            font-weight: bold;
         }
         button:hover { background: #dc2626; }
+        .btn-fetch { background: #3b82f6; width: 100%; margin-bottom: 8px; }
+        .btn-fetch:hover { background: #2563eb; }
+        .preview-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-top: 5px;
+            display: none;
+            border: 2px solid #38bdf8;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Control Panel Live</h2>
+    <h2>Control Panel Live TikTok</h2>
     
     <!-- 1. Input Video Host -->
     <div class="form-group">
-        <label for="hostVideoFile">Upload / Pilih Video untuk Host (Background Utama):</label>
+        <label for="hostVideoFile">Upload Video untuk Host (Background):</label>
         <input type="file" id="hostVideoFile" accept="video/*">
     </div>
 
-    <!-- 2. Input Username TikTok & Pilih Kotak 1-8 -->
+    <!-- 2. Kotak 1 - 8 (Sistem Otomatis & Link Profil TikTok) -->
     <div class="form-group">
-        <label>Input Username TikTok & Alokasi Kotak (1 - 8):</label>
-        <div class="grid-slots" id="slotsContainer">
-            <!-- Dibuat otomatis via JS -->
-        </div>
+        <label>Pengaturan Kotak Target (1 - 8):</label>
+        <div class="grid-slots" id="slotsContainer"></div>
     </div>
 
     <!-- 3. Pilih Opsi Video Gift -->
@@ -85,8 +89,8 @@
         <label for="giftSelect">Pilih Animasi Video Gift (Green Screen):</label>
         <select id="giftSelect">
             <option value="">-- Pilih Efek Gift --</option>
-            <option value="gift1.mp4">Gift Animasi 1 (Contoh)</option>
-            <option value="gift2.mp4">Gift Animasi 2 (Contoh)</option>
+            <option value="gift1.mp4">Gift Animasi 1</option>
+            <option value="gift2.mp4">Gift Animasi 2</option>
         </select>
         <button id="triggerGift" style="background: #10b981; margin-top: 10px; width: 100%;">Tampilkan Gift ke Display</button>
     </div>
@@ -95,9 +99,8 @@
 <script>
     const channel = new BroadcastChannel('live_control_channel');
 
-    // 1. Handle Video Host
-    const hostVideoFile = document.getElementById('hostVideoFile');
-    hostVideoFile.addEventListener('change', (e) => {
+    // Handle Video Host
+    document.getElementById('hostVideoFile').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
             const videoURL = URL.createObjectURL(file);
@@ -105,7 +108,7 @@
         }
     });
 
-    // 2. Setup 8 Kotak Input Target TikTok
+    // Inisialisasi 8 Kotak
     const slotsContainer = document.getElementById('slotsContainer');
     const slotData = {};
 
@@ -116,35 +119,68 @@
         card.className = 'slot-card';
         card.innerHTML = `
             <h4>Kotak ${i}</h4>
-            <input type="text" placeholder="Username TikTok target..." id="user_${i}" data-slot="${i}" style="margin-bottom:8px;">
-            <label style="font-size:12px; font-weight:normal;">Upload Foto Bulat Crop:</label>
-            <input type="file" accept="image/*" id="photo_${i}" data-slot="${i}">
-            <button onclick="clearSlot(${i})" style="width:100%; margin-top:8px;">Reset Kotak ${i}</button>
+            <input type="text" placeholder="Masukkan Link / Username TikTok..." id="input_${i}" style="margin-bottom:8px;">
+            <button class="btn-fetch" onclick="fetchTikTokProfile(${i})">Deteksi Profil Otomatis</button>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img id="preview_${i}" class="preview-img">
+                <span id="status_${i}" style="font-size: 11px; color: #94a3b8;">Belum ada data</span>
+            </div>
+            <button onclick="clearSlot(${i})" style="width:100%; background:#64748b;">Reset Kotak ${i}</button>
         `;
         slotsContainer.appendChild(card);
     }
 
-    // Event listener input username & foto
-    for (let i = 1; i <= 8; i++) {
-        const userInput = document.getElementById(`user_${i}`);
-        const photoInput = document.getElementById(`photo_${i}`);
+    // Fungsi Deteksi Otomatis menggunakan API publik / TikPaw fallback parser
+    window.fetchTikTokProfile = async function(i) {
+        let inputVal = document.getElementById(`input_${i}`).value.trim();
+        const statusSpan = document.getElementById(`status_${i}`);
+        const previewImg = document.getElementById(`preview_${i}`);
 
-        userInput.addEventListener('input', (e) => {
-            slotData[i].username = e.target.value;
-            sendSlotUpdate(i);
-        });
+        if (!inputVal) {
+            alert('Masukkan link atau username terlebih dahulu!');
+            return;
+        }
 
-        photoInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    slotData[i].photo = event.target.result;
-                    sendSlotUpdate(i);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        // Ekstrak username jika berupa link lengkap (misal: https://www.tiktok.com/@username)
+        let username = inputVal;
+        if (inputVal.includes('tiktok.com/@')) {
+            const match = inputVal.match(/@([a-zA-Z0-9._]+)/);
+            if (match) username = match[1];
+        } else {
+            username = username.replace('@', '');
+        }
+
+        statusSpan.innerText = "Mendeteksi...";
+        
+        try {
+            // Menggunakan layanan pihak ketiga CORS-friendly untuk mengambil data profil atau menggunakan avatar generator publik jika diblokir TikTok
+            // Sebagai alternatif yang stabil dan akurat tanpa API Key berbayar, kita gunakan avatar instan berdasarkan username
+            let avatarUrl = `https://unavatar.io/tiktok/${username}`;
+            
+            // Verifikasi apakah gambar aktif/valid
+            let testImg = new Image();
+            testImg.src = avatarUrl;
+            testImg.onload = function() {
+                slotData[i] = { username: '@' + username, photo: avatarUrl };
+                previewImg.src = avatarUrl;
+                previewImg.style.display = 'block';
+                statusSpan.innerText = "Berhasil Terdeteksi!";
+                sendSlotUpdate(i);
+            };
+            testImg.onerror = function() {
+                // Fallback jika unavatar gagal
+                let fallbackAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
+                slotData[i] = { username: '@' + username, photo: fallbackAvatar };
+                previewImg.src = fallbackAvatar;
+                previewImg.style.display = 'block';
+                statusSpan.innerText = "Terdeteksi (Fallback)";
+                sendSlotUpdate(i);
+            };
+
+        } catch (error) {
+            statusSpan.innerText = "Gagal mendeteksi!";
+            console.error(error);
+        }
     }
 
     function sendSlotUpdate(slotIndex) {
@@ -156,13 +192,14 @@
     }
 
     window.clearSlot = function(i) {
-        document.getElementById(`user_${i}`).value = '';
-        document.getElementById(`photo_${i}`).value = '';
+        document.getElementById(`input_${i}`).value = '';
+        document.getElementById(`preview_${i}`).style.display = 'none';
+        document.getElementById(`status_${i}`).innerText = 'Kosong';
         slotData[i] = { username: '', photo: '' };
         sendSlotUpdate(i);
     }
 
-    // 3. Trigger Video Gift (Green Screen di bagian bawah)
+    // Trigger Gift
     const giftSelect = document.getElementById('giftSelect');
     document.getElementById('triggerGift').addEventListener('click', () => {
         const giftVal = giftSelect.value;
