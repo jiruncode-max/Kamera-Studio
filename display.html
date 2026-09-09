@@ -10,24 +10,23 @@
             overflow: hidden; background: #000; font-family: Arial, sans-serif;
             display: flex; justify-content: center; align-items: center;
         }
-        /* Kontainer Utama Pas 9:16 (Standar Live HP / TikTok) */
         #displayScreen {
             position: relative;
             width: 100vw;
             height: 100vh;
-            max-width: 56.25vh; /* Menjaga rasio 9:16 persis tanpa terlalu panjang */
+            max-width: 56.25vh; /* Rasio persis 9:16 */
             max-height: 100vw;
             overflow: hidden;
             background: #0f172a;
         }
         #hostVideo {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: -10;
+            object-fit: cover; z-index: 1; /* Pastikan di atas background tapi di bawah elemen UI */
         }
         .layout-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; box-sizing: border-box; z-index: 2; pointer-events: none;
+            padding: 15px; box-sizing: border-box; z-index: 3; pointer-events: none;
         }
         .side-column {
             display: flex; flex-direction: column; gap: 8px; height: 100%; justify-content: center;
@@ -48,7 +47,6 @@
         .default-plus { font-size: 18px; color: #888; font-weight: bold; }
         .default-text { font-size: 8px; color: #888; margin-top: 2px; }
 
-        /* Overlay Gift Full Layar 9:16 Menyesuaikan Video Host */
         #giftOverlayContainer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 5; display: flex; justify-content: center; align-items: center;
@@ -63,16 +61,14 @@
 <body>
 
     <div id="displayScreen">
-        <!-- Video Background Host -->
-        <video id="hostVideo" autoplay loop></video>
+        <!-- Video Background Host dengan atribut wajib untuk autoplay browser/OBS -->
+        <video id="hostVideo" autoplay loop playsinline></video>
         
-        <!-- Kotak 1 - 8 Samping Kiri & Kanan -->
         <div class="layout-container">
             <div class="side-column" id="left-column"></div>
             <div class="side-column" id="right-column"></div>
         </div>
 
-        <!-- Animasi Gift Full Layar 9:16 (Green Screen Transparan) -->
         <div id="giftOverlayContainer">
             <video id="giftVideoSource" crossorigin="anonymous" playsinline></video>
             <canvas id="giftCanvas"></canvas>
@@ -103,9 +99,14 @@
             const data = event.data;
 
             if (data.type === 'UPDATE_HOST_VIDEO') {
+                console.log("Menerima video host:", data.url);
                 hostVideo.src = data.url;
                 hostVideo.load();
-                hostVideo.play().catch(err => console.log("Gagal memutar video host:", err));
+                hostVideo.play().then(() => {
+                    console.log("Video host berhasil diputar!");
+                }).catch(err => {
+                    console.log("Gagal memutar video host (perlu interaksi klik):", err);
+                });
             }
 
             if (data.type === 'TRIGGER_GIFT') {
@@ -128,7 +129,6 @@
                         let frame = ctx.getImageData(0, 0, giftCanvas.width, giftCanvas.height);
                         let l = frame.data.length;
                         
-                        // Menghapus latar hijau (Chroma Key) agar menyatu mulus dengan video host
                         for (let p = 0; p < l; p += 4) {
                             let red = frame.data[p];
                             let green = frame.data[p + 1];
@@ -157,6 +157,13 @@
                 }
             }
         };
+
+        // Solusi jika browser memblokir autoplay: Klik sekali di layar display untuk mengaktifkan video
+        document.body.addEventListener('click', () => {
+            if (hostVideo.paused && hostVideo.src) {
+                hostVideo.play().catch(e => console.log(e));
+            }
+        });
     </script>
 </body>
 </html>
