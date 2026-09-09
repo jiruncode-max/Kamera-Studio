@@ -3,197 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control Panel - Live TikTok</title>
+    <title>Display Screen - OBS Vertikal</title>
     <style>
-        body {
-            margin: 0; padding: 20px; font-family: Arial, sans-serif;
-            background-color: #0f172a; color: #fff;
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: #000; font-family: Arial, sans-serif;
+            display: flex; justify-content: center; align-items: center;
         }
-        .container {
-            max-width: 850px; margin: 0 auto; background: #1e293b;
-            padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        #displayScreen {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            max-width: 56.25vh;
+            max-height: 100vw;
+            overflow: hidden;
+            background: #0f172a;
         }
-        h2 { border-bottom: 2px solid #334155; padding-bottom: 10px; margin-top: 0; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input, select {
-            width: 100%; padding: 10px; background: #0f172a;
-            border: 1px solid #475569; color: white; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px;
+        #hostVideo {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; z-index: 1;
         }
-        .grid-slots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .slot-card {
-            background: #334155; padding: 15px; border-radius: 8px; border: 1px solid #475569;
+        .layout-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; box-sizing: border-box; z-index: 3; pointer-events: none;
         }
-        .slot-card h4 { margin: 0 0 10px 0; color: #38bdf8; }
-        .btn-action {
-            background: #ef4444; color: white; border: none; padding: 8px 12px;
-            border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%;
+        .side-column {
+            display: flex; flex-direction: column; gap: 8px; height: 100%; justify-content: center;
         }
-        .btn-play { background: #10b981; margin-top: 8px; }
-        .btn-install { background: #3b82f6; margin-top: 8px; }
-        .preview-img {
-            width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
-            margin-top: 5px; display: none; border: 2px solid #38bdf8;
+        .slot-box {
+            position: relative;
+            width: 70px; height: 70px; background: rgba(15, 23, 42, 0.85);
+            border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.6); overflow: visible;
         }
+        .slot-box.filled {
+            border-color: #38bdf8; background: rgba(15, 23, 42, 0.95);
+        }
+        .slot-photo {
+            width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+            border: 2px solid #38bdf8; background-color: #334155;
+        }
+        .top-badge-icon {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8));
+            z-index: 10;
+            display: none;
+        }
+        .default-plus { font-size: 18px; color: #888; font-weight: bold; }
+        .default-text { font-size: 7.5px; color: #888; margin-top: 2px; text-align: center; }
+
+        #giftOverlayContainer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5; display: flex; justify-content: center; align-items: center;
+            pointer-events: none; overflow: hidden;
+        }
+        #giftCanvas {
+            width: 100%; height: 100%; object-fit: cover; display: none;
+        }
+        #giftVideoSource { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Control Panel Live TikTok</h2>
+    <div id="displayScreen">
+        <video id="hostVideo" autoplay loop playsinline></video>
         
-        <div class="form-group">
-            <label for="hostVideoFile">Upload Video untuk Host (Background Full Layar):</label>
-            <input type="file" id="hostVideoFile" accept="video/*">
-            <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host ke Display</button>
+        <div class="layout-container">
+            <div class="side-column" id="left-column"></div>
+            <div class="side-column" id="right-column"></div>
         </div>
 
-        <div class="form-group">
-            <label for="giftVideoFile">Upload File Animasi Video Gift (Full Layar 9:16):</label>
-            <input type="file" id="giftVideoFile" accept="video/*">
-            <!-- Tombol ini sekarang hanya memilih file, belum menampilkan animasi gift ke display -->
-            <button class="btn-action btn-install" onclick="stageGiftVideo()" style="background:#8b5cf6; margin-bottom:8px;">Simpan Pilihan Gift</button>
-            <button class="btn-action btn-play" onclick="playGiftVideo()">Putar Animasi Gift ke Display</button>
-        </div>
-
-        <div class="form-group">
-            <label>Pengaturan Kotak Target (1 - 8) & Ikon Atas:</label>
-            <div class="grid-slots" id="slotsContainer"></div>
+        <div id="giftOverlayContainer">
+            <video id="giftVideoSource" crossorigin="anonymous" playsinline></video>
+            <canvas id="giftCanvas"></canvas>
         </div>
     </div>
 
     <script>
         const channel = new BroadcastChannel('live_control_channel');
-        const slotData = {};
-        const pendingData = {};
-        let hostVideoUrl = '';
-        let giftVideoUrl = '';
+        const leftColumn = document.getElementById('left-column');
+        const rightColumn = document.getElementById('right-column');
+        const slotsState = {};
 
-        const iconOptions = [
-            { name: "Pilih Ikon...", url: "" },
-            { name: "Ikon 1 (Mawar/Gift)", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp" },
-            { name: "Ikon 2", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp" },
-            { name: "Ikon 3", url: "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp" },
-            { name: "Ikon 4", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d067d13988e8754ed6adbebd89b9ee8.png~tplv-obj.webp" },
-            { name: "Ikon 5", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp" }
-        ];
+        const totalSlots = 8;
+        const middleSlot = 4;
 
-        document.getElementById('hostVideoFile').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) hostVideoUrl = URL.createObjectURL(file);
-        });
-
-        function playHostVideo() {
-            if (!hostVideoUrl) return alert('Silakan pilih file video host terlebih dahulu!');
-            channel.postMessage({ type: 'UPDATE_HOST_VIDEO', url: hostVideoUrl });
+        for (let i = 1; i <= totalSlots; i++) {
+            slotsState[i] = { username: '', photo: '', topIcon: '' };
+            const box = document.createElement('div');
+            box.className = 'slot-box'; box.id = `display_slot_${i}`;
+            box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Permintaan</div>`;
+            if (i <= middleSlot) leftColumn.appendChild(box); else rightColumn.appendChild(box);
         }
 
-        document.getElementById('giftVideoFile').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) giftVideoUrl = URL.createObjectURL(file);
-        });
+        const hostVideo = document.getElementById('hostVideo');
+        const giftVideo = document.getElementById('giftVideoSource');
+        const giftCanvas = document.getElementById('giftCanvas');
+        const ctx = giftCanvas.getContext('2d', { willReadFrequently: true });
+        let renderInterval = null;
+        let giftTimeout = null;
+        let iconTimeout = null;
 
-        function stageGiftVideo() {
-            if (!giftVideoUrl) return alert('Silakan pilih file video gift terlebih dahulu!');
-            alert('File gift berhasil disiapkan. Klik "Putar Animasi Gift ke Display" untuk memainkannya.');
-        }
+        channel.onmessage = function (event) {
+            const data = event.data;
 
-        function playGiftVideo() {
-            if (!giftVideoUrl) return alert('Silakan pilih file animasi video gift terlebih dahulu!');
-            channel.postMessage({ type: 'TRIGGER_GIFT', url: giftVideoUrl });
-        }
-
-        const slotsContainer = document.getElementById('slotsContainer');
-        for (let i = 1; i <= 8; i++) {
-            slotData[i] = { username: '', photo: '', topIcon: '' };
-            pendingData[i] = { username: '', inputVal: '', photo: '', topIcon: '' };
-
-            const card = document.createElement('div');
-            card.className = 'slot-card';
-            
-            let optionsHtml = '';
-            iconOptions.forEach((opt) => {
-                optionsHtml += `<option value="${opt.url}">${opt.name}</option>`;
-            });
-
-            card.innerHTML = `
-                <h4>Target ${i}</h4>
-                <select id="icon_${i}" onchange="stageIcon(${i})">${optionsHtml}</select>
-                <input type="text" placeholder="Ketik Username/Link TikTok..." id="input_${i}" oninput="stageProfile(${i})">
-                <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
-                    <img id="preview_${i}" class="preview-img">
-                    <span id="status_${i}" style="font-size: 11px; color: #94a3b8;">Menunggu input...</span>
-                </div>
-                <button class="btn-action btn-install" onclick="installSlot(${i})">Pasang ke Display</button>
-                <button class="btn-action" onclick="clearSlot(${i})" style="background:#64748b; margin-top:8px;">Reset Target ${i}</button>
-            `;
-            slotsContainer.appendChild(card);
-        }
-
-        window.stageIcon = function(i) {
-            const selectedIcon = document.getElementById(`icon_${i}`).value;
-            pendingData[i].topIcon = selectedIcon;
-        }
-
-        window.stageProfile = function(i) {
-            let inputVal = document.getElementById(`input_${i}`).value.trim();
-            const statusSpan = document.getElementById(`status_${i}`);
-            const previewImg = document.getElementById(`preview_${i}`);
-
-            pendingData[i].inputVal = inputVal;
-
-            if (!inputVal) {
-                previewImg.style.display = 'none';
-                statusSpan.innerText = 'Kosong';
-                pendingData[i].username = '';
-                pendingData[i].photo = '';
-                return;
+            if (data.type === 'UPDATE_HOST_VIDEO') {
+                hostVideo.src = data.url;
+                hostVideo.load();
+                hostVideo.play().catch(err => console.log("Gagal memutar video host:", err));
             }
 
-            let username = inputVal.includes('tiktok.com/@') ? (inputVal.match(/@([a-zA-Z0-9._]+)/)?.[1] || inputVal) : inputVal.replace('@', '');
+            if (data.type === 'TRIGGER_GIFT') {
+                giftVideo.src = data.url;
+                giftVideo.load();
+                giftVideo.currentTime = 0;
+                
+                if (giftTimeout) clearTimeout(giftTimeout);
+                if (iconTimeout) clearTimeout(iconTimeout);
 
-            statusSpan.innerText = "Mendeteksi...";
-            let avatarUrl = `https://unavatar.io/tiktok/${username}`;
-            let testImg = new Image();
-            testImg.src = avatarUrl;
-            testImg.onload = function() {
-                if (pendingData[i].inputVal === inputVal) {
-                    pendingData[i].username = '@' + username;
-                    pendingData[i].photo = avatarUrl;
-                    previewImg.src = avatarUrl; previewImg.style.display = 'block';
-                    statusSpan.innerText = "Siap dipasang!";
+                // Munculkan ikon kecil saat video gift diputar
+                for (let i = 1; i <= totalSlots; i++) {
+                    const iconEl = document.getElementById(`icon_badge_${i}`);
+                    if (iconEl) iconEl.style.display = 'block';
                 }
-            };
-            testImg.onerror = function() {
-                if (pendingData[i].inputVal === inputVal) {
-                    let fallbackAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
-                    pendingData[i].username = '@' + username;
-                    pendingData[i].photo = fallbackAvatar;
-                    previewImg.src = fallbackAvatar; previewImg.style.display = 'block';
-                    statusSpan.innerText = "Siap (Fallback)!";
+
+                giftVideo.play().then(() => {
+                    giftCanvas.style.display = 'block';
+                    giftCanvas.width = giftVideo.videoWidth || 720;
+                    giftCanvas.height = giftVideo.videoHeight || 1280;
+                    
+                    if (renderInterval) clearInterval(renderInterval);
+                    renderInterval = setInterval(() => {
+                        if (giftVideo.paused || giftVideo.ended) {
+                            clearInterval(renderInterval);
+                            giftCanvas.style.display = 'none';
+                            return;
+                        }
+                        ctx.drawImage(giftVideo, 0, 0, giftCanvas.width, giftCanvas.height);
+                        let frame = ctx.getImageData(0, 0, giftCanvas.width, giftCanvas.height);
+                        let l = frame.data.length;
+                        
+                        for (let p = 0; p < l; p += 4) {
+                            let red = frame.data[p];
+                            let green = frame.data[p + 1];
+                            let blue = frame.data[p + 2];
+                            
+                            if (green > 95 && red < 90 && blue < 90) {
+                                frame.data[p + 3] = 0;
+                            }
+                        }
+                        ctx.putImageData(frame, 0, 0);
+                    }, 30);
+
+                    // Video gift tetap berjalan 5 detik
+                    giftTimeout = setTimeout(() => {
+                        giftVideo.pause();
+                        clearInterval(renderInterval);
+                        giftCanvas.style.display = 'none';
+                    }, 5000);
+
+                    // Ikon disembunyikan setelah 3 detik
+                    iconTimeout = setTimeout(() => {
+                        for (let i = 1; i <= totalSlots; i++) {
+                            const iconEl = document.getElementById(`icon_badge_${i}`);
+                            if (iconEl) iconEl.style.display = 'none';
+                        }
+                    }, 3000);
+
+                }).catch(err => console.log("Gagal memutar video gift:", err));
+            }
+
+            if (data.type === 'UPDATE_SLOT') {
+                slotsState[data.slot] = data.data;
+                const box = document.getElementById(`display_slot_${data.slot}`);
+                const slot = slotsState[data.slot];
+
+                let iconHtml = slot.topIcon ? `<img src="${slot.topIcon}" class="top-badge-icon" id="icon_badge_${data.slot}" crossorigin="anonymous">` : '';
+
+                if (slot.username && slot.photo) {
+                    box.classList.add('filled');
+                    box.innerHTML = `${iconHtml}<img src="${slot.photo}" class="slot-photo" crossorigin="anonymous">`;
+                } else {
+                    box.classList.remove('filled');
+                    box.innerHTML = `${iconHtml}<div class="default-plus">+</div><div class="default-text">Permintaan</div>`;
                 }
-            };
-        }
+            }
+        };
 
-        window.installSlot = function(i) {
-            slotData[i] = { 
-                username: pendingData[i].username, 
-                photo: pendingData[i].photo, 
-                topIcon: document.getElementById(`icon_${i}`).value 
-            };
-            channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
-            document.getElementById(`status_${i}`).innerText = "Terpasang di Display!";
-        }
-
-        window.clearSlot = function(i) {
-            document.getElementById(`input_${i}`).value = '';
-            document.getElementById(`icon_${i}`).selectedIndex = 0;
-            document.getElementById(`preview_${i}`).style.display = 'none';
-            document.getElementById(`status_${i}`).innerText = 'Kosong';
-            slotData[i] = { username: '', photo: '', topIcon: '' };
-            pendingData[i] = { username: '', inputVal: '', photo: '', topIcon: '' };
-            channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
-        }
+        document.body.addEventListener('click', () => {
+            if (hostVideo.paused && hostVideo.src) {
+                hostVideo.play().catch(e => console.log(e));
+            }
+        });
     </script>
 </body>
 </html>
