@@ -6,112 +6,59 @@
     <title>Display Screen - OBS</title>
     <style>
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: transparent;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: transparent; font-family: Arial, sans-serif;
         }
-        #displayScreen {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-        }
+        #displayScreen { width: 100vw; height: 100vh; position: relative; }
         #hostVideo {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            z-index: -10;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            object-fit: cover; z-index: -10;
         }
         .layout-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            box-sizing: border-box;
-            z-index: 2;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 40px; box-sizing: border-box; z-index: 2;
         }
         .side-column {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            height: 100%;
-            justify-content: center;
+            display: flex; flex-direction: column; gap: 12px; height: 100%; justify-content: center;
         }
         .slot-box {
-            width: 90px;
-            height: 90px;
-            background: rgba(15, 23, 42, 0.85);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 14px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
-            overflow: hidden;
+            width: 90px; height: 90px; background: rgba(15, 23, 42, 0.85);
+            border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 14px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.6); overflow: hidden;
         }
         .slot-box.filled {
-            border-color: #38bdf8;
-            background: rgba(15, 23, 42, 0.95);
+            border-color: #38bdf8; background: rgba(15, 23, 42, 0.95);
         }
         .slot-photo {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #38bdf8;
-            background-color: #334155;
+            width: 60px; height: 60px; border-radius: 50%; object-fit: cover;
+            border: 2px solid #38bdf8; background-color: #334155;
         }
         .default-plus { font-size: 24px; color: #888; font-weight: bold; }
         .default-text { font-size: 10px; color: #888; margin-top: 2px; }
 
-        /* Container Gift Overlay: Setengah Bagian Bawah & Simetris */
         #giftOverlayContainer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100vw;
-            height: 50vh;
-            z-index: 5;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            pointer-events: none;
-            overflow: hidden;
+            position: absolute; bottom: 0; left: 0; width: 100vw; height: 50vh;
+            z-index: 5; display: flex; justify-content: center; align-items: flex-end;
+            pointer-events: none; overflow: hidden;
         }
         #giftVideo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            mix-blend-mode: screen; /* Efek transparan green screen sederhana */
-            display: none;
+            width: 100%; height: 100%; object-fit: cover;
+            mix-blend-mode: screen; display: none;
         }
     </style>
 </head>
 <body>
 
     <div id="displayScreen">
-        <!-- Video Background Host -->
         <video id="hostVideo" autoplay muted loop></video>
         
-        <!-- Kotak 1 - 8 (Kiri & Kanan) -->
         <div class="layout-container">
             <div class="side-column" id="left-column"></div>
             <div class="side-column" id="right-column"></div>
         </div>
 
-        <!-- Animasi Gift di Setengah Bagian Bawah -->
         <div id="giftOverlayContainer">
             <video id="giftVideo" muted></video>
         </div>
@@ -126,11 +73,9 @@
         for (let i = 1; i <= 8; i++) {
             slotsState[i] = { username: '', photo: '' };
             const box = document.createElement('div');
-            box.className = 'slot-box';
-            box.id = `display_slot_${i}`;
+            box.className = 'slot-box'; box.id = `display_slot_${i}`;
             box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Kotak ${i}</div>`;
-            if (i <= 4) leftColumn.appendChild(box);
-            else rightColumn.appendChild(box);
+            if (i <= 4) leftColumn.appendChild(box); else rightColumn.appendChild(box);
         }
 
         channel.onmessage = function (event) {
@@ -160,9 +105,7 @@
 
                 if (slot.username && slot.photo) {
                     box.classList.add('filled');
-                    box.innerHTML = `
-                        <img src="${slot.photo}" class="slot-photo" crossorigin="anonymous">
-                    `;
+                    box.innerHTML = `<img src="${slot.photo}" class="slot-photo" crossorigin="anonymous">`;
                 } else {
                     box.classList.remove('filled');
                     box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Kotak ${data.slot}</div>`;
