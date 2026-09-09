@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Live (OBS)</title>
+    <title>Display Screen - OBS</title>
     <style>
         body, html {
             margin: 0;
@@ -12,7 +12,11 @@
             height: 100%;
             overflow: hidden;
             background: transparent;
-            font-family: Arial, sans-serif;
+        }
+        #displayScreen {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
         }
         #hostVideo {
             position: fixed;
@@ -21,7 +25,7 @@
             width: 100vw;
             height: 100vh;
             object-fit: cover;
-            z-index: 1;
+            z-index: -10;
         }
         .layout-container {
             position: absolute;
@@ -34,8 +38,7 @@
             align-items: center;
             padding: 20px 40px;
             box-sizing: border-box;
-            z-index: 3;
-            pointer-events: none;
+            z-index: 2;
         }
         .side-column {
             display: flex;
@@ -47,111 +50,132 @@
         .slot-box {
             width: 90px;
             height: 90px;
-            background: rgba(15, 23, 42, 0.75);
+            background: rgba(15, 23, 42, 0.85);
             border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 14px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
             overflow: hidden;
         }
         .slot-box.filled {
             border-color: #38bdf8;
-            background: transparent;
+            background: rgba(15, 23, 42, 0.95);
         }
         .slot-photo {
-            width: 100%;
-            height: 100%;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid #38bdf8;
+            background-color: #334155;
         }
         .default-plus { font-size: 24px; color: #888; font-weight: bold; }
+        .default-text { font-size: 10px; color: #888; margin-top: 2px; }
 
-        /* Gift Green Screen Symmetrical Bottom */
+        /* Container Gift Overlay: Setengah Bagian Bawah & Simetris */
         #giftOverlayContainer {
             position: absolute;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50%;
-            height: 40%;
-            z-index: 4;
+            left: 0;
+            width: 100vw;
+            height: 50vh;
+            z-index: 5;
             display: flex;
             justify-content: center;
             align-items: flex-end;
             pointer-events: none;
+            overflow: hidden;
         }
         #giftVideo {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
+            mix-blend-mode: screen; /* Efek tembus pandang green screen sederhana */
             display: none;
-            mix-blend-mode: screen;
         }
     </style>
 </head>
 <body>
 
-    <video id="hostVideo" autoplay muted loop></video>
-    
-    <div class="layout-container">
-        <div class="side-column" id="left-column"></div>
-        <div class="side-column" id="right-column"></div>
+    <div id="displayScreen">
+        <!-- Video Background Host -->
+        <video id="hostVideo" autoplay muted loop></video>
+        
+        <!-- Kotak 1 - 8 (Kiri & Kanan) -->
+        <div class="layout-container">
+            <div class="side-column" id="left-column"></div>
+            <div class="side-column" id="right-column"></div>
+        </div>
+
+        <!-- Animasi Gift di Setengah Bagian Bawah -->
+        <div id="giftOverlayContainer">
+            <video id="giftVideo" autoplay muted></video>
+        </div>
     </div>
 
-    <div id="giftOverlayContainer">
-        <video id="giftVideo" muted></video>
-    </div>
+    <script>
+        const channel = new BroadcastChannel('live_control_channel');
+        const leftColumn = document.getElementById('left-column');
+        const rightColumn = document.getElementById('right-column');
+        const slotsState = {};
 
-<script>
-    const channel = new BroadcastChannel('live_control_channel');
-    const leftColumn = document.getElementById('left-column');
-    const rightColumn = document.getElementById('right-column');
-    const slotsState = {};
-
-    for (let i = 1; i <= 8; i++) {
-        slotsState[i] = { photo: '' };
-        const box = document.createElement('div');
-        box.className = 'slot-box';
-        box.id = `display_slot_${i}`;
-        box.innerHTML = `<div class="default-plus">+</div>`;
-        if (i <= 4) leftColumn.appendChild(box);
-        else rightColumn.appendChild(box);
-    }
-
-    channel.onmessage = function (event) {
-        const data = event.data;
-
-        if (data.type === 'UPDATE_HOST_VIDEO') {
-            const hostVideo = document.getElementById('hostVideo');
-            hostVideo.src = data.url;
-            hostVideo.play().catch(err => console.log(err));
+        // Inisialisasi 8 Slot Kosong di Display
+        for (let i = 1; i <= 8; i++) {
+            slotsState[i] = { username: '', photo: '' };
+            const box = document.createElement('div');
+            box.className = 'slot-box';
+            box.id = `display_slot_${i}`;
+            box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Kotak ${i}</div>`;
+            if (i <= 4) leftColumn.appendChild(box);
+            else rightColumn.appendChild(box);
         }
 
-        if (data.type === 'UPDATE_SLOT') {
-            slotsState[data.slot] = data.data;
-            const box = document.getElementById(`display_slot_${data.slot}`);
-            const slot = slotsState[data.slot];
+        // Listener pesan dari control.html
+        channel.onmessage = function (event) {
+            const data = event.data;
 
-            if (slot.photo) {
-                box.classList.add('filled');
-                box.innerHTML = `<img src="${slot.photo}" class="slot-photo" crossorigin="anonymous">`;
-            } else {
-                box.classList.remove('filled');
-                box.innerHTML = `<div class="default-plus">+</div>`;
+            if (data.type === 'UPDATE_HOST_VIDEO') {
+                const hostVideo = document.getElementById('hostVideo');
+                hostVideo.src = data.url;
+                hostVideo.play().catch(err => console.log(err));
+                
+                // Memicu video gift otomatis bertabrakan simetris di setengah bawah layar
+                triggerGiftEffect();
             }
-        }
 
-        if (data.type === 'TRIGGER_GIFT') {
+            if (data.type === 'UPDATE_SLOT') {
+                slotsState[data.slot] = data.data;
+                const box = document.getElementById(`display_slot_${data.slot}`);
+                const slot = slotsState[data.slot];
+
+                if (slot.username && slot.photo) {
+                    box.classList.add('filled');
+                    // Hanya menampilkan foto bulat crop bersih (tanpa teks nama, bintang, atau ikon lain)
+                    box.innerHTML = `
+                        <img src="${slot.photo}" class="slot-photo" crossorigin="anonymous">
+                    `;
+                } else {
+                    box.classList.remove('filled');
+                    box.innerHTML = `<div class="default-plus">+</div><div class="default-text">Kotak ${data.slot}</div>`;
+                }
+            }
+        };
+
+        function triggerGiftEffect() {
             const giftVid = document.getElementById('giftVideo');
-            giftVid.src = data.gift;
+            // Menggunakan file video transparan / efek green screen otomatis
+            giftVid.src = "https://www.w3schools.com/html/mov_bbb.mp4"; // Ganti URL video gift Anda di sini
             giftVid.style.display = 'block';
             giftVid.play().catch(err => console.log(err));
-            giftVid.onended = () => giftVid.style.display = 'none';
+            
+            giftVid.onended = () => {
+                giftVid.style.display = 'none';
+            };
         }
-    };
-</script>
-
+    </script>
 </body>
 </html>
