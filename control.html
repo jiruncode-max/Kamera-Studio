@@ -16,9 +16,9 @@
         h2 { border-bottom: 2px solid #334155; padding-bottom: 10px; margin-top: 0; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input {
+        input, select {
             width: 100%; padding: 10px; background: #0f172a;
-            border: 1px solid #475569; color: white; border-radius: 6px; box-sizing: border-box;
+            border: 1px solid #475569; color: white; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px;
         }
         .grid-slots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .slot-card {
@@ -43,18 +43,18 @@
         
         <div class="form-group">
             <label for="hostVideoFile">Upload Video untuk Host (Background Full Layar):</label>
-            <input type="file" id="hostVideoFile" accept="video/*" style="margin-bottom: 8px;">
+            <input type="file" id="hostVideoFile" accept="video/*">
             <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host ke Display</button>
         </div>
 
         <div class="form-group">
-            <label for="giftVideoFile">Upload File Animasi Video Gift (Green Screen / Setengah Bawah):</label>
-            <input type="file" id="giftVideoFile" accept="video/*" style="margin-bottom: 8px;">
+            <label for="giftVideoFile">Upload File Animasi Video Gift (Full Layar 9:16):</label>
+            <input type="file" id="giftVideoFile" accept="video/*">
             <button class="btn-action btn-play" onclick="playGiftVideo()">Putar Animasi Gift ke Display</button>
         </div>
 
         <div class="form-group">
-            <label>Pengaturan Kotak Target (1 - 8):</label>
+            <label>Pengaturan Kotak Target (1 - 8) & Ikon Atas:</label>
             <div class="grid-slots" id="slotsContainer"></div>
         </div>
     </div>
@@ -64,6 +64,15 @@
         const slotData = {};
         let hostVideoUrl = '';
         let giftVideoUrl = '';
+
+        const iconOptions = [
+            { name: "Pilih Ikon...", url: "" },
+            { name: "Ikon 1 (Mawar/Gift)", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp" },
+            { name: "Ikon 2", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp" },
+            { name: "Ikon 3", url: "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp" },
+            { name: "Ikon 4", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d067d13988e8754ed6adbebd89b9ee8.png~tplv-obj.webp" },
+            { name: "Ikon 5", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp" }
+        ];
 
         document.getElementById('hostVideoFile').addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -87,17 +96,24 @@
 
         const slotsContainer = document.getElementById('slotsContainer');
         for (let i = 1; i <= 8; i++) {
-            slotData[i] = { username: '', photo: '' };
+            slotData[i] = { username: '', photo: '', topIcon: '' };
             const card = document.createElement('div');
             card.className = 'slot-card';
+            
+            let optionsHtml = '';
+            iconOptions.forEach((opt, idx) => {
+                optionsHtml += `<option value="${opt.url}">${opt.name}</option>`;
+            });
+
             card.innerHTML = `
-                <h4>Kotak ${i}</h4>
+                <h4>Target ${i}</h4>
+                <select id="icon_${i}" onchange="updateSlotData(${i})">${optionsHtml}</select>
                 <input type="text" placeholder="Ketik Username/Link TikTok..." id="input_${i}" oninput="autoDetectProfile(${i})">
-                <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
                     <img id="preview_${i}" class="preview-img">
                     <span id="status_${i}" style="font-size: 11px; color: #94a3b8;">Menunggu input...</span>
                 </div>
-                <button class="btn-action" onclick="clearSlot(${i})" style="background:#64748b; margin-top:8px;">Reset Kotak ${i}</button>
+                <button class="btn-action" onclick="clearSlot(${i})" style="background:#64748b; margin-top:8px;">Reset Target ${i}</button>
             `;
             slotsContainer.appendChild(card);
         }
@@ -106,6 +122,7 @@
             let inputVal = document.getElementById(`input_${i}`).value.trim();
             const statusSpan = document.getElementById(`status_${i}`);
             const previewImg = document.getElementById(`preview_${i}`);
+            const selectedIcon = document.getElementById(`icon_${i}`).value;
 
             if (!inputVal) { clearSlot(i); return; }
 
@@ -116,16 +133,22 @@
             let testImg = new Image();
             testImg.src = avatarUrl;
             testImg.onload = function() {
-                slotData[i] = { username: '@' + username, photo: avatarUrl };
+                slotData[i] = { username: '@' + username, photo: avatarUrl, topIcon: selectedIcon };
                 previewImg.src = avatarUrl; previewImg.style.display = 'block';
                 statusSpan.innerText = "Berhasil!"; sendSlotUpdate(i);
             };
             testImg.onerror = function() {
                 let fallbackAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
-                slotData[i] = { username: '@' + username, photo: fallbackAvatar };
+                slotData[i] = { username: '@' + username, photo: fallbackAvatar, topIcon: selectedIcon };
                 previewImg.src = fallbackAvatar; previewImg.style.display = 'block';
                 statusSpan.innerText = "Fallback!"; sendSlotUpdate(i);
             };
+        }
+
+        window.updateSlotData = function(i) {
+            const selectedIcon = document.getElementById(`icon_${i}`).value;
+            slotData[i].topIcon = selectedIcon;
+            sendSlotUpdate(i);
         }
 
         function sendSlotUpdate(slotIndex) {
@@ -134,9 +157,11 @@
 
         window.clearSlot = function(i) {
             document.getElementById(`input_${i}`).value = '';
+            document.getElementById(`icon_${i}`).selectedIndex = 0;
             document.getElementById(`preview_${i}`).style.display = 'none';
             document.getElementById(`status_${i}`).innerText = 'Kosong';
-            slotData[i] = { username: '', photo: '' }; sendSlotUpdate(i);
+            slotData[i] = { username: '', photo: '', topIcon: '' }; 
+            sendSlotUpdate(i);
         }
     </script>
 </body>
