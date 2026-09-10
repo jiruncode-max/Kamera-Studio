@@ -78,16 +78,16 @@
         const giftVideoContainer = document.getElementById('giftVideoContainer');
         const giftVideo = document.getElementById('giftVideo');
 
-        // Menyimpan data akumulasi poin setiap slot (1-8)
+        // Menyimpan akumulasi poin per slot
         const slotPointsCache = {};
 
-        // Inisialisasi 8 Slot Kosong di Layar Display
+        // Inisialisasi 8 Slot di Layar Display (Sesuai struktur tampilan sebelumnya)
         for (let i = 1; i <= 8; i++) {
             slotPointsCache[i] = 0;
             const card = document.createElement('div');
             card.className = 'slot-display';
             card.id = `display_slot_${i}`;
-            card.style.opacity = '0.4'; // Transparan jika belum diisi target
+            card.style.opacity = '0.4'; 
             
             card.innerHTML = `
                 <img id="display_icon_${i}" class="slot-top-icon" src="" style="display: none;" alt="Icon">
@@ -148,18 +148,18 @@
             }
 
             if (msg.type === 'TRIGGER_GIFT') {
-                // Perbarui ikon & akumulasikan poin saat gift diputar
                 const slotsData = msg.slots;
                 for (let i = 1; i <= 8; i++) {
                     if (slotsData[i]) {
                         const iconEl = document.getElementById(`display_icon_${i}`);
                         
+                        // Munculkan ikon gift di atas target
                         if (slotsData[i].topIcon) {
                             iconEl.src = slotsData[i].topIcon;
                             iconEl.style.display = 'block';
                         }
 
-                        // Tambahkan poin berdasarkan pilihan gift di control panel
+                        // Tambahkan nilai poin ke total akumulasi slot secara real-time
                         if (slotsData[i].points) {
                             slotPointsCache[i] += slotsData[i].points;
                             document.getElementById(`display_points_${i}`).innerText = slotPointsCache[i].toLocaleString('id-ID');
@@ -167,14 +167,14 @@
                     }
                 }
 
-                // Putar video animasi gift secara fullscreen
+                // Putar video animasi gift fullscreen
                 giftVideo.src = msg.url;
                 giftVideoContainer.style.display = 'flex';
                 giftVideo.play().catch(e => console.log("Gagal memutar video gift:", e));
             }
         };
 
-        // Sembunyikan video gift otomatis setelah selesai diputar
+        // Sembunyikan video gift setelah selesai
         giftVideo.onended = function () {
             giftVideoContainer.style.display = 'none';
             giftVideo.src = '';
