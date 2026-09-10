@@ -3,31 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control Panel - Live TikTok with Points</title>
+    <title>TikTok Live Full Pack (Pro Detection System)</title>
     <style>
+        /* --- RESET & BASIC --- */
         * { box-sizing: border-box; }
         body {
-            margin: 0; padding: 20px; font-family: Arial, sans-serif;
-            background-color: #0f172a; color: #fff;
+            margin: 0; padding: 0; font-family: Arial, sans-serif;
+            background-color: #050505; color: #fff; overflow-x: hidden; height: 100vh;
         }
-        .container {
-            max-width: 850px; margin: 0 auto; background: #1e293b;
-            padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        
+        /* --- LAYOUT UTAMA --- */
+        .main-wrapper {
+            display: flex; flex-wrap: wrap; height: 100vh;
         }
-        h2 { border-bottom: 2px solid #334155; padding-bottom: 10px; margin-top: 0; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input, select {
-            width: 100%; padding: 10px; background: #0f172a;
-            border: 1px solid #475569; color: white; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px;
+        
+        /* --- BAGIAN CONTROL PANEL (KIRI) --- */
+        .control-panel {
+            flex: 1; min-width: 380px; padding: 20px; 
+            background: #0f172a; overflow-y: auto; border-right: 2px solid #334155;
+            display: flex; flex-direction: column;
         }
+        .container { max-width: 100%; margin: 0 auto; }
+        
+        h2 { border-bottom: 2px solid #334155; padding-bottom: 10px; margin-top: 0; font-size: 1.2rem; color: #38bdf8; }
+        .form-group { margin-bottom: 20px; background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; }
+        
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.9rem; color: #94a3b8; }
+        
+        input[type="text"], select {
+            width: 100%; padding: 10px; background: #020617;
+            border: 1px solid #475569; color: white; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px; outline: none;
+        }
+        input[type="text"]:focus { border-color: #38bdf8; }
+        
+        .grid-slots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        
+        .slot-card {
+            background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155;
+        }
+        .slot-card h4 { margin: 0 0 10px 0; color: #38bdf8; font-size: 0.95rem; }
+        
         .btn-action {
             background: #ef4444; color: white; border: none; padding: 8px 12px;
-            border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%;
+            border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; font-size: 0.85rem;
+            transition: opacity 0.2s;
         }
+        .btn-action:hover { opacity: 0.9; }
         .btn-play { background: #10b981; margin-top: 8px; }
         .btn-install { background: #3b82f6; margin-top: 8px; }
         
+        /* Kartu Preview Kecil di Panel Kontrol */
         .target-card-inline {
             display: none; align-items: center; gap: 10px; margin-top: 5px; margin-bottom: 8px;
             background: #0f172a; padding: 8px; border-radius: 6px; border: 1px solid #475569;
@@ -40,93 +65,466 @@
         .target-info-inline { flex: 1; min-width: 0; }
         .target-name-inline { font-size: 13px; font-weight: bold; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .target-username-inline { font-size: 11px; color: #38bdf8; }
+        
+        .status-msg { font-size: 11px; color: #94a3b8; margin-bottom: 5px; min-height: 16px; }
+        .status-msg.loading { color: #facc15; }
+        .status-msg.success { color: #4ade80; }
+        .status-msg.error { color: #f87171; }
+
+        /* --- BAGIAN DISPLAY LIVE (KANAN - UNTUK OBS) --- */
+        .display-live {
+            flex: 2; min-width: 360px; position: relative;
+            background: #000; display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        
+        #hostVideoElement {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+        }
+        #giftVideoElement {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+            z-index: 10; pointer-events: none; display: none;
+        }
+
+        /* Grid Target di Layar Live */
+        .target-grid {
+            position: absolute; bottom: 20px; left: 10px; right: 10px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+            z-index: 5; pointer-events: none;
+        }
+        .target-box {
+            background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 8px; padding: 8px 5px; text-align: center;
+            display: none; 
+            backdrop-filter: blur(4px); box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .target-box img.avatar-live {
+            width: 60px; height: 60px; border-radius: 50%; border: 2px solid #38bdf8;
+            object-fit: cover; margin-bottom: 5px;
+        }
+        .target-icon {
+            width: 24px; height: 24px; vertical-align: middle; margin-right: 2px;
+        }
+        .target-name-display {
+            font-size: 10px; color: #fff; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            font-weight: bold;
+        }
+        .target-points {
+            font-size: 10px; color: #fbbf24; font-weight: bold;
+        }
+
+        /* Logo Corner */
+        .live-badge {
+            position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5);
+            padding: 4px 8px; border-radius: 4px; font-size: 10px; color: rgba(255,255,255,0.7);
+            z-index: 20; pointer-events: none;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Control Panel Live TikTok (Poin Gift)</h2>
+    <div class="main-wrapper">
         
-        <div class="form-group">
-            <label for="targetInput">Ketik Username/Link TikTok Target:</label>
-            <input type="text" placeholder="Contoh: @username atau https://tiktok.com/@username" id="targetInput" oninput="stageProfile()">
-            
-            <div id="targetCardInline" class="target-card-inline">
-                <img id="previewImg" class="preview-img" alt="Avatar">
-                <div class="target-info-inline">
-                    <div id="targetName" class="target-name-inline">-</div>
-                    <div id="targetUsername" class="target-username-inline">-</div>
+        <!-- === BAGIAN 1: CONTROL PANEL (INPUT) === -->
+        <div class="control-panel">
+            <div class="container">
+                <h2>Control Panel (Pro System)</h2>
+                
+                <!-- Input Video Host -->
+                <div class="form-group">
+                    <label for="hostVideoFile">1. Upload Video Host (Background):</label>
+                    <input type="file" id="hostVideoFile" accept="video/*">
+                    <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host</button>
+                </div>
+
+                <!-- Input Video Gift -->
+                <div class="form-group">
+                    <label for="giftVideoFile">2. Upload Animasi Gift (Overlay):</label>
+                    <input type="file" id="giftVideoFile" accept="video/*">
+                    <button class="btn-action btn-play" onclick="playGiftVideo()">Putar Gift Animasi</button>
+                </div>
+
+                <!-- Slot Manager -->
+                <div class="form-group">
+                    <label>3. Atur Target Slot (1 - 8):</label>
+                    <div class="grid-slots" id="slotsContainer">
+                        <!-- Slot cards akan digenerate JS -->
+                    </div>
                 </div>
             </div>
-            <div id="statusText" style="font-size: 11px; color: #94a3b8; margin-bottom: 5px;">Menunggu input...</div>
         </div>
+
+        <!-- === BAGIAN 2: DISPLAY LIVE (OUTPUT OBS) === -->
+        <div class="display-live" id="displayArea">
+            <div class="live-badge">PREVIEW LIVE DISPLAY</div>
+            
+            <!-- Video Background -->
+            <video id="hostVideoElement" loop muted playsinline></video>
+            
+            <!-- Video Gift Overlay -->
+            <video id="giftVideoElement" playsinline></video>
+
+            <!-- Grid Kotak Target -->
+            <div class="target-grid" id="liveTargetGrid">
+                <!-- Slot 1-8 akan digenerate di sini oleh JS -->
+            </div>
+        </div>
+
     </div>
 
     <script>
-        let pendingData = { username: '', name: '', inputVal: '', photo: '' };
+        // --- KOMUNIKASI ANTAR PANEL (BroadcastChannel) ---
+        const channel = new BroadcastChannel('live_control_channel');
+        
+        // --- DATA & STATE ---
+        const slotData = {}; // Data yang sudah terpasang
+        const pendingData = {}; // Data yang sedang di-input/blm di-install
+        let hostVideoUrl = '';
+        let giftVideoUrl = '';
 
-        window.stageProfile = async function() {
-            let inputVal = document.getElementById('targetInput').value.trim();
-            const statusSpan = document.getElementById('statusText');
-            const previewImg = document.getElementById('previewImg');
-            const targetCardInline = document.getElementById('targetCardInline');
-            const nameEl = document.getElementById('targetName');
-            const usernameEl = document.getElementById('targetUsername');
+        const iconOptions = [
+            { name: "Pilih Ikon...", url: "", points: 0 },
+            { name: "Paus", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp", points: 6000 },
+            { name: "Singa", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp", points: 29999 },
+            { name: "Robot", url: "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp", points: 18999 },
+            { name: "Pesawat", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d067d13988e8754ed6adbebd89b9ee8.png~tplv-obj.webp", points: 5000 },
+            { name: "Kuda", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp", points: 42999 },
+            { name: "Tiktok Tu", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp", points: 44999 }
+        ];
 
-            pendingData.inputVal = inputVal;
+        // ==========================================
+        // BAGIAN 1: SISTEM DETEKSI (DARI KODE KE-2)
+        // ==========================================
+
+        function normalize(v) {
+            let s = String(v || "").trim();
+            s = s.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, "");
+            s = s.replace(/^@/, "");
+            return s.split(/[/?#]/)[0].trim();
+        }
+
+        function pick(obj, keys, fb) {
+            for (const k of keys) {
+                let v = obj;
+                for (const p of k.split(".")) v = v?.[p];
+                if (v !== undefined && v !== null && v !== "") return v;
+            }
+            return fb;
+        }
+
+        function extractUser(raw) {
+            if (!raw || typeof raw !== "object") throw new Error("Response Kosong");
+            
+            // Cek error code dari API TikWM
+            if (raw.code !== undefined && Number(raw.code) !== 0) {
+                throw new Error(raw.msg || "Akun tidak ditemukan");
+            }
+
+            const root = raw.data || raw;
+            const info = root.userInfo || root.user_info || {};
+            const user = info.user || root.user || info || root;
+
+            const username = String(pick(user, ["uniqueId", "unique_id", "username"], "")).replace(/^@/, "").trim();
+            if (!username) throw new Error("Username tidak ditemukan di data");
+
+            return {
+                username,
+                name: String(pick(user, ["nickname", "name", "display_name"], username)),
+                avatar: String(pick(user, ["avatarLarger", "avatarMedium", "avatarThumb", "avatar", "avatar_url"], "")),
+                verified: Boolean(pick(user, ["verified", "isVerified", "is_verified"], false))
+            };
+        }
+
+        async function requestTikwmUser(username) {
+            const res = await fetch("https://www.tikwm.com/api/user/info/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+                body: "unique_id=" + encodeURIComponent(username)
+            });
+            if (!res.ok) throw new Error("Gagal koneksi ke server (HTTP " + res.status + ")");
+            const json = await res.json();
+            return extractUser(json);
+        }
+
+        // ==========================================
+        // BAGIAN 2: LOGIC CONTROL PANEL (PENGIRIM)
+        // ==========================================
+
+        // Generate Slot Cards UI
+        const slotsContainer = document.getElementById('slotsContainer');
+        for (let i = 1; i <= 8; i++) {
+            // Inisialisasi Data
+            slotData[i] = { username: '', name: '', photo: '', topIcon: '', points: 0 };
+            pendingData[i] = { username: '', name: '', photo: '' };
+
+            const card = document.createElement('div');
+            card.className = 'slot-card';
+            
+            // Buat Opsi Icon
+            let optionsHtml = '';
+            iconOptions.forEach((opt) => {
+                optionsHtml += `<option value="${opt.url}" data-points="${opt.points}">${opt.name} (${opt.points ? opt.points : 0})</option>`;
+            });
+
+            card.innerHTML = `
+                <h4>Slot ${i}</h4>
+                <select id="icon_${i}">${optionsHtml}</select>
+                <input type="text" placeholder="Username / Link TikTok..." id="input_${i}">
+                
+                <!-- Preview Card Kecil -->
+                <div id="targetCardInline_${i}" class="target-card-inline">
+                    <img id="preview_${i}" class="preview-img" alt="Avatar">
+                    <div class="target-info-inline">
+                        <div id="targetName_${i}" class="target-name-inline">-</div>
+                        <div id="targetUsername_${i}" class="target-username-inline">-</div>
+                    </div>
+                </div>
+                <div id="status_${i}" class="status-msg">Siap</div>
+
+                <button class="btn-action btn-install" id="btnInstall_${i}" onclick="installSlot(${i})">Pasang</button>
+                <button class="btn-action" onclick="clearSlot(${i})" style="background:#64748b; margin-top:8px;">Reset</button>
+            `;
+            slotsContainer.appendChild(card);
+
+            // Event Listener Input untuk Auto-Detect (Debounced)
+            const inputEl = document.getElementById(`input_${i}`);
+            let timeout = null;
+            inputEl.addEventListener('input', () => {
+                const btnInstall = document.getElementById(`btnInstall_${i}`);
+                btnInstall.innerText = "Cek...";
+                btnInstall.disabled = true;
+                
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    stageProfile(i);
+                }, 800); // Delay 800ms agar tidak spam API saat ngetik
+            });
+        }
+
+        // Fungsi Cek Profil (Auto-detect)
+        window.stageProfile = async function(i) {
+            const inputEl = document.getElementById(`input_${i}`);
+            const statusSpan = document.getElementById(`status_${i}`);
+            const previewImg = document.getElementById(`preview_${i}`);
+            const targetCardInline = document.getElementById(`targetCardInline_${i}`);
+            const nameEl = document.getElementById(`targetName_${i}`);
+            const usernameEl = document.getElementById(`targetUsername_${i}`);
+            const btnInstall = document.getElementById(`btnInstall_${i}`);
+
+            let inputVal = inputEl.value.trim();
+            pendingData[i].inputVal = inputVal;
 
             if (!inputVal) {
                 targetCardInline.classList.remove('show');
-                statusSpan.innerText = 'Kosong';
-                pendingData.username = '';
-                pendingData.name = '';
-                pendingData.photo = '';
+                statusSpan.innerText = 'Siap';
+                statusSpan.className = 'status-msg';
+                pendingData[i].username = '';
+                pendingData[i].name = '';
+                pendingData[i].photo = '';
+                btnInstall.innerText = "Pasang";
+                btnInstall.disabled = true;
                 return;
             }
 
-            let username = inputVal.includes('tiktok.com/@') ? (inputVal.match(/@([a-zA-Z0-9._]+)/)?.[1] || inputVal) : inputVal.replace('@', '');
-
-            statusSpan.innerText = "Mendeteksi akun...";
+            let cleanUsername = normalize(inputVal);
+            
+            statusSpan.innerText = 'Mendeteksi...';
+            statusSpan.className = 'status-msg loading';
+            targetCardInline.classList.add('show');
+            
+            // Set placeholder sementara
+            previewImg.src = `https://ui-avatars.com/api/?name=${cleanUsername}&background=random&size=128`;
+            nameEl.innerText = cleanUsername;
+            usernameEl.innerText = '@' + cleanUsername;
 
             try {
-                const targetUrl = `https://www.tiktok.com/@${username}`;
-                const oembedApi = `https://www.tiktok.com/oembed?url=${encodeURIComponent(targetUrl)}`;
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(oembedApi)}`;
-
-                const response = await fetch(proxyUrl);
-                if (!response.ok) throw new Error('Gagal mengambil data');
+                // Panggil API Deteksi (Fungsi Pro)
+                const data = await requestTikwmUser(cleanUsername);
                 
-                const proxyData = await response.json();
-                const data = JSON.parse(proxyData.contents);
+                // Update Pending Data
+                pendingData[i].username = '@' + data.username;
+                pendingData[i].name = data.name;
+                pendingData[i].photo = data.avatar;
 
-                if (pendingData.inputVal === inputVal) {
-                    let realName = data.author_name || username;
-                    let realThumb = data.thumbnail_url || `https://unavatar.io/tiktok/${username}`;
+                // Update UI
+                previewImg.src = data.avatar;
+                nameEl.innerText = data.name;
+                usernameEl.innerText = '@' + data.username;
+                
+                statusSpan.innerText = "Terdeteksi!";
+                statusSpan.className = 'status-msg success';
+                
+                btnInstall.innerText = "Pasang";
+                btnInstall.disabled = false;
 
-                    pendingData.username = '@' + username;
-                    pendingData.name = realName;
-                    pendingData.photo = realThumb;
-                    
-                    previewImg.src = realThumb;
-                    nameEl.innerText = realName;
-                    usernameEl.innerText = '@' + username;
-                    targetCardInline.classList.add('show');
-                    statusSpan.innerText = "Berhasil akurat!";
-                }
             } catch (error) {
-                if (pendingData.inputVal === inputVal) {
-                    let fallbackName = username.charAt(0).toUpperCase() + username.slice(1);
-                    let fallbackAvatar = `https://unavatar.io/tiktok/${username}`;
+                console.error(error);
+                statusSpan.innerText = "Gagal / Akun Private";
+                statusSpan.className = 'status-msg error';
+                btnInstall.innerText = "Gagal";
+                btnInstall.disabled = true;
+                
+                // Fallback UI jika gagal (tetap pakai UI Avatar agar tidak blank)
+                pendingData[i].username = '@' + cleanUsername;
+                pendingData[i].name = cleanUsername.charAt(0).toUpperCase() + cleanUsername.slice(1);
+                pendingData[i].photo = `https://ui-avatars.com/api/?name=${cleanUsername}&background=random&size=128`;
+            }
+        }
 
-                    pendingData.username = '@' + username;
-                    pendingData.name = fallbackName;
-                    pendingData.photo = fallbackAvatar;
+        // Fungsi Pasang ke Slot
+        window.installSlot = function(i) {
+            if(!pendingData[i].username) return;
+
+            const selectEl = document.getElementById(`icon_${i}`);
+            const selectedOption = selectEl.options[selectEl.selectedIndex];
+            const iconVal = selectEl.value;
+            const pointVal = parseInt(selectedOption.getAttribute('data-points')) || 0;
+
+            slotData[i] = { 
+                username: pendingData[i].username, 
+                name: pendingData[i].name,
+                photo: pendingData[i].photo, 
+                topIcon: iconVal,
+                points: pointVal
+            };
+            
+            // Kirim ke Channel
+            channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
+            
+            // Update Preview Lokal
+            updateLiveGridData(slotData);
+            document.getElementById(`status_${i}`).innerText = "Terpasang!";
+        }
+
+        // Fungsi Reset Slot
+        window.clearSlot = function(i) {
+            document.getElementById(`input_${i}`).value = '';
+            document.getElementById(`icon_${i}`).selectedIndex = 0;
+            document.getElementById(`targetCardInline_${i}`).classList.remove('show');
+            document.getElementById(`status_${i}`).innerText = 'Siap';
+            document.getElementById(`status_${i}`).className = 'status-msg';
+            document.getElementById(`btnInstall_${i}`).innerText = "Pasang";
+            document.getElementById(`btnInstall_${i}`).disabled = true;
+            
+            slotData[i] = { username: '', name: '', photo: '', topIcon: '', points: 0 };
+            pendingData[i] = { username: '', name: '', inputVal: '', photo: '' };
+            
+            channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
+            updateLiveGridData(slotData);
+        }
+
+        // Logic Video Host
+        document.getElementById('hostVideoFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) hostVideoUrl = URL.createObjectURL(file);
+        });
+
+        function playHostVideo() {
+            if (!hostVideoUrl) return alert('Pilih file video host dulu!');
+            channel.postMessage({ type: 'UPDATE_HOST_VIDEO', url: hostVideoUrl });
+        }
+
+        // Logic Video Gift
+        document.getElementById('giftVideoFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) giftVideoUrl = URL.createObjectURL(file);
+        });
+
+        function playGiftVideo() {
+            if (!giftVideoUrl) return alert('Pilih file animasi gift dulu!');
+            
+            // Kumpulkan data icon terbaru sebelum kirim
+            for (let i = 1; i <= 8; i++) {
+                const selectEl = document.getElementById(`icon_${i}`);
+                const selectedOption = selectEl.options[selectEl.selectedIndex];
+                const iconVal = selectEl.value;
+                const pointVal = parseInt(selectedOption.getAttribute('data-points')) || 0;
+
+                if (slotData[i]) {
+                    slotData[i].topIcon = iconVal;
+                    slotData[i].points = pointVal;
+                }
+            }
+            channel.postMessage({ type: 'TRIGGER_GIFT', url: giftVideoUrl, slots: slotData });
+        }
+
+        // ==========================================
+        // BAGIAN 3: LOGIC DISPLAY RECEIVER (PENERIMA)
+        // ==========================================
+
+        const hostVideoEl = document.getElementById('hostVideoElement');
+        const giftVideoEl = document.getElementById('giftVideoElement');
+        const liveGrid = document.getElementById('liveTargetGrid');
+
+        // Generate Kotak di Live Display (1-8)
+        for(let i=1; i<=8; i++){
+            const box = document.createElement('div');
+            box.className = 'target-box';
+            box.id = `liveSlot_${i}`;
+            box.innerHTML = `
+                <img id="liveImg_${i}" class="avatar-live" src="" alt="" style="display:none">
+                <div style="display:flex; align-items:center; justify-content:center; margin-bottom:4px;">
+                    <img id="liveIcon_${i}" class="target-icon" src="" style="display:none">
+                </div>
+                <span id="liveName_${i}" class="target-name-display"></span>
+                <span id="livePoints_${i}" class="target-points"></span>
+            `;
+            liveGrid.appendChild(box);
+        }
+
+        channel.onmessage = (event) => {
+            const { type, url, slot, data, slots } = event.data;
+
+            if (type === 'UPDATE_HOST_VIDEO') {
+                hostVideoEl.src = url;
+                hostVideoEl.play().catch(e => console.log("Autoplay blocked until interaction"));
+            }
+            
+            if (type === 'TRIGGER_GIFT') {
+                // Update grid dulu
+                if(slots) updateLiveGridData(slots);
+                
+                // Play gift
+                giftVideoEl.src = url;
+                giftVideoEl.style.display = 'block';
+                giftVideoEl.play();
+                
+                giftVideoEl.onended = () => {
+                    giftVideoEl.style.display = 'none';
+                    giftVideoEl.src = "";
+                };
+            }
+
+            if (type === 'UPDATE_SLOT') {
+                slotData[slot] = data;
+                updateLiveGridData(slotData);
+            }
+        };
+
+        function updateLiveGridData(currentSlots) {
+            for(let i=1; i<=8; i++){
+                const box = document.getElementById(`liveSlot_${i}`);
+                const img = document.getElementById(`liveImg_${i}`);
+                const icon = document.getElementById(`liveIcon_${i}`);
+                const name = document.getElementById(`liveName_${i}`);
+                const pts = document.getElementById(`livePoints_${i}`);
+
+                if(currentSlots[i] && currentSlots[i].username) {
+                    box.style.display = 'block';
+                    img.src = currentSlots[i].photo;
+                    img.style.display = 'inline-block';
                     
-                    previewImg.src = fallbackAvatar;
-                    nameEl.innerText = fallbackName;
-                    usernameEl.innerText = '@' + username;
-                    targetCardInline.classList.add('show');
-                    statusSpan.innerText = "Siap (Metode Alternatif)!";
+                    if(currentSlots[i].topIcon) {
+                        icon.src = currentSlots[i].topIcon;
+                        icon.style.display = 'inline-block';
+                    } else {
+                        icon.style.display = 'none';
+                    }
+
+                    name.innerText = currentSlots[i].name;
+                    pts.innerText = currentSlots[i].points ? currentSlots[i].points.toLocaleString() : '';
+                } else {
+                    box.style.display = 'none';
                 }
             }
         }
