@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Live - Control Panel</title>
+    <title>TikTok Live - Control Panel Pro</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -30,6 +30,7 @@
         }
         .btn-action:hover { opacity: 0.9; }
         .btn-play { background: #10b981; margin-top: 8px; }
+        .btn-gift { background: #8b5cf6; margin-top: 8px; }
         .target-card-inline {
             display: none; align-items: center; gap: 10px; margin-top: 5px; margin-bottom: 8px;
             background: #0f172a; padding: 8px; border-radius: 6px; border: 1px solid #475569;
@@ -67,6 +68,13 @@
             <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host</button>
         </div>
 
+        <!-- Input Video Gift (Layer Layar) -->
+        <div class="form-group">
+            <label for="giftVideoFile">Upload Video Efek Gift (Layer Layar):</label>
+            <input type="file" id="giftVideoFile" accept="video/*">
+            <button class="btn-action btn-gift" onclick="playGiftVideoLayer()">Putar Video Gift di Layar</button>
+        </div>
+
         <!-- Input Target Permintaan -->
         <div class="form-group">
             <label>Atur Target Permintaan:</label>
@@ -98,6 +106,7 @@
     <script>
         const channel = new BroadcastChannel('live_control_channel');
         let hostVideoUrl = '';
+        let giftVideoUrl = '';
         let pendingTargetData = { username: '', name: '', photo: '' };
 
         function normalize(v) {
@@ -259,6 +268,16 @@
         function playHostVideo() {
             if (!hostVideoUrl) return alert('Pilih file video host dulu!');
             channel.postMessage({ type: 'UPDATE_HOST_VIDEO', url: hostVideoUrl });
+        }
+
+        document.getElementById('giftVideoFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) giftVideoUrl = URL.createObjectURL(file);
+        });
+
+        function playGiftVideoLayer() {
+            if (!giftVideoUrl) return alert('Pilih file video gift dulu!');
+            channel.postMessage({ type: 'PLAY_GIFT_LAYER', url: giftVideoUrl });
         }
     </script>
 </body>
