@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Screen - Auto Fit 10:16</title>
+    <title>Display Screen - Lebih Lebar (11:16)</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -14,8 +14,9 @@
             position: relative;
             width: 100%;
             height: 100%;
-            max-width: calc(100vh * (10 / 16));
-            max-height: calc(100vw * (16 / 10));
+            /* Memperlebar rasio menjadi 11:16 agar video host dan gift lebih luas ke samping */
+            max-width: calc(100vh * (11 / 16));
+            max-height: calc(100vw * (16 / 11));
             overflow: hidden;
             background: #0f172a;
         }
@@ -26,7 +27,8 @@
         .layout-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 22px; box-sizing: border-box; z-index: 3; pointer-events: none;
+            /* Mengurangi padding samping agar jarak kotak ke pinggir layar sedikit merapat */
+            padding: 15px 12px; box-sizing: border-box; z-index: 3; pointer-events: none;
         }
         .side-column {
             display: flex; flex-direction: column; gap: 10px; height: 100%; justify-content: center;
