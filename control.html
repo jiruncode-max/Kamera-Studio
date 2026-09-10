@@ -11,7 +11,7 @@
             background-color: #050505; color: #fff; overflow-x: hidden; min-height: 100vh;
         }
         .control-panel {
-            width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; 
+            width: 100%; max-width: 500px; margin: 0 auto; padding: 20px; 
             background: #0f172a; overflow-y: auto; border: 2px solid #334155;
             display: flex; flex-direction: column; min-height: 100vh;
         }
@@ -23,11 +23,6 @@
             border: 1px solid #475569; color: white; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px; outline: none;
         }
         input[type="text"]:focus { border-color: #38bdf8; }
-        .grid-slots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .slot-card {
-            background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155;
-        }
-        .slot-card h4 { margin: 0 0 10px 0; color: #38bdf8; font-size: 0.95rem; }
         .btn-action {
             background: #ef4444; color: white; border: none; padding: 8px 12px;
             border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; font-size: 0.85rem;
@@ -58,44 +53,52 @@
     <div class="control-panel">
         <h2>Control Panel (Pro System)</h2>
         
+        <!-- Input Username Host -->
+        <div class="form-group">
+            <label for="hostUserInput">Username Host:</label>
+            <input type="text" id="hostUserInput" value="JK O9O1O2." placeholder="Masukkan teks username host...">
+            <button class="btn-action btn-play" onclick="updateHostUser()">Ubah Nama Host</button>
+        </div>
+
         <!-- Input Video Host -->
         <div class="form-group">
-            <label for="hostVideoFile">1. Upload Video Host (Background):</label>
+            <label for="hostVideoFile">Upload Video Host (Background):</label>
             <input type="file" id="hostVideoFile" accept="video/*">
             <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host</button>
         </div>
 
-        <!-- Input Video Gift -->
+        <!-- Input Target Permintaan (Satuan / 1 per 1) -->
         <div class="form-group">
-            <label for="giftVideoFile">2. Upload Animasi Gift (Overlay):</label>
-            <input type="file" id="giftVideoFile" accept="video/*">
-            <button class="btn-action btn-play" onclick="playGiftVideo()">Putar Gift Animasi</button>
-        </div>
+            <label>Atur Target Permintaan:</label>
+            <select id="targetIcon">
+                <option value="" data-points="0">Pilih Ikon Gift...</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp" data-points="6000">Paus (6,000)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp" data-points="29999">Singa (29,999)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp" data-points="18999">Robot (18,999)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d067d13988e8754ed6adbebd89b9ee8.png~tplv-obj.webp" data-points="5000">Pesawat (5,000)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp" data-points="42999">Kuda (42,999)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp" data-points="44999">Tiktok Tu (44,999)</option>
+            </select>
+            <input type="text" placeholder="Username / Link TikTok Target..." id="targetInput">
+            
+            <div id="targetCardInline" class="target-card-inline">
+                <img id="previewImg" class="preview-img" alt="Avatar">
+                <div class="target-info-inline">
+                    <div id="targetName" class="target-name-inline">-</div>
+                    <div id="targetUsername" class="target-username-inline">-</div>
+                </div>
+            </div>
+            <div id="statusMsg" class="status-msg">Siap</div>
 
-        <!-- Slot Manager -->
-        <div class="form-group">
-            <label>3. Atur Target Slot (1 - 8):</label>
-            <div class="grid-slots" id="slotsContainer"></div>
+            <button class="btn-action" id="btnInstall" onclick="installTarget()" style="background:#3b82f6; margin-top:8px;" disabled>Pasang ke Display</button>
+            <button class="btn-action" onclick="clearTarget()" style="background:#64748b; margin-top:8px;">Reset / Kosongkan</button>
         </div>
     </div>
 
     <script>
         const channel = new BroadcastChannel('live_control_channel');
-        
-        const slotData = {};
-        const pendingData = {};
         let hostVideoUrl = '';
-        let giftVideoUrl = '';
-
-        const iconOptions = [
-            { name: "Pilih Ikon...", url: "", points: 0 },
-            { name: "Paus", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp", points: 6000 },
-            { name: "Singa", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp", points: 29999 },
-            { name: "Robot", url: "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp", points: 18999 },
-            { name: "Pesawat", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d067d13988e8754ed6adbebd89b9ee8.png~tplv-obj.webp", points: 5000 },
-            { name: "Kuda", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp", points: 42999 },
-            { name: "Tiktok Tu", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp", points: 44999 }
-        ];
+        let pendingTargetData = { username: '', name: '', photo: '' };
 
         function normalize(v) {
             let s = String(v || "").trim();
@@ -127,8 +130,7 @@
             return {
                 username,
                 name: String(pick(user, ["nickname", "name", "display_name"], username)),
-                avatar: String(pick(user, ["avatarLarger", "avatarMedium", "avatarThumb", "avatar", "avatar_url"], "")),
-                verified: Boolean(pick(user, ["verified", "isVerified", "is_verified"], false))
+                avatar: String(pick(user, ["avatarLarger", "avatarMedium", "avatarThumb", "avatar", "avatar_url"], ""))
             };
         }
 
@@ -138,145 +140,115 @@
                 headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
                 body: "unique_id=" + encodeURIComponent(username)
             });
-            if (!res.ok) throw new Error("Gagal koneksi ke server (HTTP " + res.status + ")");
+            if (!res.ok) throw new Error("Gagal koneksi ke server");
             const json = await res.json();
             return extractUser(json);
         }
 
-        const slotsContainer = document.getElementById('slotsContainer');
-        for (let i = 1; i <= 8; i++) {
-            slotData[i] = { username: '', name: '', photo: '', topIcon: '', points: 0 };
-            pendingData[i] = { username: '', name: '', photo: '' };
+        const targetInput = document.getElementById('targetInput');
+        const statusMsg = document.getElementById('statusMsg');
+        const previewImg = document.getElementById('previewImg');
+        const targetCardInline = document.getElementById('targetCardInline');
+        const targetName = document.getElementById('targetName');
+        const targetUsername = document.getElementById('targetUsername');
+        const btnInstall = document.getElementById('btnInstall');
 
-            const card = document.createElement('div');
-            card.className = 'slot-card';
-            
-            let optionsHtml = '';
-            iconOptions.forEach((opt) => {
-                optionsHtml += `<option value="${opt.url}" data-points="${opt.points}">${opt.name} (${opt.points ? opt.points : 0})</option>`;
-            });
+        let timeout = null;
+        targetInput.addEventListener('input', () => {
+            btnInstall.innerText = "Cek...";
+            btnInstall.disabled = true;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => { stageProfile(); }, 800);
+        });
 
-            card.innerHTML = `
-                <h4>Slot ${i}</h4>
-                <select id="icon_${i}">${optionsHtml}</select>
-                <input type="text" placeholder="Username / Link TikTok..." id="input_${i}">
-                <div id="targetCardInline_${i}" class="target-card-inline">
-                    <img id="preview_${i}" class="preview-img" alt="Avatar">
-                    <div class="target-info-inline">
-                        <div id="targetName_${i}" class="target-name-inline">-</div>
-                        <div id="targetUsername_${i}" class="target-username-inline">-</div>
-                    </div>
-                </div>
-                <div id="status_${i}" class="status-msg">Siap</div>
-                <button class="btn-action" id="btnInstall_${i}" onclick="installSlot(${i})" style="background:#3b82f6; margin-top:8px;">Pasang</button>
-                <button class="btn-action" onclick="clearSlot(${i})" style="background:#64748b; margin-top:8px;">Reset</button>
-            `;
-            slotsContainer.appendChild(card);
-
-            const inputEl = document.getElementById(`input_${i}`);
-            let timeout = null;
-            inputEl.addEventListener('input', () => {
-                const btnInstall = document.getElementById(`btnInstall_${i}`);
-                btnInstall.innerText = "Cek...";
-                btnInstall.disabled = true;
-                clearTimeout(timeout);
-                timeout = setTimeout(() => { stageProfile(i); }, 800);
-            });
-        }
-
-        window.stageProfile = async function(i) {
-            const inputEl = document.getElementById(`input_${i}`);
-            const statusSpan = document.getElementById(`status_${i}`);
-            const previewImg = document.getElementById(`preview_${i}`);
-            const targetCardInline = document.getElementById(`targetCardInline_${i}`);
-            const nameEl = document.getElementById(`targetName_${i}`);
-            const usernameEl = document.getElementById(`targetUsername_${i}`);
-            const btnInstall = document.getElementById(`btnInstall_${i}`);
-
-            let inputVal = inputEl.value.trim();
-            pendingData[i].inputVal = inputVal;
-
+        async function stageProfile() {
+            let inputVal = targetInput.value.trim();
             if (!inputVal) {
                 targetCardInline.classList.remove('show');
-                statusSpan.innerText = 'Siap';
-                statusSpan.className = 'status-msg';
-                pendingData[i].username = '';
-                pendingData[i].name = '';
-                pendingData[i].photo = '';
-                btnInstall.innerText = "Pasang";
+                statusMsg.innerText = 'Siap';
+                statusMsg.className = 'status-msg';
+                pendingTargetData = { username: '', name: '', photo: '' };
+                btnInstall.innerText = "Pasang ke Display";
                 btnInstall.disabled = true;
                 return;
             }
 
             let cleanUsername = normalize(inputVal);
-            statusSpan.innerText = 'Mendeteksi...';
-            statusSpan.className = 'status-msg loading';
+            statusMsg.innerText = 'Mendeteksi...';
+            statusMsg.className = 'status-msg loading';
             targetCardInline.classList.add('show');
             
             previewImg.src = `https://ui-avatars.com/api/?name=${cleanUsername}&background=random&size=128`;
-            nameEl.innerText = cleanUsername;
-            usernameEl.innerText = '@' + cleanUsername;
+            targetName.innerText = cleanUsername;
+            targetUsername.innerText = '@' + cleanUsername;
 
             try {
                 const data = await requestTikwmUser(cleanUsername);
-                pendingData[i].username = '@' + data.username;
-                pendingData[i].name = data.name;
-                pendingData[i].photo = data.avatar;
+                pendingTargetData = {
+                    username: '@' + data.username,
+                    name: data.name,
+                    photo: data.avatar
+                };
 
                 previewImg.src = data.avatar;
-                nameEl.innerText = data.name;
-                usernameEl.innerText = '@' + data.username;
+                targetName.innerText = data.name;
+                targetUsername.innerText = '@' + data.username;
                 
-                statusSpan.innerText = "Terdeteksi!";
-                statusSpan.className = 'status-msg success';
-                btnInstall.innerText = "Pasang";
+                statusMsg.innerText = "Terdeteksi!";
+                statusMsg.className = 'status-msg success';
+                btnInstall.innerText = "Pasang ke Display";
                 btnInstall.disabled = false;
             } catch (error) {
                 console.error(error);
-                statusSpan.innerText = "Gagal / Akun Private";
-                statusSpan.className = 'status-msg error';
+                statusMsg.innerText = "Gagal / Akun Private";
+                statusMsg.className = 'status-msg error';
                 btnInstall.innerText = "Gagal";
                 btnInstall.disabled = true;
                 
-                pendingData[i].username = '@' + cleanUsername;
-                pendingData[i].name = cleanUsername.charAt(0).toUpperCase() + cleanUsername.slice(1);
-                pendingData[i].photo = `https://ui-avatars.com/api/?name=${cleanUsername}&background=random&size=128`;
+                pendingTargetData = {
+                    username: '@' + cleanUsername,
+                    name: cleanUsername,
+                    photo: `https://ui-avatars.com/api/?name=${cleanUsername}&background=random&size=128`
+                };
             }
         }
 
-        window.installSlot = function(i) {
-            if(!pendingData[i].username) return;
+        function installTarget() {
+            if (!pendingTargetData.username) return;
 
-            const selectEl = document.getElementById(`icon_${i}`);
+            const selectEl = document.getElementById('targetIcon');
             const selectedOption = selectEl.options[selectEl.selectedIndex];
             const iconVal = selectEl.value;
             const pointVal = parseInt(selectedOption.getAttribute('data-points')) || 0;
 
-            slotData[i] = { 
-                username: pendingData[i].username, 
-                name: pendingData[i].name,
-                photo: pendingData[i].photo, 
+            const finalData = {
+                username: pendingTargetData.username,
+                name: pendingTargetData.name,
+                photo: pendingTargetData.photo,
                 topIcon: iconVal,
                 points: pointVal
             };
-            
-            channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
-            document.getElementById(`status_${i}`).innerText = "Terpasang!";
+
+            channel.postMessage({ type: 'UPDATE_TARGET_SLOT', data: finalData });
+            statusMsg.innerText = "Berhasil Dipasang!";
         }
 
-        window.clearSlot = function(i) {
-            document.getElementById(`input_${i}`).value = '';
-            document.getElementById(`icon_${i}`).selectedIndex = 0;
-            document.getElementById(`targetCardInline_${i}`).classList.remove('show');
-            document.getElementById(`status_${i}`).innerText = 'Siap';
-            document.getElementById(`status_${i}`).className = 'status-msg';
-            document.getElementById(`btnInstall_${i}`).innerText = "Pasang";
-            document.getElementById(`btnInstall_${i}`).disabled = true;
-            
-            slotData[i] = { username: '', name: '', photo: '', topIcon: '', points: 0 };
-            pendingData[i] = { username: '', name: '', inputVal: '', photo: '' };
-            
-            channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
+        function clearTarget() {
+            targetInput.value = '';
+            document.getElementById('targetIcon').selectedIndex = 0;
+            targetCardInline.classList.remove('show');
+            statusMsg.innerText = 'Siap';
+            statusMsg.className = 'status-msg';
+            btnInstall.innerText = "Pasang ke Display";
+            btnInstall.disabled = true;
+
+            pendingTargetData = { username: '', name: '', photo: '' };
+            channel.postMessage({ type: 'UPDATE_TARGET_SLOT', data: null });
+        }
+
+        function updateHostUser() {
+            const val = document.getElementById('hostUserInput').value;
+            channel.postMessage({ type: 'UPDATE_HOST_USER', data: val });
         }
 
         document.getElementById('hostVideoFile').addEventListener('change', (e) => {
@@ -287,27 +259,6 @@
         function playHostVideo() {
             if (!hostVideoUrl) return alert('Pilih file video host dulu!');
             channel.postMessage({ type: 'UPDATE_HOST_VIDEO', url: hostVideoUrl });
-        }
-
-        document.getElementById('giftVideoFile').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) giftVideoUrl = URL.createObjectURL(file);
-        });
-
-        function playGiftVideo() {
-            if (!giftVideoUrl) return alert('Pilih file animasi gift dulu!');
-            for (let i = 1; i <= 8; i++) {
-                const selectEl = document.getElementById(`icon_${i}`);
-                const selectedOption = selectEl.options[selectEl.selectedIndex];
-                const iconVal = selectEl.value;
-                const pointVal = parseInt(selectedOption.getAttribute('data-points')) || 0;
-
-                if (slotData[i]) {
-                    slotData[i].topIcon = iconVal;
-                    slotData[i].points = pointVal;
-                }
-            }
-            channel.postMessage({ type: 'TRIGGER_GIFT', url: giftVideoUrl, slots: slotData });
         }
     </script>
 </body>
