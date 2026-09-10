@@ -16,9 +16,9 @@
             background-color: #000000;
             color: #ffffff;
             display: flex;
-            align-items: flex-start; /* Digeser agak ke atas */
+            align-items: flex-start;
             justify-content: center;
-            padding-top: 3vh; /* Memberikan jarak atas agar posisi condong ke atas */
+            padding-top: 3vh;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
@@ -27,7 +27,6 @@
             transform-origin: center top;
         }
 
-        /* Container Utama disesuaikan agar pas di layar laptop 16:9 */
         .board-container { 
             display: flex; 
             flex-direction: row; 
@@ -38,7 +37,6 @@
             justify-content: center;
         }
 
-        /* Kolom Kiri & Kanan (Masing-masing 4 Kotak) */
         .side-column {
             display: flex;
             flex-direction: column;
@@ -60,7 +58,6 @@
             flex: 1;
         }
 
-        /* Kotak Utama Host di Tengah dengan Rasio 9:16 */
         .card-main {
             flex: 1; 
             border: 2px solid #ffffff; 
@@ -98,7 +95,6 @@
             font-weight: 700;
         }
 
-        /* Label Nama Host di Kiri Bawah Video Utama */
         .video-username-box {
             position: absolute; 
             bottom: 14px; 
@@ -183,21 +179,21 @@
             max-width: 100%;
         }
 
-        /* Banner Pop-up TikTok Gift di Kiri Bawah */
+        /* Banner Pop-up TikTok Gift di Kiri Bawah, menempel di atas label host */
         .giftPopupContainer {
             position: absolute;
-            bottom: 50px; 
+            bottom: 52px; 
             left: 14px; 
-            background: linear-gradient(90deg, rgba(20,20,25,0.85) 0%, rgba(35,35,45,0.75) 100%);
+            background: linear-gradient(90deg, rgba(20,20,25,0.9) 0%, rgba(35,35,45,0.8) 100%);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             padding: 6px 14px 6px 6px;
             border-radius: 99px;
             display: flex;
             align-items: center;
             gap: 10px;
             z-index: 999;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             opacity: 0;
             transform: translateX(-120%);
             transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -293,6 +289,7 @@
                     <div class="target-uname">@username</div>
                 </div>
             </div>
+            <!-- Kotak Paling Bawah Sebelah Kiri (Slot 4) Sekaligus Tempat Tampil Gift Animasi -->
             <div class="slot-box" id="slot-4">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
@@ -309,11 +306,11 @@
             <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
             <video id="displayHostVideo" autoplay muted loop playsinline></video>
 
-            <!-- Pop-up Gift di Kiri Bawah (Pengirim Gift) -->
+            <!-- Pop-up Gift di Kiri Bawah Video Utama -->
             <div class="giftPopupContainer" id="giftPopupContainer">
                 <img class="popup-avatar" id="popupAvatar" src="" alt="Avatar">
                 <div class="popup-info">
-                    <span class="popup-name" id="popupName">Nama Pengirim</span>
+                    <span class="popup-name" id="popupName">Nama</span>
                     <span class="popup-uname" id="popupUname">@username</span>
                 </div>
                 <img class="popup-gift-img" id="popupGiftImg" src="" alt="Gift">
@@ -373,6 +370,9 @@
 
         let popupTimer = null;
 
+        // Daftar nama acak jika pengirim gift tidak ditentukan
+        const randomNames = ["J.K 090102", "Siti Rahma", "Budi Santoso", "Dewi Lestari", "Rizky Pratama"];
+
         channel.onmessage = (event) => {
             const { type, url, data, count, giftUrl, senderName, senderUname, senderPhoto } = event.data;
 
@@ -391,10 +391,14 @@
             }
 
             if (type === 'TRIGGER_GIFT_POPUP') {
-                // Menggunakan data pengirim gift langsung (misal: J.K 090102) bukan dari slot target
+                // Mengambil atau membuat nama dan foto acak bergaya seperti contoh J.K
+                const chosenName = senderName || randomNames[Math.floor(Math.random() * randomNames.length)];
+                const chosenUname = senderUname || "@" + chosenName.toLowerCase().replace(/[^a-z0-9]/g, '');
+                
+                // Gunakan foto bawaan atau avatar acak
                 popupAvatar.src = senderPhoto || '';
-                popupName.innerText = senderName || 'J.K';
-                popupUname.innerText = senderUname || '@090102';
+                popupName.innerText = chosenName;
+                popupUname.innerText = chosenUname;
                 popupGiftImg.src = giftUrl || '';
                 popupCount.innerText = `x${count || 1}`;
 
