@@ -22,6 +22,7 @@
             width: 100vw;
             padding: 12px 10px 0 10px;
             overflow: hidden;
+            position: relative;
         }
 
         .board-container { 
@@ -71,19 +72,21 @@
             font-weight: 700;
         }
 
+        /* Posisi nama host tepat di tengah bawah kotak */
         .video-username-box {
             position: absolute; 
-            bottom: 10px; 
-            left: 10px; 
+            bottom: 15px; 
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 10; 
             display: inline-flex; 
             align-items: center;
-            padding: 3px 10px; 
+            padding: 4px 14px; 
             background-color: rgba(17, 24, 39, 0.85); 
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
             border-radius: 99px; 
-            display: none; /* Awalnya disembunyikan sampai ada data */
+            display: none; 
         }
         .video-username { 
             font-size: 11px; 
@@ -167,6 +170,22 @@
             padding: 2px 8px;
             border-radius: 99px;
         }
+
+        /* Layer video gift di atas layar website */
+        #giftVideoLayerContainer {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        #giftVideoLayerContainer video {
+            max-width: 80%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body>
@@ -196,6 +215,11 @@
         </div>
     </div>
 
+    <!-- Layer Video Gift Mengambang di Website -->
+    <div id="giftVideoLayerContainer">
+        <video id="giftVideoLayer" playsinline></video>
+    </div>
+
     <script>
         const channel = new BroadcastChannel('live_control_channel');
 
@@ -209,6 +233,9 @@
         const targetDisplayName = document.getElementById('targetDisplayName');
         const targetDisplayUsername = document.getElementById('targetDisplayUsername');
         const targetDisplayPoints = document.getElementById('targetDisplayPoints');
+
+        const giftVideoLayerContainer = document.getElementById('giftVideoLayerContainer');
+        const giftVideoLayer = document.getElementById('giftVideoLayer');
 
         channel.onmessage = (event) => {
             const { type, url, data } = event.data;
@@ -224,6 +251,20 @@
                     displayHostUserBox.style.display = 'inline-flex';
                 } else {
                     displayHostUserBox.style.display = 'none';
+                }
+            }
+
+            if (type === 'PLAY_GIFT_LAYER') {
+                if (url) {
+                    giftVideoLayer.src = url;
+                    giftVideoLayerContainer.style.display = 'flex';
+                    giftVideoLayer.play().catch(e => console.log("Autoplay blocked"));
+
+                    // Sembunyikan otomatis setelah video selesai diputar
+                    giftVideoLayer.onended = () => {
+                        giftVideoLayerContainer.style.display = 'none';
+                        giftVideoLayer.src = '';
+                    };
                 }
             }
 
@@ -257,5 +298,4 @@
         };
     </script>
 </body>
-</html></body>
 </html>
