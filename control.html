@@ -172,45 +172,51 @@
                 return;
             }
 
-            let username = inputVal.includes('tiktok.com/@') ? (inputVal.match(/@([a-zA-Z0-9._]+)/)?.[1] || inputVal) : inputVal.replace('@', '');
+            // Ekstrak username secara bersih dari link atau teks biasa
+            let username = inputVal.includes('tiktok.com/@') 
+                ? (inputVal.match(/@([a-zA-Z0-9._]+)/)?.[1] || inputVal) 
+                : inputVal.replace('@', '').trim();
 
-            statusSpan.innerText = "Mendeteksi akun...";
+            statusSpan.innerText = "Memuat profil...";
 
-            try {
-                const response = await fetch(`https://www.tiktok.com/oembed?url=https://www.tiktok.com/@${username}`);
-                if (!response.ok) throw new Error('Gagal mengambil data');
-                const data = await response.json();
+            let formattedUsername = '@' + username;
+            let realName = username.charAt(0).toUpperCase() + username.slice(1);
+            let realThumb = `https://unavatar.io/tiktok/${username}`;
 
+            // Validasi pemuatan gambar profil via unavatar
+            const imgCheck = new Image();
+            imgCheck.src = realThumb;
+            
+            imgCheck.onload = function() {
                 if (pendingData[i].inputVal === inputVal) {
-                    let realName = data.author_name || username;
-                    let realThumb = data.thumbnail_url || `https://unavatar.io/tiktok/${username}`;
-
-                    pendingData[i].username = '@' + username;
-                    pendingData[i].name = realName;
-                    pendingData[i].photo = realThumb;
-                    
-                    previewImg.src = realThumb;
-                    nameEl.innerText = realName;
-                    usernameEl.innerText = '@' + username;
-                    targetCardInline.classList.add('show');
-                    statusSpan.innerText = "Berhasil akurat!";
+                    applyProfileData(i, formattedUsername, realName, realThumb, "Berhasil terdeteksi!");
                 }
-            } catch (error) {
+            };
+
+            imgCheck.onerror = function() {
                 if (pendingData[i].inputVal === inputVal) {
-                    let fallbackName = username.charAt(0).toUpperCase() + username.slice(1);
-                    let fallbackAvatar = `https://unavatar.io/tiktok/${username}`;
-
-                    pendingData[i].username = '@' + username;
-                    pendingData[i].name = fallbackName;
-                    pendingData[i].photo = fallbackAvatar;
-                    
-                    previewImg.src = fallbackAvatar;
-                    nameEl.innerText = fallbackName;
-                    usernameEl.innerText = '@' + username;
-                    targetCardInline.classList.add('show');
-                    statusSpan.innerText = "Siap (Metode Alternatif)!";
+                    let fallbackThumb = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
+                    applyProfileData(i, formattedUsername, realName, fallbackThumb, "Siap (Avatar Cadangan)");
                 }
-            }
+            };
+        }
+
+        function applyProfileData(i, username, name, photo, statusText) {
+            const statusSpan = document.getElementById(`status_${i}`);
+            const previewImg = document.getElementById(`preview_${i}`);
+            const targetCardInline = document.getElementById(`targetCardInline_${i}`);
+            const nameEl = document.getElementById(`targetName_${i}`);
+            const usernameEl = document.getElementById(`targetUsername_${i}`);
+
+            pendingData[i].username = username;
+            pendingData[i].name = name;
+            pendingData[i].photo = photo;
+            
+            previewImg.src = photo;
+            nameEl.innerText = name;
+            usernameEl.innerText = username;
+            targetCardInline.classList.add('show');
+            statusSpan.innerText = statusText;
         }
 
         window.installSlot = function(i) {
