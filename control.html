@@ -3,226 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Live Controller</title>
+    <title>TikTok Live - Control Panel Pro</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+        * { box-sizing: border-box; }
         body {
-            background-color: #121214;
-            color: #ffffff;
-            padding: 20px;
+            margin: 0; padding: 0; font-family: Arial, sans-serif;
+            background-color: #050505; color: #fff; overflow-x: hidden; min-height: 100vh;
         }
-        h2 {
-            margin-bottom: 15px;
-            color: #20D5EC;
+        .control-panel {
+            width: 100%; max-width: 500px; margin: 0 auto; padding: 20px; 
+            background: #0f172a; overflow-y: auto; border: 2px solid #334155;
+            display: flex; flex-direction: column; min-height: 100vh;
         }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        h2 { border-bottom: 2px solid #334155; padding-bottom: 10px; margin-top: 0; font-size: 1.2rem; color: #38bdf8; }
+        .form-group { margin-bottom: 20px; background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.9rem; color: #94a3b8; }
+        input[type="text"], select, input[type="file"] {
+            width: 100%; padding: 10px; background: #020617;
+            border: 1px solid #475569; color: white; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px; outline: none;
         }
-        .card {
-            background: #1a1a1e;
-            border: 1px solid #2a2a30;
-            padding: 15px;
-            border-radius: 10px;
+        input[type="text"]:focus { border-color: #38bdf8; }
+        .btn-action {
+            background: #ef4444; color: white; border: none; padding: 8px 12px;
+            border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; font-size: 0.85rem;
+            transition: opacity 0.2s;
         }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
+        .btn-action:hover { opacity: 0.9; }
+        .btn-play { background: #10b981; margin-top: 8px; }
+        .btn-gift { background: #ec4899; margin-top: 8px; font-size: 1rem; padding: 12px; }
+        .target-card-inline {
+            display: none; align-items: center; gap: 10px; margin-top: 5px; margin-bottom: 8px;
+            background: #0f172a; padding: 8px; border-radius: 6px; border: 1px solid #475569;
         }
-        input, select {
-            padding: 8px 12px;
-            background: #25252b;
-            border: 1px solid #3a3a45;
-            color: white;
-            border-radius: 6px;
-            flex: 1;
-            min-width: 150px;
+        .target-card-inline.show { display: flex; }
+        .preview-img {
+            width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+            border: 2px solid #38bdf8; flex-shrink: 0;
         }
-        button {
-            padding: 8px 16px;
-            background: #20D5EC;
-            color: #000;
-            border: none;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        button:hover {
-            opacity: 0.85;
-        }
-        .danger-btn {
-            background: #ef4444;
-            color: white;
-        }
-        
-        /* Panel Tombol Gift Spam */
-        .gift-control-panel {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .gift-btn {
-            background: #25252b;
-            border: 1px solid #3a3a45;
-            border-radius: 8px;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .gift-btn:hover {
-            border-color: #fbbf24;
-            background: #2f2f38;
-        }
-        .gift-btn img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-        }
-        .gift-btn span {
-            font-size: 11px;
-            font-weight: bold;
-            color: #fbbf24;
-        }
+        .target-info-inline { flex: 1; min-width: 0; }
+        .target-name-inline { font-size: 13px; font-weight: bold; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .target-username-inline { font-size: 11px; color: #38bdf8; }
+        .status-msg { font-size: 11px; color: #94a3b8; margin-bottom: 5px; min-height: 16px; }
+        .status-msg.loading { color: #facc15; }
+        .status-msg.success { color: #4ade80; }
+        .status-msg.error { color: #f87171; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Panel Kontrol TikTok Live</h2>
-
-        <!-- Pengaturan Video Host Utama -->
-        <div class="card">
-            <h3>1. Setel Video Host Utama</h3>
-            <div class="input-group" style="margin-top: 10px;">
-                <input type="text" id="hostVideoUrl" placeholder="Masukkan URL Video MP4 Host...">
-                <button onclick="updateHostVideo()">Terapkan Video</button>
-            </div>
-            <div class="input-group">
-                <input type="text" id="hostUsernameInput" placeholder="Nama/User Host (cth: @komal)...">
-                <button onclick="updateHostUsername()">Terapkan Nama Host</button>
-            </div>
+    <div class="control-panel">
+        <h2>Control Panel (Pro System)</h2>
+        
+        <!-- Input Nama Host (Komal) -->
+        <div class="form-group">
+            <label for="hostUserInput">Nama Host (Komal):</label>
+            <input type="text" id="hostUserInput" placeholder="Masukkan teks nama host (cth: J.K 090102)...">
+            <button class="btn-action btn-play" onclick="updateHostUser()">Ubah Nama Host</button>
         </div>
 
-        <!-- Pengaturan 8 Slot Permintaan / Penonton -->
-        <div class="card">
-            <h3>2. Kelola Slot Penonton (1 - 8)</h3>
-            <div class="input-group" style="margin-top: 10px;">
-                <select id="slotSelector">
-                    <option value="1">Slot 1</option>
-                    <option value="2">Slot 2</option>
-                    <option value="3">Slot 3</option>
-                    <option value="4">Slot 4</option>
-                    <option value="5">Slot 5</option>
-                    <option value="6">Slot 6</option>
-                    <option value="7">Slot 7</option>
-                    <option value="8">Slot 8</option>
-                </select>
-                <input type="text" id="targetName" placeholder="Nama Lengkap">
-                <input type="text" id="targetUsername" placeholder="@username">
-                <input type="text" id="targetPhoto" placeholder="URL Foto Profil">
-            </div>
-            <div class="input-group">
-                <button onclick="saveSlot()">Simpan ke Slot</button>
-                <button class="danger-btn" onclick="clearSlot()">Kosongkan Slot</button>
-            </div>
+        <!-- Input Video Host -->
+        <div class="form-group">
+            <label for="hostVideoFile">Upload Video Host (Background):</label>
+            <input type="file" id="hostVideoFile" accept="video/*">
+            <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host</button>
         </div>
 
-        <!-- Panel Trigger Gift Spam -->
-        <div class="card">
-            <h3>3. Kirim Gift (Klik berulang untuk Spam x1, x2, x3...)</h3>
-            <p style="font-size: 12px; color: #a1a1aa; margin-bottom: 10px;">Pilih dulu slot penonton yang mengirim gift di atas, lalu klik ikon gift di bawah:</p>
-            <div class="gift-control-panel">
-                <div class="gift-btn" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp', 5)">
-                    <img src="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp" alt="Gift 5">
-                    <span>Nilai: 5</span>
-                </div>
-                <div class="gift-btn" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/beaaa3a78a00b5b20661b00924ab0e7f~tplv-obj.webp', 10)">
-                    <img src="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/beaaa3a78a00b5b20661b00924ab0e7f~tplv-obj.webp" alt="Gift 10">
-                    <span>Nilai: 10</span>
-                </div>
-                <div class="gift-btn" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/075e206d6da035f10ff5f8fecd82abcc.png~tplv-obj.webp', 15)">
-                    <img src="https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/075e206d6da035f10ff5f8fecd82abcc.png~tplv-obj.webp" alt="Gift 15">
-                    <span>Nilai: 15</span>
-                </div>
-                <div class="gift-btn" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/20b8f61246c7b6032777bb81bf4ee055~tplv-obj.webp', 20)">
-                    <img src="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/20b8f61246c7b6032777bb81bf4ee055~tplv-obj.webp" alt="Gift 20">
-                    <span>Nilai: 20</span>
-                </div>
-                <div class="gift-btn" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp', 30)">
-                    <img src="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp" alt="Gift 30">
-                    <span>Nilai: 30</span>
-                </div>
-                <div class="gift-btn" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2f1e4f3f5c728ffbfa35705b480fdc92~tplv-obj.webp', 99)">
-                    <img src="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2f1e4f3f5c728ffbfa35705b480fdc92~tplv-obj.webp" alt="Gift 99">
-                    <span>Nilai: 99</span>
+        <!-- Trigger Popup Gift dengan Spam Otomatis x1, x2, x3... -->
+        <div class="form-group">
+            <label>Pilih Slot Penerima Gift:</label>
+            <select id="popupSlot">
+                <option value="1">Slot 1 (Kiri Atas)</option>
+                <option value="2">Slot 2</option>
+                <option value="3">Slot 3</option>
+                <option value="4">Slot 4</option>
+                <option value="5">Slot 5 (Kanan Atas)</option>
+                <option value="6">Slot 6</option>
+                <option value="7">Slot 7</option>
+                <option value="8">Slot 8</option>
+            </select>
+            
+            <label style="margin-top:8px;">Pilih Jenis Gift (Ikon):</label>
+            <select id="giftChoice">
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp">Gift (Nilai 5)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/beaaa3a78a00b5b20661b00924ab0e7f~tplv-obj.webp">Gift (Nilai 10)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/075e206d6da035f10ff5f8fecd82abcc.png~tplv-obj.webp">Gift (Nilai 15)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/20b8f61246c7b6032777bb81bf4ee055~tplv-obj.webp">Gift (Nilai 20)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp">Gift (Nilai 30)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2f1e4f3f5c728ffbfa35705b480fdc92~tplv-obj.webp">Gift (Nilai 99)</option>
+            </select>
+
+            <button class="btn-action btn-gift" onclick="triggerGiftPopup()">Kirim Gift (Spam)</button>
+        </div>
+
+        <!-- Input Target Permintaan -->
+        <div class="form-group">
+            <label for="targetSlot">Pilih Slot Target (1 - 8):</label>
+            <select id="targetSlot">
+                <option value="1">Slot 1 (Kiri Atas)</option>
+                <option value="2">Slot 2</option>
+                <option value="3">Slot 3</option>
+                <option value="4">Slot 4</option>
+                <option value="5">Slot 5 (Kanan Atas)</option>
+                <option value="6">Slot 6</option>
+                <option value="7">Slot 7</option>
+                <option value="8">Slot 8</option>
+            </select>
+
+            <label style="margin-top:10px;">Username / Link TikTok Target:</label>
+            <input type="text" placeholder="Masukkan username target..." id="targetInput">
+            
+            <div id="targetCardInline" class="target-card-inline">
+                <img id="previewImg" class="preview-img" alt="Avatar">
+                <div class="target-info-inline">
+                    <div id="targetName" class="target-name-inline">-</div>
+                    <div id="targetUsername" class="target-username-inline">-</div>
                 </div>
             </div>
+            <div id="statusMsg" class="status-msg">Siap</div>
+
+            <button class="btn-action" id="btnInstall" onclick="installTarget()" style="background:#3b82f6; margin-top:8px;" disabled>Pasang ke Display</button>
+            <button class="btn-action" onclick="clearTarget()" style="background:#64748b; margin-top:8px;">Reset / Kosongkan Slot Ini</button>
         </div>
     </div>
 
     <script>
         const channel = new BroadcastChannel('live_control_channel');
-        
-        // Objek untuk melacak jumlah spam gift berdasarkan URL gift & slot
+        let hostVideoUrl = '';
+        let pendingTargetData = { username: '', name: '', photo: '' };
         let giftCounters = {};
 
-        function updateHostVideo() {
-            const url = document.getElementById('hostVideoUrl').value;
-            if (url) {
-                channel.postMessage({ type: 'UPDATE_HOST_VIDEO', url: url });
+        function normalize(v) {
+            let s = String(v || "").trim();
+            s = s.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, "");
+            s = s.replace(/^@/, "");
+            return s.split(/[/?#]/)[0].trim();
+        }
+
+        function pick(obj, keys, fb) {
+            for (const k of keys) {
+                let v = obj;
+                for (const p of k.split(".")) v = v?.[p];
+                if (v !== undefined && v !== null && v !== "") return v;
+            }
+            return fb;
+        }
+
+        function extractUser(raw) {
+            if (!raw || typeof raw !== "object") throw new Error("Response Kosong");
+            if (raw.code !== undefined && Number(raw.code) !== 0) {
+                throw new Error(raw.msg || "Akun tidak ditemukan");
+            }
+            const root = raw.data || raw;
+            const info = root.userInfo || root.user_info || {};
+            const user = info.user || root.user || info || root;
+            const username = String(pick(user, ["uniqueId", "unique_id", "username"], "")).replace(/^@/, "").trim();
+            if (!username) throw new Error("Username tidak ditemukan di data");
+
+            return {
+                username,
+                name: String(pick(user, ["nickname", "name", "display_name"], username)),
+                avatar: String(pick(user, ["avatarLarger", "avatarMedium", "avatarThumb", "avatar", "avatar_url"], ""))
+            };
+        }
+
+        async function requestTikwmUser(username) {
+            const res = await fetch("https://www.tikwm.com/api/user/info/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+                body: "unique_id=" + encodeURIComponent(username)
+            });
+            if (!res.ok) throw new Error("Gagal koneksi ke server");
+            const json = await res.json();
+            return extractUser(json);
+        }
+
+        const targetInput = document.getElementById('targetInput');
+        const statusMsg = document.getElementById('statusMsg');
+        const previewImg = document.getElementById('previewImg');
+        const targetCardInline = document.getElementById('targetCardInline');
+        const targetName = document.getElementById('targetName');
+        const targetUsername = document.getElementById('targetUsername');
+        const btnInstall = document.getElementById('btnInstall');
+
+        let timeout = null;
+        targetInput.addEventListener('input', () => {
+            btnInstall.innerText = "Cek...";
+            btnInstall.disabled = true;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => { stageProfile(); }, 800);
+        });
+
+        async function stageProfile() {
+            let inputVal = targetInput.value.trim();
+            if (!inputVal) {
+                targetCardInline.classList.remove('show');
+                statusMsg.innerText = 'Siap';
+                statusMsg.className = 'status-msg';
+                pendingTargetData = { username: '', name: '', photo: '' };
+                btnInstall.innerText = "Pasang ke Display";
+                btnInstall.disabled = true;
+                return;
+            }
+
+            let cleanUsername = normalize(inputVal);
+            statusMsg.innerText = 'Mendeteksi...';
+            statusMsg.className = 'status-msg loading';
+            targetCardInline.classList.add('show');
+            
+            previewImg.src = `https://ui-avatars.com/api/?name=${cleanUsername}&background=random&size=128`;
+            targetName.innerText = cleanUsername;
+            targetUsername.innerText = '@' + cleanUsername;
+
+            try {
+                const data = await requestTikwmUser(cleanUsername);
+                pendingTargetData = {
+                    username: '@' + data.username,
+                    name: data.name,
+                    photo: data.avatar
+                };
+
+                previewImg.src = data.avatar;
+                targetName.innerText = data.name;
+                targetUsername.innerText = '@' + data.username;
+                
+                statusMsg.innerText = "Terdeteksi!";
+                statusMsg.className = 'status-msg success';
+                btnInstall.innerText = "Pasang ke Display";
+                btnInstall.disabled = false;
+            } catch (error) {
+                console.error(error);
+                statusMsg.innerText = "Gagal / Akun Private";
+                statusMsg.className = 'status-msg error';
+                btnInstall.innerText = "Gagal";
+                btnInstall.disabled = true;
+                
+                pendingTargetData = {
+                    username: '@' + cleanUsername,
+                    name: cleanUsername,
+                    photo: `https://ui-avatars.com/api/?name=${cleanUsername}&background=random&size=128`
+                };
             }
         }
 
-        function updateHostUsername() {
-            const username = document.getElementById('hostUsernameInput').value;
-            channel.postMessage({ type: 'UPDATE_HOST_USER', data: username });
+        function installTarget() {
+            if (!pendingTargetData.username) return;
+
+            const slotId = document.getElementById('targetSlot').value;
+
+            const finalData = {
+                slot: slotId,
+                username: pendingTargetData.username,
+                name: pendingTargetData.name,
+                photo: pendingTargetData.photo
+            };
+
+            channel.postMessage({ type: 'UPDATE_TARGET_SLOT', data: finalData });
+            statusMsg.innerText = `Slot ${slotId} Berhasil Dipasang!`;
         }
 
-        function saveSlot() {
-            const slot = document.getElementById('slotSelector').value;
-            const name = document.getElementById('targetName').value;
-            const username = document.getElementById('targetUsername').value;
-            const photo = document.getElementById('targetPhoto').value;
+        function clearTarget() {
+            const slotId = document.getElementById('targetSlot').value;
+            targetInput.value = '';
+            targetCardInline.classList.remove('show');
+            statusMsg.innerText = 'Siap';
+            statusMsg.className = 'status-msg';
+            btnInstall.innerText = "Pasang ke Display";
+            btnInstall.disabled = true;
 
-            channel.postMessage({
-                type: 'UPDATE_TARGET_SLOT',
-                data: { slot, name, username, photo, clear: false }
-            });
+            pendingTargetData = { username: '', name: '', photo: '' };
+            channel.postMessage({ type: 'UPDATE_TARGET_SLOT', data: { slot: slotId, clear: true } });
         }
 
-        function clearSlot() {
-            const slot = document.getElementById('slotSelector').value;
-            channel.postMessage({
-                type: 'UPDATE_TARGET_SLOT',
-                data: { slot, clear: true }
-            });
+        function updateHostUser() {
+            const val = document.getElementById('hostUserInput').value;
+            channel.postMessage({ type: 'UPDATE_HOST_USER', data: val });
         }
 
-        function sendGift(giftUrl, giftId) {
-            const slot = document.getElementById('slotSelector').value;
-            const key = `${slot}_${giftUrl}`;
+        document.getElementById('hostVideoFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) hostVideoUrl = URL.createObjectURL(file);
+        });
 
-            // Jika gift sama diklik lagi dalam waktu dekat atau berturut-turut, naikkan hitungannya (Spam x1, x2, x3...)
+        function playHostVideo() {
+            if (!hostVideoUrl) return alert('Pilih file video host dulu!');
+            channel.postMessage({ type: 'UPDATE_HOST_VIDEO', url: hostVideoUrl });
+        }
+
+        function triggerGiftPopup() {
+            const slotId = document.getElementById('popupSlot').value;
+            const giftImgUrl = document.getElementById('giftChoice').value;
+            const key = `${slotId}_${giftImgUrl}`;
+
             if (!giftCounters[key]) {
                 giftCounters[key] = { count: 1, lastTime: Date.now() };
             } else {
-                // Reset hitungan jika jeda waktu lebih dari 6 detik
                 if (Date.now() - giftCounters[key].lastTime > 6000) {
                     giftCounters[key].count = 1;
                 } else {
@@ -231,11 +305,11 @@
                 giftCounters[key].lastTime = Date.now();
             }
 
-            channel.postMessage({
-                type: 'TRIGGER_GIFT_POPUP',
-                slot: slot,
-                giftUrl: giftUrl,
-                count: giftCounters[key].count
+            channel.postMessage({ 
+                type: 'TRIGGER_GIFT_POPUP', 
+                slot: slotId, 
+                count: giftCounters[key].count, 
+                giftUrl: giftImgUrl 
             });
         }
     </script>
