@@ -18,10 +18,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Mulai dari atas */
             min-height: 100vh;
             width: 100vw;
-            padding: 15px;
+            padding: 15px 20px; /* Jarak aman atas (15px) agar garis tidak terlalu mentok */
             overflow-x: hidden;
             position: relative;
         }
@@ -31,8 +31,8 @@
             flex-direction: row; 
             gap: 25px; 
             width: 100%; 
-            max-width: 800px; 
-            align-items: center;
+            max-width: 900px; 
+            align-items: flex-start;
             justify-content: center;
         }
 
@@ -46,8 +46,8 @@
             justify-content: center; 
             position: relative; 
             overflow: hidden; 
-            aspect-ratio: 1 / 1; /* Diubah menjadi bujur sangkar / segi 4 sama sisi */
-            max-width: 360px;
+            aspect-ratio: 1 / 1; /* Bujur sangkar / segi 4 sama sisi */
+            max-width: 420px; /* Dibuat lebih besar agar memenuhi layar ke atas */
         }
 
         .card-main video { 
@@ -106,13 +106,13 @@
             height: 100%;
         }
         .request-placeholder .plus-icon { 
-            font-size: 38px; 
+            font-size: 42px; 
             font-weight: 700; 
             line-height: 1; 
             color: #ffffff; 
         }
         .request-placeholder .request-text { 
-            font-size: 14px; 
+            font-size: 15px; 
             font-weight: 700; 
             color: #ffffff; 
         }
@@ -132,23 +132,23 @@
             display: flex;
         }
         .target-avatar {
-            width: 75px;
-            height: 75px;
+            width: 85px;
+            height: 85px;
             border-radius: 50%;
             border: 2px solid #20D5EC;
             object-fit: cover;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         .target-icon-overlay {
             position: absolute;
             top: 15px;
             right: 15px;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             object-fit: contain;
         }
         .target-name {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 3px;
@@ -158,30 +158,30 @@
             max-width: 100%;
         }
         .target-uname {
-            font-size: 11px;
+            font-size: 12px;
             color: #20D5EC;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .target-points {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             color: #fbbf24;
             background: rgba(0,0,0,0.6);
-            padding: 3px 10px;
+            padding: 3px 12px;
             border-radius: 99px;
         }
 
         /* Area Canvas Animasi Gift di Bawah Kotak */
         .gift-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             display: flex;
             justify-content: center;
             margin-top: 15px;
         }
         #giftCanvasLayer {
             width: 100%;
-            max-width: 450px;
+            max-width: 500px;
             height: auto;
             aspect-ratio: 16 / 9;
             display: none;
