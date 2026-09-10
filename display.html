@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Profile Detector & Green Screen Gift</title>
+    <title>TikTok Host & Permintaan</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,116 +16,21 @@
             background-color: #050505;
             color: #ffffff;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             min-height: 100vh;
             width: 100vw;
             padding: 10px;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        /* --- Controls --- */
-        .controls-wrapper {
-            width: 100%;
-            max-width: 700px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .search-container {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            width: 100%;
-        }
-
-        .search-container input {
-            flex: 1;
-            min-width: 0;
-            padding: 8px 12px; 
-            border-radius: 8px;
-            border: 1px solid #374151;
-            background-color: #0b0f19;
-            color: #ffffff;
-            font-size: 13px; 
-            outline: none;
-            height: 36px;
-        }
-
-        .search-container input:focus { border-color: #4b5563; }
-
-        .search-container button.btn-search {
-            width: 36px; height: 36px; padding: 0; border-radius: 8px; border: none; background-color: #374151;
-            color: #ffffff; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
-        .search-container button.btn-search:hover { background-color: #4b5563; }
-
-        .btn-delete-one {
-            height: 36px; padding: 0 10px; border-radius: 8px; background-color: #ef4444; border: 1px solid #dc2626;
-            color: #ffffff; font-size: 11px; font-weight: bold; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; flex-shrink: 0; transition: background 0.2s, border-color 0.2s; white-space: nowrap;
-        }
-        .btn-delete-one:hover { background-color: #dc2626; }
-
-        .btn-clear-main {
-            width: 36px; height: 36px; border-radius: 8px; background-color: #1f2937; border: 1px solid #374151;
-            color: #ffffff; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; flex-shrink: 0; transition: background 0.2s, border-color 0.2s;
-        }
-        .btn-clear-main:hover { background-color: #ef4444; border-color: #dc2626; }
-
-        .upload-row {
-            display: flex;
-            gap: 8px;
-            background: #111827;
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid #374151;
-            font-size: 12px;
-            align-items: center;
-        }
-        .upload-row label { font-weight: bold; color: #38bdf8; flex-shrink: 0; }
-        .upload-row input[type="file"] { color: #ccc; font-size: 11px; }
-
-        .sub-control-row {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 8px;
-            width: 100%;
-            position: relative;
-        }
-
-        .gift-group { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
-
-        .btn-gift {
-            height: 28px; padding: 0 10px; border-radius: 6px; border: none; color: #ffffff;
-            font-weight: 700; font-size: 11px; cursor: pointer; transition: transform 0.2s; display: flex;
-            align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        .btn-gift:hover { transform: scale(1.05); }
-        .gift-5 { background: linear-gradient(135deg, #06b6d4 0%, #0369a1 100%); }
-        .gift-10 { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-        .gift-15 { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); }
-        .gift-20 { background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); }
-        .gift-99 { background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); }
-        .gift-500 { background: linear-gradient(135deg, #f97316 0%, #c2410c 100%); }
-        .gift-4499 { background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); }
-
-        .error-message { color: #ef4444; font-size: 11px; font-weight: 500; }
-
-        /* --- Board Container --- */
         .board-container { 
             display: flex; 
             flex-direction: row; 
-            gap: 12px; 
+            gap: 16px; 
             width: 100%; 
             max-width: 700px; 
-            align-items: stretch;
+            align-items: center;
             justify-content: center;
         }
 
@@ -140,408 +45,96 @@
             position: relative; 
             overflow: hidden; 
             aspect-ratio: 9 / 16;
-            max-height: 75vh;
+            max-height: 80vh;
         }
 
-        .card-main video { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-        /* Video Green Screen Overlay Full Layar di Kotak Main */
-        #greenScreenVideo {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 20;
-            display: none; /* Sembunyikan secara default */
-            background: transparent;
+        .card-main video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block; 
         }
 
         .video-host-badge {
-            position: absolute; top: 10px; left: 10px; z-index: 10; display: inline-flex; align-items: center; justify-content: center;
-            padding: 3px 10px; background-color: #20D5EC; border-radius: 99px; color: #000000; font-size: 10px; font-weight: 700;
+            position: absolute; 
+            top: 10px; 
+            left: 10px; 
+            z-index: 10; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center;
+            padding: 3px 10px; 
+            background-color: #20D5EC; 
+            border-radius: 99px; 
+            color: #000000; 
+            font-size: 10px; 
+            font-weight: 700;
         }
 
         .video-username-box {
-            position: absolute; bottom: 10px; left: 10px; z-index: 10; display: inline-flex; align-items: center;
-            padding: 3px 10px; background-color: rgba(17, 24, 39, 0.85); backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 99px; width: fit-content;
-        }
-        .video-username { font-size: 11px; font-weight: 700; color: #ffffff; }
-
-        /* Placeholder (+ Permintaan) */
-        .request-placeholder {
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-            color: #ffffff; user-select: none; cursor: pointer; width: 100%; height: 100%;
-        }
-        .request-placeholder .plus-icon { font-size: 32px; font-weight: 700; line-height: 1; color: #ffffff; }
-        .request-placeholder .request-text { font-size: 13px; font-weight: 700; color: #ffffff; }
-
-        .small-profile-wrapper {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            width: 100%; height: 100%; position: relative; padding: 10px; 
-        }
-
-        .small-avatar {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%; 
-            object-fit: cover; 
-            border: 3px solid #374151;
-            background-color: #374151; 
-            box-shadow: 0 0 25px rgba(29, 78, 216, 0.7); 
-            display: block; 
-            margin-bottom: 10px;
-        }
-
-        .star-score-container {
-            position: absolute; top: 12px; left: 12px; display: inline-flex; align-items: center; gap: 5px; 
-            padding: 5px 10px; background-color: rgba(17, 24, 39, 0.9); border: 1px solid #374151;
-            border-radius: 99px; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
-        .blue-circle-icon { width: 16px; height: 16px; border-radius: 50%; background-color: #20D5EC; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .blue-circle-icon svg { width: 10px; height: 10px; fill: #ffffff; }
-        .star-score-number { font-size: 12px; font-weight: 700; color: #ffffff; line-height: 1; }
-
-        .profile-name-box {
-            position: absolute;
-            bottom: 12px;
-            left: 12px; 
-            display: inline-flex;
-            align-items: center; 
-            gap: 6px;
-            padding: 5px 10px;
-            background-color: rgba(17, 24, 39, 0.9);
-            border: 1px solid #374151;
-            border-radius: 99px;
-            max-width: 72%; 
-            height: 30px;    
-            z-index: 5;
-            overflow: hidden;
-        }
-
-        .profile-name-text {
-            font-size: 11px;
-            font-weight: 600;
-            color: #f3f4f6;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 95px; 
-            flex-shrink: 1; 
-            display: block;
-        }
-
-        .verified-badge { width: 12px; height: 12px; flex-shrink: 0; }
-
-        .add-friend-btn {
-            display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; 
-            background-color: #000000; border: 1px solid #374151; border-radius: 50%; cursor: pointer;
-            flex-shrink: 0; transition: background 0.2s, border-color 0.2s; padding: 0;
-        }
-        .add-friend-btn svg { width: 10px; height: 10px; fill: #ffffff; display: block; }
-        .add-friend-btn:hover { background-color: #333333; border-color: #555555; }
-
-        .mic-box {
-            position: absolute; bottom: 12px; right: 14px;
-            width: 32px; height: 32px;
-            background: rgba(17, 24, 39, 0.9);
-            border: 1px solid #374151;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            z-index: 5;
-            cursor: pointer; 
-            transition: background 0.2s, border-color 0.2s;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .mic-box:hover { background-color: #374151; }
-        .mic-icon-wrapper { position: relative; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
-        .mic-icon { width: 100%; height: 100%; fill: #ffffff; display: block; }
-        
-        .mic-slash-line { 
-            display: none; 
             position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            width: 18px; 
-            height: 1.8px;
-            background-color: #ffffff; 
-            transform: translate(-50%, -50%) rotate(45deg); 
-            border-radius: 1px; 
-            z-index: 99; 
+            bottom: 10px; 
+            left: 10px; 
+            z-index: 10; 
+            display: inline-flex; 
+            align-items: center;
+            padding: 3px 10px; 
+            background-color: rgba(17, 24, 39, 0.85); 
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 99px; 
         }
-        .mic-box.muted .mic-slash-line { display: block; }
+        .video-username { 
+            font-size: 11px; 
+            font-weight: 700; 
+            color: #ffffff; 
+        }
 
-        /* Gift Popup Kecil (opsional tambahan) */
-        .gift-popup-effect {
-            position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; object-fit: cover; z-index: 50; pointer-events: none; border-radius: 6px; 
-            animation: zoomInAndOut 5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        /* Placeholder Kotak Permintaan */
+        .request-placeholder {
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 4px;
+            color: #ffffff; 
+            user-select: none; 
+            width: 100%; 
+            height: 100%;
         }
-        @keyframes zoomInAndOut {
-            0% { transform: scale(0); opacity: 0; }
-            10% { transform: scale(1.2); opacity: 1; }
-            20% { transform: scale(1); opacity: 1; }
-            85% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(0); opacity: 0; }
+        .request-placeholder .plus-icon { 
+            font-size: 32px; 
+            font-weight: 700; 
+            line-height: 1; 
+            color: #ffffff; 
+        }
+        .request-placeholder .request-text { 
+            font-size: 13px; 
+            font-weight: 700; 
+            color: #ffffff; 
         }
     </style>
 </head>
 <body>
 
-    <div class="controls-wrapper">
-        <!-- Input Upload Video Green Screen Gift -->
-        <div class="upload-row">
-            <label for="gsVideoFile">Upload Video Gift (Green Screen):</label>
-            <input type="file" id="gsVideoFile" accept="video/*">
-        </div>
-
-        <div class="search-container">
-            <input type="text" id="usernameInput" placeholder="Masukkan Username TikTok...">
-            <button class="btn-search" onclick="detectTikTok()" title="Cari / Tambah">✔</button>
-            <button class="btn-delete-one" onclick="deleteCurrentSlot()">Hapus</button>
-            <button class="btn-clear-main" id="btnClear" onclick="clearAll()" title="Bersihkan Semua">🔄</button>
-        </div>
-
-        <div class="sub-control-row">
-            <div class="gift-group">
-                <button class="btn-gift gift-5" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp', 5)">5</button>
-                <button class="btn-gift gift-10" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/beaaa3a78a00b5b20661b00924ab0e7f~tplv-obj.webp', 10)">10</button>
-                <button class="btn-gift gift-15" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/075e206d6da035f10ff5f8fecd82abcc.png~tplv-obj.webp', 15)">15</button>
-                <button class="btn-gift gift-20" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/20b8f61246c7b6032777bb81bf4ee055~tplv-obj.webp', 20)">20</button>
-                <button class="btn-gift gift-99" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2f1e4f3f5c728ffbfa35705b480fdc92~tplv-obj.webp', 99)">99</button>
-                <button class="btn-gift gift-500" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/e0589e95a2b41970f0f30f6202f5fce6~tplv-obj.webp', 500)">500</button>
-                <button class="btn-gift gift-4499" onclick="sendGift('https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp', 4499)">4499</button>
-            </div>
-            <div class="error-message" id="errorMsg"></div>
-        </div>
-    </div>
-
     <div class="board-container">
-        <!-- Kotak Video Utama (Kiri) + Layar Green Screen Video Gift -->
-        <div class="card-main" id="cardMain">
+        <!-- Kotak Video Host (Kiri) -->
+        <div class="card-main">
             <div class="video-host-badge"><span>Host</span></div>
             <div class="video-username-box"><span class="video-username">JK O9O1O2.</span></div>
-            
-            <!-- Video Utama Background Host -->
-            <video id="mainVideo" autoplay muted loop playsinline>
+            <video autoplay muted loop playsinline>
                 <source src="https://b.top4top.io/m_3899uvdp01.mp4" type="video/mp4">
             </video>
-
-            <!-- Video Pemutar Animasi Green Screen Gift -->
-            <video id="greenScreenVideo" playsinline></video>
         </div>
 
-        <!-- Kotak Slot Profil (Kanan) -->
-        <div class="card-small" id="slot-1">
-            <div class="request-placeholder" onclick="document.getElementById('usernameInput').focus()">
+        <!-- Kotak Permintaan (Kanan) -->
+        <div class="card-small">
+            <div class="request-placeholder">
                 <span class="plus-icon">+</span>
                 <span class="request-text">Permintaan</span>
             </div>
         </div>
     </div>
 
-    <script>
-        let slotData = null;
-        let greenScreenUrl = '';
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const video = document.getElementById('mainVideo');
-            video.play().catch(e => console.log("Autoplay blocked", e));
-        });
-
-        // Tangkap file video green screen gift yang diupload
-        document.getElementById('gsVideoFile').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                greenScreenUrl = URL.createObjectURL(file);
-                const gsVideo = document.getElementById('greenScreenVideo');
-                gsVideo.src = greenScreenUrl;
-                gsVideo.load();
-            }
-        });
-
-        function formatScore(score) {
-            if (score >= 1000000) return (score / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-            if (score >= 1000) return (score / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-            return score.toString();
-        }
-
-        function toggleMic() {
-            if (slotData) {
-                slotData.isMuted = !slotData.isMuted;
-                renderSlot();
-            }
-        }
-
-        function extractUser(raw) {
-            if (!raw || typeof raw !== "object") throw new Error("API response empty");
-            if (raw.code !== undefined && Number(raw.code) !== 0) throw new Error(raw.msg || "Akun tidak ditemukan");
-            const root = raw.data || raw;
-            const info = root.userInfo || root.user_info || {};
-            const user = info.user || root.user || info || root;
-            const username = String(pick(user, ["uniqueId", "unique_id", "username"], "")).replace(/^@/, "").trim();
-            if (!username) throw new Error("Username tidak ditemukan");
-            return {
-                username,
-                name: String(pick(user, ["nickname", "name", "display_name"], username)),
-                avatar: String(pick(user, ["avatarLarger", "avatarMedium", "avatarThumb", "avatar", "avatar_url"], "")),
-                verified: Boolean(pick(user, ["verified", "isVerified", "is_verified"], false))
-            };
-        }
-
-        function pick(obj, keys, fb) {
-            for (const k of keys) {
-                let v = obj;
-                for (const p of k.split(".")) v = v?.[p];
-                if (v !== undefined && v !== null && v !== "") return v;
-            }
-            return fb;
-        }
-
-        async function requestTikwmUser(username) {
-            const res = await fetch("https://www.tikwm.com/api/user/info/", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-                body: "unique_id=" + encodeURIComponent(username)
-            });
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const json = await res.json();
-            return extractUser(json);
-        }
-
-        function normalize(v) {
-            let s = String(v || "").trim();
-            s = s.replace(/^https?:\/\/(?:www\.|m\.)?tiktok\.com\//i, "");
-            s = s.replace(/^@/, "");
-            return s.split(/[/?#]/)[0].trim();
-        }
-
-        function clearAll() {
-            removeSlot();
-            document.getElementById('usernameInput').value = '';
-            document.getElementById('errorMsg').innerText = '';
-        }
-
-        function deleteCurrentSlot() {
-            removeSlot();
-        }
-
-        function removeSlot() {
-            const slot = document.getElementById('slot-1');
-            if (!slot) return;
-            
-            slot.style.backgroundColor = "#000000";
-            slot.innerHTML = `
-                <div class="request-placeholder" onclick="document.getElementById('usernameInput').focus()">
-                    <span class="plus-icon">+</span>
-                    <span class="request-text">Permintaan</span>
-                </div>
-            `;
-            slotData = null;
-        }
-
-        async function detectTikTok() {
-            const username = normalize(document.getElementById('usernameInput').value);
-            if (!username) return alert("Masukkan Username TikTok!");
-
-            try {
-                const data = await requestTikwmUser(username);
-                slotData = { avatar: data.avatar, name: data.name, verified: data.verified, score: 0, isMuted: true };
-                renderSlot();
-                document.getElementById('errorMsg').innerText = '';
-                document.getElementById('usernameInput').value = '';
-            } catch (err) {
-                document.getElementById('errorMsg').innerText = err.message;
-            }
-        }
-
-        function sendGift(giftUrl, points) {
-            if (!slotData) { alert("Tambahkan profil di slot terlebih dahulu!"); return; }
-            slotData.score += points;
-            renderSlot(); 
-            
-            // 1. Munculkan efek gambar gift kecil di pojok slot
-            const slotElement = document.getElementById('slot-1');
-            const giftPop = document.createElement('img');
-            giftPop.src = giftUrl; giftPop.className = 'gift-popup-effect';
-            slotElement.appendChild(giftPop);
-            setTimeout(() => { if (giftPop.parentNode) giftPop.remove(); }, 5000);
-
-            // 2. Putar Video Green Screen Gift di Kotak Display Utama (jika sudah di-upload)
-            if (greenScreenUrl) {
-                const gsVideo = document.getElementById('greenScreenVideo');
-                gsVideo.style.display = 'block';
-                gsVideo.currentTime = 0;
-                gsVideo.play().catch(e => console.log("Gagal memutar video green screen:", e));
-
-                // Sembunyikan kembali video setelah selesai diputar
-                gsVideo.onended = function() {
-                    gsVideo.style.display = 'none';
-                };
-            }
-        }
-
-        function renderSlot() {
-            const slot = document.getElementById('slot-1');
-            if (!slotData) return;
-
-            slot.style.backgroundColor = "#1f2937"; 
-
-            let verifiedHtml = '';
-            if (slotData.verified) {
-                verifiedHtml = `
-                    <svg class="verified-badge" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="9" fill="#20D5EC" stroke="#20D5EC" stroke-width="2" stroke-dasharray="1 1.5" />
-                        <g transform="translate(12, 12) scale(0.75) translate(-12, -12)">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="white"/>
-                        </g>
-                    </svg>
-                `;
-            }
-
-            const addFriendButtonHtml = `
-                <div class="add-friend-btn" title="Add Friend">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="white"/>
-                    </svg>
-                </div>
-            `;
-
-            slot.innerHTML = `
-                <div class="small-profile-wrapper">
-                    <div class="star-score-container">
-                        <div class="blue-circle-icon">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                            </svg>
-                        </div>
-                        <span class="star-score-number">${formatScore(slotData.score)}</span>
-                    </div>
-
-                    <img src="${slotData.avatar}" class="small-avatar" alt="Avatar">
-
-                    <div class="profile-name-box">
-                        <span class="profile-name-text">${slotData.name}</span>
-                        ${verifiedHtml}
-                        ${addFriendButtonHtml}
-                    </div>
-
-                    <div class="mic-box ${slotData.isMuted ? 'muted' : ''}" onclick="toggleMic()" title="${slotData.isMuted ? 'Mikrofon Bisu' : 'Mikrofon Aktif'}">
-                        <div class="mic-icon-wrapper">
-                            <svg class="mic-icon" viewBox="0 0 24 24">
-                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
-                            </svg>
-                            <div class="mic-slash-line"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-    </script>
 </body>
 </html>
