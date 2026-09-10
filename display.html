@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Host & Permintaan (Display 9:16)</title>
+    <title>TikTok Live Display (Compact 9:16)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,7 +13,7 @@
         }
 
         body {
-            background-color: #050505;
+            background-color: #000000;
             color: #ffffff;
             display: flex;
             align-items: center;
@@ -23,7 +23,6 @@
             overflow: hidden;
         }
 
-        /* Membungkus seluruh tampilan dengan rasio tetap 9:16 yang pas di layar */
         .page-wrapper {
             position: relative;
             width: 100vw;
@@ -34,33 +33,32 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px;
-            gap: 12px;
+            padding: 16px;
+            overflow: hidden;
         }
 
+        /* Container utama untuk 2 kotak kecil berdampingan */
         .board-container { 
             display: flex; 
             flex-direction: row; 
             gap: 12px; 
             width: 100%; 
-            flex: 1;
+            max-width: 340px; /* Ukuran diperkecil agar pas dan compact */
             align-items: center;
             justify-content: center;
-            min-height: 0;
         }
 
         .card-main, .card-small {
             flex: 1; 
-            height: 100%;
             border: 2px solid #374151; 
-            border-radius: 14px; 
-            background-color: #000000;
+            border-radius: 12px; 
+            background-color: #0f172a;
             display: flex; 
             align-items: center; 
             justify-content: center; 
             position: relative; 
             overflow: hidden; 
-            aspect-ratio: 9 / 16; 
+            aspect-ratio: 3 / 4; /* Kotak lebih ringkas/proporsional */
         }
 
         .card-main video { 
@@ -72,28 +70,28 @@
 
         .video-host-badge {
             position: absolute; 
-            top: 10px; 
-            left: 10px; 
+            top: 6px; 
+            left: 6px; 
             z-index: 10; 
             display: inline-flex; 
             align-items: center; 
             justify-content: center;
-            padding: 3px 10px; 
+            padding: 2px 8px; 
             background-color: #20D5EC; 
             border-radius: 99px; 
             color: #000000; 
-            font-size: 10px; 
+            font-size: 9px; 
             font-weight: 700;
         }
 
         .video-username-box {
             position: absolute; 
-            bottom: 10px; 
-            left: 10px; 
+            bottom: 6px; 
+            left: 6px; 
             z-index: 10; 
             display: inline-flex; 
             align-items: center;
-            padding: 3px 10px; 
+            padding: 2px 8px; 
             background-color: rgba(17, 24, 39, 0.85); 
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.1); 
@@ -101,10 +99,9 @@
             display: none; 
         }
         .video-username { 
-            font-size: 10px; 
+            font-size: 9px; 
             font-weight: 700; 
             color: #ffffff; 
-            line-height: normal;
         }
 
         .request-placeholder {
@@ -119,13 +116,13 @@
             height: 100%;
         }
         .request-placeholder .plus-icon { 
-            font-size: 36px; 
+            font-size: 28px; 
             font-weight: 700; 
             line-height: 1; 
             color: #ffffff; 
         }
         .request-placeholder .request-text { 
-            font-size: 13px; 
+            font-size: 11px; 
             font-weight: 700; 
             color: #ffffff; 
         }
@@ -138,30 +135,30 @@
             width: 100%;
             height: 100%;
             position: relative;
-            padding: 10px;
+            padding: 8px;
             text-align: center;
         }
         .target-display-content.show {
             display: flex;
         }
         .target-avatar {
-            width: 68px;
-            height: 68px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             border: 2px solid #20D5EC;
             object-fit: cover;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .target-icon-overlay {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 26px;
-            height: 26px;
+            top: 6px;
+            right: 6px;
+            width: 22px;
+            height: 22px;
             object-fit: contain;
         }
         .target-name {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 2px;
@@ -171,34 +168,30 @@
             max-width: 100%;
         }
         .target-uname {
-            font-size: 10px;
+            font-size: 9px;
             color: #20D5EC;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
         .target-points {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
             color: #fbbf24;
             background: rgba(0,0,0,0.6);
-            padding: 2px 8px;
+            padding: 2px 6px;
             border-radius: 99px;
         }
 
-        /* Area Canvas Animasi Gift */
-        .gift-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            flex-shrink: 0;
-        }
+        /* Canvas Efek Animasi Menyatu di Atas Layar */
         #giftCanvasLayer {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-height: 140px;
-            height: auto;
-            aspect-ratio: 16 / 9;
+            height: 100%;
             display: none;
+            pointer-events: none;
+            z-index: 99;
             object-fit: contain;
-            background: transparent;
         }
     </style>
 </head>
@@ -230,11 +223,9 @@
             </div>
         </div>
 
-        <!-- Area Video Gift di Bagian Bawah -->
-        <div class="gift-container">
-            <video id="sourceGiftVideo" style="display:none;" playsinline></video>
-            <canvas id="giftCanvasLayer"></canvas>
-        </div>
+        <!-- Layer Canvas Animasi Gift Menyeluruh -->
+        <video id="sourceGiftVideo" style="display:none;" playsinline></video>
+        <canvas id="giftCanvasLayer"></canvas>
     </div>
 
     <script>
@@ -320,8 +311,8 @@
         };
 
         function runGreenScreenEffect() {
-            giftCanvasLayer.width = 800;
-            giftCanvasLayer.height = 450;
+            giftCanvasLayer.width = window.innerWidth;
+            giftCanvasLayer.height = window.innerHeight;
 
             function processFrame() {
                 if (sourceGiftVideo.paused || sourceGiftVideo.ended) return;
