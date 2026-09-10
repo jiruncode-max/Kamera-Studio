@@ -18,10 +18,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             min-height: 100vh;
             width: 100vw;
-            padding: 20px 15px;
+            padding: 15px;
             overflow-x: hidden;
             position: relative;
         }
@@ -29,10 +29,10 @@
         .board-container { 
             display: flex; 
             flex-direction: row; 
-            gap: 20px; 
+            gap: 25px; 
             width: 100%; 
-            max-width: 900px; 
-            align-items: flex-start;
+            max-width: 800px; 
+            align-items: center;
             justify-content: center;
         }
 
@@ -46,8 +46,8 @@
             justify-content: center; 
             position: relative; 
             overflow: hidden; 
-            aspect-ratio: 9 / 16;
-            max-height: 75vh;
+            aspect-ratio: 1 / 1; /* Diubah menjadi bujur sangkar / segi 4 sama sisi */
+            max-width: 360px;
         }
 
         .card-main video { 
@@ -106,7 +106,7 @@
             height: 100%;
         }
         .request-placeholder .plus-icon { 
-            font-size: 36px; 
+            font-size: 38px; 
             font-weight: 700; 
             line-height: 1; 
             color: #ffffff; 
@@ -132,19 +132,19 @@
             display: flex;
         }
         .target-avatar {
-            width: 80px;
-            height: 80px;
+            width: 75px;
+            height: 75px;
             border-radius: 50%;
             border: 2px solid #20D5EC;
             object-fit: cover;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .target-icon-overlay {
             position: absolute;
             top: 15px;
             right: 15px;
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             object-fit: contain;
         }
         .target-name {
@@ -160,10 +160,10 @@
         .target-uname {
             font-size: 11px;
             color: #20D5EC;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .target-points {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: #fbbf24;
             background: rgba(0,0,0,0.6);
@@ -174,14 +174,14 @@
         /* Area Canvas Animasi Gift di Bawah Kotak */
         .gift-container {
             width: 100%;
-            max-width: 900px;
+            max-width: 800px;
             display: flex;
             justify-content: center;
             margin-top: 15px;
         }
         #giftCanvasLayer {
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
             height: auto;
             aspect-ratio: 16 / 9;
             display: none;
