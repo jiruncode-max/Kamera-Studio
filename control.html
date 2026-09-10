@@ -54,10 +54,10 @@
     <div class="control-panel">
         <h2>Control Panel (Pro System)</h2>
         
-        <!-- Input Username Host -->
+        <!-- Input Nama Host (Komal) -->
         <div class="form-group">
-            <label for="hostUserInput">Username Host:</label>
-            <input type="text" id="hostUserInput" placeholder="Masukkan teks username host...">
+            <label for="hostUserInput">Nama Host (Komal):</label>
+            <input type="text" id="hostUserInput" placeholder="Masukkan teks nama host (cth: J.K 090102)...">
             <button class="btn-action btn-play" onclick="updateHostUser()">Ubah Nama Host</button>
         </div>
 
@@ -68,9 +68,9 @@
             <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host</button>
         </div>
 
-        <!-- Trigger Popup Gift Jari Hati (Spamable) -->
+        <!-- Trigger Popup Gift Jari Hati dengan pilihan jumlah 5, 10, 15, 20, 30 -->
         <div class="form-group">
-            <label>Kirim Gift Jari Hati (Spam Multiplier):</label>
+            <label>Kirim Gift Jari Hati:</label>
             <select id="popupSlot">
                 <option value="1">Slot 1 (Kiri Atas)</option>
                 <option value="2">Slot 2</option>
@@ -81,14 +81,22 @@
                 <option value="7">Slot 7</option>
                 <option value="8">Slot 8</option>
             </select>
-            <select id="giftChoice">
-                <!-- Ikon Gift Jari Hati (Finger Heart) -->
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp">Gift Jari Hati (Finger Heart)</option>
+            
+            <label style="margin-top:8px;">Jumlah Gift (Multiplier):</label>
+            <select id="giftMultiplier">
+                <option value="5">x5</option>
+                <option value="10">x10</option>
+                <option value="15">x15</option>
+                <option value="20">x20</option>
+                <option value="30">x30</option>
             </select>
-            <button class="btn-action btn-gift" onclick="triggerGiftPopup()">Send Gift (Klik Berulang untuk Spam x2, x3...)</button>
+
+            <!-- Menggunakan link ikon gift Jari Hati -->
+            <input type="hidden" id="giftChoice" value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp">
+            <button class="btn-action btn-gift" onclick="triggerGiftPopup()">Kirim Gift Jari Hati</button>
         </div>
 
-        <!-- Input Target Permintaan -->
+        <!-- Input Target Permintaan (Tanpa pilihan icon gift target) -->
         <div class="form-group">
             <label for="targetSlot">Pilih Slot Target (1 - 8):</label>
             <select id="targetSlot">
@@ -102,14 +110,8 @@
                 <option value="8">Slot 8</option>
             </select>
 
-            <label style="margin-top:10px;">Atur Target Permintaan:</label>
-            <select id="targetIcon">
-                <option value="" data-points="0">Pilih Ikon Gift Target...</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp" data-points="1000">Gift A (1,000)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/beaaa3a78a00b5b20661b00924ab0e7f~tplv-obj.webp" data-points="5000">Gift B (5,000)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/075e206d6da035f10ff5f8fecd82abcc.png~tplv-obj.webp" data-points="10000">Gift C (10,000)</option>
-            </select>
-            <input type="text" placeholder="Username / Link TikTok Target..." id="targetInput">
+            <label style="margin-top:10px;">Username / Link TikTok Target:</label>
+            <input type="text" placeholder="Masukkan username target..." id="targetInput">
             
             <div id="targetCardInline" class="target-card-inline">
                 <img id="previewImg" class="preview-img" alt="Avatar">
@@ -247,18 +249,12 @@
             if (!pendingTargetData.username) return;
 
             const slotId = document.getElementById('targetSlot').value;
-            const selectEl = document.getElementById('targetIcon');
-            const selectedOption = selectEl.options[selectEl.selectedIndex];
-            const iconVal = selectEl.value;
-            const pointVal = parseInt(selectedOption.getAttribute('data-points')) || 0;
 
             const finalData = {
                 slot: slotId,
                 username: pendingTargetData.username,
                 name: pendingTargetData.name,
-                photo: pendingTargetData.photo,
-                topIcon: iconVal,
-                points: pointVal
+                photo: pendingTargetData.photo
             };
 
             channel.postMessage({ type: 'UPDATE_TARGET_SLOT', data: finalData });
@@ -268,7 +264,6 @@
         function clearTarget() {
             const slotId = document.getElementById('targetSlot').value;
             targetInput.value = '';
-            document.getElementById('targetIcon').selectedIndex = 0;
             targetCardInline.classList.remove('show');
             statusMsg.innerText = 'Siap';
             statusMsg.className = 'status-msg';
@@ -296,8 +291,9 @@
 
         function triggerGiftPopup() {
             const slotId = document.getElementById('popupSlot').value;
+            const multiplierVal = document.getElementById('giftMultiplier').value;
             const giftImgUrl = document.getElementById('giftChoice').value;
-            channel.postMessage({ type: 'TRIGGER_GIFT_POPUP', slot: slotId, giftUrl: giftImgUrl });
+            channel.postMessage({ type: 'TRIGGER_GIFT_POPUP', slot: slotId, count: multiplierVal, giftUrl: giftImgUrl });
         }
     </script>
 </body>
