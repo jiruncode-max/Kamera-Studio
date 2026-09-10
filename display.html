@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Screen - Sedikit Lebih Lebar</title>
+    <title>Display Screen - Rasio 10:16 (Video & Gift)</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -12,7 +12,6 @@
         }
         #displayScreen {
             position: relative;
-            /* Melebarkan rasio sedikit dari 9:16 menjadi sekitar 10:16 agar lebih pas di layar laptop */
             width: calc(100vh * (10 / 16));
             height: 100vh;
             max-width: 100vw;
@@ -23,7 +22,8 @@
         }
         #hostVideo {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: 1;
+            /* Mengubah object-fit menjadi fill agar video host pas 10:16 di layar laptop */
+            object-fit: fill; z-index: 1;
         }
         .layout-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -67,7 +67,10 @@
             pointer-events: none; overflow: hidden;
         }
         #giftCanvas {
-            width: 100%; height: 100%; object-fit: cover; display: none;
+            width: 100%; height: 100%; 
+            /* Mengubah object-fit canvas gift menjadi fill agar ikut menyesuaikan rasio 10:16 */
+            object-fit: fill; 
+            display: none;
         }
         #giftVideoSource { display: none; }
     </style>
@@ -92,6 +95,7 @@
         const channel = new BroadcastChannel('live_control_channel');
         const leftColumn = document.getElementById('left-column');
         const rightColumn = document.getElementById('right-column');
+        const displayScreen = document.getElementById('displayScreen');
         const slotsState = {};
 
         const totalSlots = 8;
@@ -157,8 +161,9 @@
 
                 giftVideo.play().then(() => {
                     giftCanvas.style.display = 'block';
-                    giftCanvas.width = giftVideo.videoWidth || 720;
-                    giftCanvas.height = giftVideo.videoHeight || 1280;
+                    // Menyesuaikan ukuran canvas gift dengan ukuran kontainer display (rasio 10:16)
+                    giftCanvas.width = displayScreen.clientWidth;
+                    giftCanvas.height = displayScreen.clientHeight;
                     
                     if (renderInterval) clearInterval(renderInterval);
                     renderInterval = setInterval(() => {
