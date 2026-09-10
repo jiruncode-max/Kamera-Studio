@@ -41,7 +41,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            width: 110px;
+            width: 130px;
             height: 100%;
             justify-content: space-between;
         }
@@ -56,6 +56,12 @@
             position: relative; 
             overflow: hidden; 
             flex: 1;
+        }
+
+        /* State ketika slot terisi target */
+        .slot-box.filled {
+            background-color: rgba(50, 50, 50, 0.4);
+            border: 2px dashed #ffffff;
         }
 
         .card-main {
@@ -146,39 +152,138 @@
             width: 100%;
             height: 100%;
             position: relative;
-            padding: 8px;
+            padding: 6px;
             text-align: center;
         }
         .target-display-content.show {
             display: flex;
         }
+
+        /* Icon Bintang & Angka Poin di Kiri Atas */
+        .slot-score-badge {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 2px 6px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 5;
+        }
+        .star-circle {
+            width: 16px;
+            height: 16px;
+            background-color: #20D5EC;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #ffffff;
+        }
+        .slot-score-text {
+            font-size: 10px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        /* Icon Gift yang muncul di Atas Kotak Bagian Kanan (Durasi 3 Detik) */
+        .slot-gift-floating {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            display: none;
+            align-items: center;
+            gap: 2px;
+            background: rgba(251, 191, 36, 0.9);
+            padding: 2px 5px;
+            border-radius: 10px;
+            z-index: 10;
+            animation: fadeInOut 3s forwards;
+        }
+        .slot-gift-floating img {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+        .slot-gift-floating span {
+            font-size: 9px;
+            font-weight: 900;
+            color: #000;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: scale(0.8); }
+            10% { opacity: 1; transform: scale(1); }
+            90% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.8); display: none; }
+        }
+
         .target-avatar {
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             border: 2px solid #20D5EC;
             object-fit: cover;
-            margin-bottom: 6px;
-        }
-        .target-name {
-            font-size: 10px;
-            font-weight: 700;
-            color: #ffffff;
             margin-bottom: 2px;
+        }
+
+        /* Bagian Nama TikTok & Icon + di Kiri Bawah */
+        .target-footer-info {
+            position: absolute;
+            bottom: 4px;
+            left: 6px;
+            right: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .target-uname-container {
+            display: flex;
+            align-items: center;
+            gap: 2px;
             overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 100%;
+            max-width: 75%;
         }
         .target-uname {
             font-size: 9px;
-            color: #20D5EC;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 100%;
+        }
+        .add-user-icon {
+            font-size: 12px;
+            font-weight: 900;
+            color: #20D5EC;
+            background: rgba(32, 213, 236, 0.2);
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
+        /* Icon Mikrofon di Mute (\) di Kanan Bawah */
+        .mic-mute-icon {
+            font-size: 10px;
+            color: #ff4d4d;
+            background: rgba(255, 77, 77, 0.2);
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Banner Pop-up Gift Global di Kiri Bawah Card Main */
         .giftPopupContainer {
             position: absolute;
             bottom: 52px; 
@@ -267,33 +372,81 @@
             <div class="slot-box" id="slot-1">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
+                    <div class="slot-score-badge">
+                        <div class="star-circle">★</div>
+                        <span class="slot-score-text">0</span>
+                    </div>
+                    <div class="slot-gift-floating" id="gift-float-1">
+                        <img src="" alt="Gift"><span class="float-count">x1</span>
+                    </div>
                     <img class="target-avatar" src="" alt="Avatar">
-                    <div class="target-name">Nama</div>
-                    <div class="target-uname">@username</div>
+                    <div class="target-footer-info">
+                        <div class="target-uname-container">
+                            <span class="target-uname">@username</span>
+                            <span class="add-user-icon">+</span>
+                        </div>
+                        <span class="mic-mute-icon">✕</span>
+                    </div>
                 </div>
             </div>
             <div class="slot-box" id="slot-2">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
+                    <div class="slot-score-badge">
+                        <div class="star-circle">★</div>
+                        <span class="slot-score-text">0</span>
+                    </div>
+                    <div class="slot-gift-floating" id="gift-float-2">
+                        <img src="" alt="Gift"><span class="float-count">x1</span>
+                    </div>
                     <img class="target-avatar" src="" alt="Avatar">
-                    <div class="target-name">Nama</div>
-                    <div class="target-uname">@username</div>
+                    <div class="target-footer-info">
+                        <div class="target-uname-container">
+                            <span class="target-uname">@username</span>
+                            <span class="add-user-icon">+</span>
+                        </div>
+                        <span class="mic-mute-icon">✕</span>
+                    </div>
                 </div>
             </div>
             <div class="slot-box" id="slot-3">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
+                    <div class="slot-score-badge">
+                        <div class="star-circle">★</div>
+                        <span class="slot-score-text">0</span>
+                    </div>
+                    <div class="slot-gift-floating" id="gift-float-3">
+                        <img src="" alt="Gift"><span class="float-count">x1</span>
+                    </div>
                     <img class="target-avatar" src="" alt="Avatar">
-                    <div class="target-name">Nama</div>
-                    <div class="target-uname">@username</div>
+                    <div class="target-footer-info">
+                        <div class="target-uname-container">
+                            <span class="target-uname">@username</span>
+                            <span class="add-user-icon">+</span>
+                        </div>
+                        <span class="mic-mute-icon">✕</span>
+                    </div>
                 </div>
             </div>
             <div class="slot-box" id="slot-4">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
+                    <div class="slot-score-badge">
+                        <div class="star-circle">★</div>
+                        <span class="slot-score-text">0</span>
+                    </div>
+                    <div class="slot-gift-floating" id="gift-float-4">
+                        <img src="" alt="Gift"><span class="float-count">x1</span>
+                    </div>
                     <img class="target-avatar" src="" alt="Avatar">
-                    <div class="target-name">Nama</div>
-                    <div class="target-uname">@username</div>
+                    <div class="target-footer-info">
+                        <div class="target-uname-container">
+                            <span class="target-uname">@username</span>
+                            <span class="add-user-icon">+</span>
+                        </div>
+                        <span class="mic-mute-icon">✕</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -321,33 +474,81 @@
             <div class="slot-box" id="slot-5">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
+                    <div class="slot-score-badge">
+                        <div class="star-circle">★</div>
+                        <span class="slot-score-text">0</span>
+                    </div>
+                    <div class="slot-gift-floating" id="gift-float-5">
+                        <img src="" alt="Gift"><span class="float-count">x1</span>
+                    </div>
                     <img class="target-avatar" src="" alt="Avatar">
-                    <div class="target-name">Nama</div>
-                    <div class="target-uname">@username</div>
+                    <div class="target-footer-info">
+                        <div class="target-uname-container">
+                            <span class="target-uname">@username</span>
+                            <span class="add-user-icon">+</span>
+                        </div>
+                        <span class="mic-mute-icon">✕</span>
+                    </div>
                 </div>
             </div>
             <div class="slot-box" id="slot-6">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
+                    <div class="slot-score-badge">
+                        <div class="star-circle">★</div>
+                        <span class="slot-score-text">0</span>
+                    </div>
+                    <div class="slot-gift-floating" id="gift-float-6">
+                        <img src="" alt="Gift"><span class="float-count">x1</span>
+                    </div>
                     <img class="target-avatar" src="" alt="Avatar">
-                    <div class="target-name">Nama</div>
-                    <div class="target-uname">@username</div>
+                    <div class="target-footer-info">
+                        <div class="target-uname-container">
+                            <span class="target-uname">@username</span>
+                            <span class="add-user-icon">+</span>
+                        </div>
+                        <span class="mic-mute-icon">✕</span>
+                    </div>
                 </div>
             </div>
             <div class="slot-box" id="slot-7">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
+                    <div class="slot-score-badge">
+                        <div class="star-circle">★</div>
+                        <span class="slot-score-text">0</span>
+                    </div>
+                    <div class="slot-gift-floating" id="gift-float-7">
+                        <img src="" alt="Gift"><span class="float-count">x1</span>
+                    </div>
                     <img class="target-avatar" src="" alt="Avatar">
-                    <div class="target-name">Nama</div>
-                    <div class="target-uname">@username</div>
+                    <div class="target-footer-info">
+                        <div class="target-uname-container">
+                            <span class="target-uname">@username</span>
+                            <span class="add-user-icon">+</span>
+                        </div>
+                        <span class="mic-mute-icon">✕</span>
+                    </div>
                 </div>
             </div>
             <div class="slot-box" id="slot-8">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
+                    <div class="slot-score-badge">
+                        <div class="star-circle">★</div>
+                        <span class="slot-score-text">0</span>
+                    </div>
+                    <div class="slot-gift-floating" id="gift-float-8">
+                        <img src="" alt="Gift"><span class="float-count">x1</span>
+                    </div>
                     <img class="target-avatar" src="" alt="Avatar">
-                    <div class="target-name">Nama</div>
-                    <div class="target-uname">@username</div>
+                    <div class="target-footer-info">
+                        <div class="target-uname-container">
+                            <span class="target-uname">@username</span>
+                            <span class="add-user-icon">+</span>
+                        </div>
+                        <span class="mic-mute-icon">✕</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -367,17 +568,17 @@
         const popupCount = document.getElementById('popupCount');
 
         let popupTimer = null;
+        const slotScores = {}; // Menyimpan skor/poin tiap slot
 
         const defaultCustomPhoto = "https://b.top4top.io/p_3905d2xmz1.jpeg";
         const randomNames = ["J.K 090102", "Siti Rahma", "Budi Santoso", "Dewi Lestari", "Rizky Pratama"];
 
-        // Fungsi pemetaan teks agar selalu menampilkan "Mengirim Kotak 1" sampai "Mengirim Kotak 8"
         function getGiftActionText(targetSlot) {
             const numSlot = Number(targetSlot);
             if (!isNaN(numSlot) && numSlot >= 1 && numSlot <= 8) {
                 return `Mengirim Kotak ${numSlot}`;
             }
-            return "Mengirim Kotak 1"; // Default fallback jika slot tidak valid
+            return "Mengirim Kotak 1";
         }
 
         channel.onmessage = (event) => {
@@ -404,14 +605,39 @@
                 const currentHostName = displayHostUser.innerText.trim();
                 const chosenName = senderName || (currentHostName !== "" ? currentHostName : randomNames[Math.floor(Math.random() * randomNames.length)]);
                 
-                // Menentukan teks aksi pengiriman strictly ke "Mengirim Kotak X"
-                const giftActionMessage = getGiftActionText(slot);
+                const targetSlot = slot || 1;
+                const giftActionMessage = getGiftActionText(targetSlot);
+                const giftCount = Number(count) || 1;
+
+                // Update Skor pada Slot yang dituju (akumulasi poin)
+                if (!slotScores[targetSlot]) slotScores[targetSlot] = 0;
+                slotScores[targetSlot] += giftCount;
+
+                const slotEl = document.getElementById(`slot-${targetSlot}`);
+                if (slotEl) {
+                    const scoreTextEl = slotEl.querySelector('.slot-score-text');
+                    if (scoreTextEl) scoreTextEl.innerText = slotScores[targetSlot];
+
+                    // Tampilkan icon gift mengapung di kanan atas slot selama 3 detik
+                    const floatGiftEl = document.getElementById(`gift-float-${targetSlot}`);
+                    if (floatGiftEl) {
+                        const imgTag = floatGiftEl.querySelector('img');
+                        const countTag = floatGiftEl.querySelector('.float-count');
+                        if (imgTag) imgTag.src = giftUrl || '';
+                        if (countTag) countTag.innerText = `x${giftCount}`;
+
+                        floatGiftEl.style.animation = 'none';
+                        void floatGiftEl.offsetWidth; // Trigger reflow
+                        floatGiftEl.style.display = 'flex';
+                        floatGiftEl.style.animation = 'fadeInOut 3s forwards';
+                    }
+                }
                 
                 popupAvatar.src = senderPhoto || defaultCustomPhoto;
                 popupName.innerText = chosenName;
                 popupUname.innerText = giftActionMessage; 
                 popupGiftImg.src = giftUrl || '';
-                popupCount.innerText = `x${count || 1}`;
+                popupCount.innerText = `x${giftCount}`;
 
                 popupCount.classList.remove('bounce');
                 void popupCount.offsetWidth; 
@@ -427,28 +653,37 @@
 
             if (type === 'UPDATE_TARGET_SLOT') {
                 if (!data || !data.slot) return;
-                const slotEl = document.getElementById(`slot-${data.slot}`);
+                const slotNum = data.slot;
+                const slotEl = document.getElementById(`slot-${slotNum}`);
                 if (!slotEl) return;
 
                 const placeholder = slotEl.querySelector('.request-placeholder');
                 const content = slotEl.querySelector('.target-display-content');
                 const avatar = slotEl.querySelector('.target-avatar');
-                const nameEl = slotEl.querySelector('.target-name');
                 const unameEl = slotEl.querySelector('.target-uname');
+                const scoreTextEl = slotEl.querySelector('.slot-score-text');
 
                 if (data.clear) {
+                    slotEl.classList.remove('filled');
                     content.classList.remove('show');
                     placeholder.style.display = 'flex';
+                    slotScores[slotNum] = 0;
+                    if (scoreTextEl) scoreTextEl.innerText = '0';
                     return;
                 }
 
                 if (data.username) {
                     placeholder.style.display = 'none';
+                    slotEl.classList.add('filled');
                     content.classList.add('show');
 
                     avatar.src = data.photo || '';
-                    nameEl.innerText = data.name || '';
                     unameEl.innerText = data.username || '';
+                    
+                    if (!slotScores[slotNum]) {
+                        slotScores[slotNum] = 0;
+                        if (scoreTextEl) scoreTextEl.innerText = '0';
+                    }
                 }
             }
         };
