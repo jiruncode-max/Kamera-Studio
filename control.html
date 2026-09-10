@@ -84,12 +84,12 @@
             
             <label style="margin-top:8px;">Pilih Jenis Gift (Ikon):</label>
             <select id="giftChoice">
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp">Gift (Nilai 5)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/beaaa3a78a00b5b20661b00924ab0e7f~tplv-obj.webp">Gift (Nilai 10)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/075e206d6da035f10ff5f8fecd82abcc.png~tplv-obj.webp">Gift (Nilai 15)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/20b8f61246c7b6032777bb81bf4ee055~tplv-obj.webp">Gift (Nilai 20)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp">Gift (Nilai 30)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2f1e4f3f5c728ffbfa35705b480fdc92~tplv-obj.webp">Gift (Nilai 99)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp" data-name="Finger Heart">Gift: Finger Heart (Nilai 5)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/beaaa3a78a00b5b20661b00924ab0e7f~tplv-obj.webp" data-name="I love you">Gift: I love you (Nilai 10)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/075e206d6da035f10ff5f8fecd82abcc.png~tplv-obj.webp" data-name="Bravo!">Gift: Bravo! (Nilai 15)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/20b8f61246c7b6032777bb81bf4ee055~tplv-obj.webp" data-name="Perfume">Gift: Perfume (Nilai 20)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp" data-name="Doughnut">Gift: Doughnut (Nilai 30)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2f1e4f3f5c728ffbfa35705b480fdc92~tplv-obj.webp" data-name="Hat and Mustac">Gift: Hat and Mustac (Nilai 99)</option>
             </select>
 
             <button class="btn-action btn-gift" onclick="triggerGiftPopup()">Kirim Gift (Spam)</button>
@@ -291,7 +291,11 @@
 
         function triggerGiftPopup() {
             const slotId = document.getElementById('popupSlot').value;
-            const giftImgUrl = document.getElementById('giftChoice').value;
+            const giftSelect = document.getElementById('giftChoice');
+            const giftImgUrl = giftSelect.value;
+            const selectedOption = giftSelect.options[giftSelect.selectedIndex];
+            const giftName = selectedOption.getAttribute('data-name') || selectedOption.text;
+            
             const key = `${slotId}_${giftImgUrl}`;
 
             if (!giftCounters[key]) {
@@ -309,7 +313,8 @@
                 type: 'TRIGGER_GIFT_POPUP', 
                 slot: slotId, 
                 count: giftCounters[key].count, 
-                giftUrl: giftImgUrl 
+                giftUrl: giftImgUrl,
+                giftName: giftName
             });
         }
     </script>
