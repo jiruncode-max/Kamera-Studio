@@ -18,10 +18,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Mulai dari atas */
+            justify-content: flex-start;
             min-height: 100vh;
             width: 100vw;
-            padding: 15px 20px; /* Jarak aman atas (15px) agar garis tidak terlalu mentok */
+            padding: 12px 15px; /* Memberikan jarak aman agar tidak terlalu mentok ke atas */
             overflow-x: hidden;
             position: relative;
         }
@@ -29,9 +29,9 @@
         .board-container { 
             display: flex; 
             flex-direction: row; 
-            gap: 25px; 
+            gap: 20px; 
             width: 100%; 
-            max-width: 900px; 
+            max-width: 950px; 
             align-items: flex-start;
             justify-content: center;
         }
@@ -46,8 +46,10 @@
             justify-content: center; 
             position: relative; 
             overflow: hidden; 
-            aspect-ratio: 1 / 1; /* Bujur sangkar / segi 4 sama sisi */
-            max-width: 420px; /* Dibuat lebih besar agar memenuhi layar ke atas */
+            aspect-ratio: 1 / 1; 
+            /* Memperbesar tinggi kotak agar merayap naik ke atas secara maksimal */
+            width: 100%;
+            max-height: calc(100vh - 220px); 
         }
 
         .card-main video { 
@@ -174,10 +176,10 @@
         /* Area Canvas Animasi Gift di Bawah Kotak */
         .gift-container {
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             display: flex;
             justify-content: center;
-            margin-top: 15px;
+            margin-top: 10px;
         }
         #giftCanvasLayer {
             width: 100%;
