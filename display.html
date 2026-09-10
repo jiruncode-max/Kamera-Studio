@@ -122,7 +122,7 @@
             return num.toString();
         }
 
-        // Fungsi resolusi nama akun & batasan ketat > 5 huruf jadi ...
+        // Fungsi penarik nama akun dan pemotongan ketat (> 5 huruf jadi ...)
         function resolveAccountName(input) {
             if (!input) return 'User';
             let clean = input.trim();
@@ -165,7 +165,7 @@
         const giftCanvas = document.getElementById('giftCanvas');
         const ctx = giftCanvas.getContext('2d', { willReadFrequently: true });
         let renderInterval = null;
-        let iconTimeouts = {}, counterIntervals = {}, badgeTimeouts = {};
+        let iconTimeouts = {};
 
         channel.onmessage = function (event) {
             const data = event.data;
@@ -225,7 +225,7 @@
             }
 
             if (data.type === 'UPDATE_SLOT') {
-                let rawInput = data.data.nickname || data.data.username || '';
+                let rawInput = data.data.username || '';
                 let finalDisplayName = resolveAccountName(rawInput);
 
                 slotsState[data.slot] = { 
