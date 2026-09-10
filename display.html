@@ -71,8 +71,8 @@
             font-weight: 700;
         }
 
-        /* Ikon Bulat Biru dengan Bintang Putih dan Angka 0 di pojok kanan atas kotak host */
-        .host-star-badge {
+        /* Ikon Bulat Biru dengan Bintang Putih dan Angka di pojok kanan atas */
+        .host-star-badge, .target-star-badge {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -88,7 +88,7 @@
             font-weight: 700;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .host-star-badge svg {
+        .host-star-badge svg, .target-star-badge svg {
             width: 12px;
             height: 12px;
             fill: #ffffff;
@@ -117,8 +117,8 @@
             text-overflow: ellipsis;
         }
 
-        /* Icon Mikrofon di sebelah kanan bawah kotak host */
-        .host-mic-box {
+        /* Icon Mikrofon di sebelah kanan bawah kotak */
+        .host-mic-box, .target-mic-box {
             position: absolute;
             bottom: 10px;
             right: 10px;
@@ -133,13 +133,13 @@
             align-items: center;
             justify-content: center;
         }
-        .host-mic-box svg {
+        .host-mic-box svg, .target-mic-box svg {
             width: 14px;
             height: 14px;
             fill: #20D5EC;
         }
 
-        /* Kotak Permintaan */
+        /* Kotak Permintaan / Placeholder */
         .request-placeholder {
             display: flex; 
             flex-direction: column; 
@@ -165,56 +165,32 @@
 
         .target-display-content {
             display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             width: 100%;
             height: 100%;
             position: relative;
-            padding: 15px;
-            text-align: center;
+            align-items: center;
+            justify-content: center;
         }
         .target-display-content.show {
             display: flex;
         }
-        .target-avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 2px solid #20D5EC;
+        
+        /* Background Foto Target Full / Cover seperti Video Host */
+        .target-bg-img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            margin-bottom: 8px;
+            display: block;
         }
+
         .target-icon-overlay {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 45px;
+            right: 10px;
             width: 28px;
             height: 28px;
             object-fit: contain;
-        }
-        .target-name {
-            font-size: 12px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 2px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 100%;
-        }
-        .target-uname {
-            font-size: 10px;
-            color: #20D5EC;
-            margin-bottom: 6px;
-        }
-        .target-points {
-            font-size: 11px;
-            font-weight: 700;
-            color: #fbbf24;
-            background: rgba(0,0,0,0.6);
-            padding: 2px 8px;
-            border-radius: 99px;
+            z-index: 10;
         }
     </style>
 </head>
@@ -225,18 +201,15 @@
         <div class="card-main">
             <div class="video-host-badge"><span>Host</span></div>
             
-            <!-- Ikon Bulat Biru: Bintang Putih & Angka 0 -->
             <div class="host-star-badge">
                 <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                 <span id="hostStarCount">0</span>
             </div>
 
-            <!-- Nama Akun TikTok Target di bawah kotak sebelah kiri, contoh: Sultan + -->
             <div class="video-username-box">
                 <span class="video-username" id="displayHostUser">Sultan +</span>
             </div>
 
-            <!-- Icon Mikrofon di sebelah kanan bawah kotak host -->
             <div class="host-mic-box">
                 <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.39-.9.89 0 2.76-2.24 5-5 5s-5-2.24-5-5c0-.5-.4-.89-.9-.89s-.9.39-.9.89c0 3.33 2.54 6.08 5.75 6.46V21h-2.1v2h6.1v-2h-2.1v-2.58c3.21-.38 5.75-3.13 5.75-6.46 0-.5-.41-.89-.9-.89z"/></svg>
             </div>
@@ -254,11 +227,27 @@
             </div>
 
             <div class="target-display-content" id="targetDisplayContent">
+                <!-- Ikon Bulat Biru: Bintang Putih & Poin Target -->
+                <div class="target-star-badge">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <span id="targetDisplayPoints">0</span>
+                </div>
+
+                <!-- Gift Icon di kanan atas -->
                 <img id="targetDisplayIcon" class="target-icon-overlay" src="" style="display: none;" alt="Icon">
-                <img id="targetDisplayAvatar" class="target-avatar" src="" alt="Avatar">
-                <div id="targetDisplayName" class="target-name">Nama Target</div>
-                <div id="targetDisplayUsername" class="target-uname">@username</div>
-                <div id="targetDisplayPoints" class="target-points" style="display: none;">0</div>
+
+                <!-- Nama Akun Target di bawah kotak sebelah kanan -->
+                <div class="video-username-box">
+                    <span class="video-username" id="targetDisplayName">Nama Target</span>
+                </div>
+
+                <!-- Icon Mikrofon di sebelah kanan bawah kotak target -->
+                <div class="target-mic-box">
+                    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.39-.9.89 0 2.76-2.24 5-5 5s-5-2.24-5-5c0-.5-.4-.89-.9-.89s-.9.39-.9.89c0 3.33 2.54 6.08 5.75 6.46V21h-2.1v2h6.1v-2h-2.1v-2.58c3.21-.38 5.75-3.13 5.75-6.46 0-.5-.41-.89-.9-.89z"/></svg>
+                </div>
+
+                <!-- Foto Target Full Cover -->
+                <img id="targetDisplayAvatar" class="target-bg-img" src="" alt="Avatar Target">
             </div>
         </div>
     </div>
@@ -274,7 +263,6 @@
         const targetDisplayAvatar = document.getElementById('targetDisplayAvatar');
         const targetDisplayIcon = document.getElementById('targetDisplayIcon');
         const targetDisplayName = document.getElementById('targetDisplayName');
-        const targetDisplayUsername = document.getElementById('targetDisplayUsername');
         const targetDisplayPoints = document.getElementById('targetDisplayPoints');
 
         channel.onmessage = (event) => {
@@ -299,8 +287,7 @@
                     targetDisplayContent.classList.add('show');
 
                     targetDisplayAvatar.src = data.photo || '';
-                    targetDisplayName.innerText = data.name || '';
-                    targetDisplayUsername.innerText = data.username || '';
+                    targetDisplayName.innerText = data.name || data.username || '';
 
                     if (data.topIcon) {
                         targetDisplayIcon.src = data.topIcon;
@@ -311,9 +298,8 @@
 
                     if (data.points && data.points > 0) {
                         targetDisplayPoints.innerText = data.points.toLocaleString();
-                        targetDisplayPoints.style.display = 'inline-block';
                     } else {
-                        targetDisplayPoints.style.display = 'none';
+                        targetDisplayPoints.innerText = '0';
                     }
                 } else {
                     targetDisplayContent.classList.remove('show');
