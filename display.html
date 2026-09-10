@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Host & Permintaan (Display)</title>
+    <title>TikTok Host & Permintaan - Advan Workmate Ryzen 5 Display</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,24 +13,24 @@
         }
 
         body {
-            background-color: #050505;
+            background-color: #000000;
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            height: 100vh;
             width: 100vw;
-            padding: 10px;
             overflow: hidden;
             position: relative;
         }
 
+        /* Container Utama disesuaikan agar pas di layar laptop 16:9 */
         .board-container { 
             display: flex; 
             flex-direction: row; 
-            gap: 12px; 
-            width: 100%; 
-            max-width: 900px; 
+            gap: 16px; 
+            height: 90vh;
+            max-height: 750px;
             align-items: center;
             justify-content: center;
         }
@@ -39,27 +39,29 @@
         .side-column {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             width: 130px;
+            height: 100%;
+            justify-content: space-between;
         }
 
         .slot-box {
-            border: 2px solid #374151; 
-            border-radius: 8px; 
+            border: 2px solid #ffffff; 
+            border-radius: 10px; 
             background-color: #000000;
             display: flex; 
             align-items: center; 
             justify-content: center; 
             position: relative; 
             overflow: hidden; 
-            height: 95px;
+            flex: 1;
         }
 
-        /* Kotak Utama Host di Tengah */
+        /* Kotak Utama Host di Tengah dengan Rasio 9:16 */
         .card-main {
             flex: 1; 
-            border: 2px solid #374151; 
-            border-radius: 12px; 
+            border: 2px solid #ffffff; 
+            border-radius: 14px; 
             background-color: #000000;
             display: flex; 
             align-items: center; 
@@ -67,7 +69,7 @@
             position: relative; 
             overflow: hidden; 
             aspect-ratio: 9 / 16;
-            max-height: 85vh;
+            height: 100%;
         }
 
         .card-main video { 
@@ -79,37 +81,37 @@
 
         .video-host-badge {
             position: absolute; 
-            top: 10px; 
-            left: 10px; 
+            top: 12px; 
+            left: 12px; 
             z-index: 10; 
             display: inline-flex; 
             align-items: center; 
             justify-content: center;
-            padding: 3px 10px; 
+            padding: 4px 12px; 
             background-color: #20D5EC; 
             border-radius: 99px; 
             color: #000000; 
-            font-size: 10px; 
+            font-size: 11px; 
             font-weight: 700;
         }
 
-        /* Komal (Label Nama Host di Kiri Bawah Video Utama) */
+        /* Label Nama Host di Kiri Bawah Video Utama */
         .video-username-box {
             position: absolute; 
-            bottom: 12px; 
-            left: 12px;
+            bottom: 14px; 
+            left: 14px;
             z-index: 10; 
             display: inline-flex; 
             align-items: center;
-            padding: 4px 12px; 
-            background-color: rgba(20, 20, 25, 0.75); 
+            padding: 5px 14px; 
+            background-color: rgba(20, 20, 25, 0.85); 
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.2); 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
             border-radius: 99px; 
             display: none; 
         }
         .video-username { 
-            font-size: 11px; 
+            font-size: 12px; 
             font-weight: 700; 
             color: #ffffff; 
         }
@@ -119,14 +121,14 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            gap: 2px;
+            gap: 4px;
             color: #ffffff; 
             user-select: none; 
             width: 100%; 
             height: 100%;
         }
         .request-placeholder .plus-icon { 
-            font-size: 24px; 
+            font-size: 26px; 
             font-weight: 700; 
             line-height: 1; 
             color: #ffffff; 
@@ -157,7 +159,7 @@
             border-radius: 50%;
             border: 2px solid #20D5EC;
             object-fit: cover;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .target-name {
             font-size: 10px;
@@ -178,19 +180,19 @@
             max-width: 100%;
         }
 
-        /* Banner Pop-up TikTok Gift (Samping Kiri Bawah) */
-        #giftPopupContainer {
+        /* Banner Pop-up TikTok Gift */
+        .giftPopupContainer {
             position: absolute;
             bottom: 20px;
-            left: 15px; 
+            left: 20px; 
             background: linear-gradient(90deg, rgba(20,20,25,0.85) 0%, rgba(35,35,45,0.75) 100%);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 4px 12px 4px 4px;
+            padding: 6px 14px 6px 6px;
             border-radius: 99px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             z-index: 999;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             opacity: 0;
@@ -199,7 +201,7 @@
             pointer-events: none;
             max-width: 85%;
         }
-        #giftPopupContainer.show {
+        .giftPopupContainer.show {
             transform: translateX(0);
             opacity: 1;
         }
@@ -212,7 +214,7 @@
             flex-shrink: 0;
         }
         .popup-name {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 800;
             color: #ffffff;
             white-space: nowrap;
@@ -248,7 +250,7 @@
 <body>
 
     <div class="board-container">
-        <!-- 4 Slot Kiri -->
+        <!-- Kolom Kiri (Slot 1 sampai 4) -->
         <div class="side-column">
             <div class="slot-box" id="slot-1">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
@@ -284,22 +286,21 @@
             </div>
         </div>
 
-        <!-- Kotak Video Host Utama (Tengah) -->
+        <!-- Bagian Tengah (Video Host Utama) -->
         <div class="card-main">
             <div class="video-host-badge"><span>Host</span></div>
             <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
             <video id="displayHostVideo" autoplay muted loop playsinline></video>
 
-            <!-- Banner Gift Samping Kiri Bawah -->
-            <div id="giftPopupContainer">
-                <img id="popupAvatar" class="popup-avatar" src="" alt="Avatar">
-                <span id="popupName" class="popup-name">Nama</span>
-                <img id="popupGiftImg" class="popup-gift-img" src="" alt="Gift">
-                <span id="popupCount" class="popup-count">x1</span>
+            <div class="giftPopupContainer" id="giftPopupContainer">
+                <img class="popup-avatar" id="popupAvatar" src="" alt="Avatar">
+                <span class="popup-name" id="popupName">Nama</span>
+                <img class="popup-gift-img" id="popupGiftImg" src="" alt="Gift">
+                <span class="popup-count" id="popupCount">x1</span>
             </div>
         </div>
 
-        <!-- 4 Slot Kanan -->
+        <!-- Kolom Kanan (Slot 5 sampai 8) -->
         <div class="side-column">
             <div class="slot-box" id="slot-5">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
@@ -342,7 +343,6 @@
         const displayHostVideo = document.getElementById('displayHostVideo');
         const displayHostUserBox = document.getElementById('displayHostUserBox');
         const displayHostUser = document.getElementById('displayHostUser');
-
         const giftPopupContainer = document.getElementById('giftPopupContainer');
         const popupAvatar = document.getElementById('popupAvatar');
         const popupName = document.getElementById('popupName');
@@ -360,15 +360,14 @@
             }
 
             if (type === 'UPDATE_HOST_USER') {
+                displayHostUser.innerText = data || '';
                 if (data && data.trim() !== '') {
-                    displayHostUser.innerText = data;
                     displayHostUserBox.style.display = 'inline-flex';
                 } else {
                     displayHostUserBox.style.display = 'none';
                 }
             }
 
-            // Menangani Trigger Gift Popup sesuai multiplier (5, 10, 15, 20, 30)
             if (type === 'TRIGGER_GIFT_POPUP') {
                 const targetSlotEl = document.getElementById(`slot-${slot}`);
                 if (targetSlotEl) {
