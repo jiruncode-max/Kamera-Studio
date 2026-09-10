@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Live Display (9:16 Fullscreen Video Gift)</title>
+    <title>TikTok Live Display (Kotak 1:1 Sama Sisi)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -23,7 +23,7 @@
             overflow: hidden;
         }
 
-        /* Tampilan utama web dikunci murni rasio 9:16 */
+        /* Pembungkus utama web tetap berasio 9:16 penuh */
         .page-wrapper {
             position: relative;
             width: 100vw;
@@ -48,12 +48,12 @@
             width: 100%; 
             align-items: center;
             justify-content: center;
-            z-index: 2; /* Di bawah layer efek gift */
+            z-index: 2;
         }
 
-        /* Kedua kotak dibuat bentuk persegi/segi 4 sama sisi */
+        /* Kedua kotak diubah secara mutlak menjadi persegi / segi 4 sama sisi (1:1) */
         .card-main, .card-small {
-            flex: 1; 
+            width: 50%;
             border: 2px solid #374151; 
             border-radius: 12px; 
             background-color: #0f172a;
@@ -62,7 +62,7 @@
             justify-content: center; 
             position: relative; 
             overflow: hidden; 
-            aspect-ratio: 1 / 1; /* Diubah jadi 1:1 (segi 4 sama sisi) */
+            aspect-ratio: 1 / 1; /* Memastikan lebar dan tinggi persis sama (persegi) */
         }
 
         .card-main video { 
@@ -185,7 +185,7 @@
             border-radius: 99px;
         }
 
-        /* Lapisan Canvas Gift FULLSCREEN 9:16 menutupi layar agar terlihat asli seperti di Live TikTok */
+        /* Layer Canvas Animasi Gift Fullscreen Menutupi Layar 9:16 */
         #giftCanvasLayer {
             position: absolute;
             top: 0;
@@ -194,7 +194,7 @@
             height: 100%;
             display: none;
             pointer-events: none;
-            z-index: 100; /* Paling atas menutupi segalanya */
+            z-index: 100;
             object-fit: cover;
         }
     </style>
@@ -227,7 +227,7 @@
             </div>
         </div>
 
-        <!-- Layer Canvas Animasi Gift Fullscreen Layar 9:16 -->
+        <!-- Layer Canvas Animasi Gift Layar 9:16 -->
         <video id="sourceGiftVideo" style="display:none;" playsinline></video>
         <canvas id="giftCanvasLayer"></canvas>
     </div>
@@ -315,7 +315,6 @@
         };
 
         function runGreenScreenEffect() {
-            // Menyesuaikan ukuran resolusi canvas dengan wrapper 9:16 agar gift tampil utuh menutupi layar
             giftCanvasLayer.width = giftCanvasLayer.clientWidth;
             giftCanvasLayer.height = giftCanvasLayer.clientHeight;
 
@@ -331,7 +330,6 @@
                     let green = frame.data[i + 1];
                     let blue = frame.data[i + 2];
 
-                    // Membersihkan background hijau (green screen) agar transparan
                     if (green > 90 && green > red * 1.2 && green > blue * 1.2) {
                         frame.data[i + 3] = 0;
                     }
