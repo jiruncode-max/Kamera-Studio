@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Screen - Auto Fit 10:16</title>
+    <title>Display Screen - Custom Layout (11:16)</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -14,8 +14,8 @@
             position: relative;
             width: 100%;
             height: 100%;
-            max-width: calc(100vh * (10 / 16));
-            max-height: calc(100vw * (16 / 10));
+            max-width: calc(100vh * (11 / 16));
+            max-height: calc(100vw * (16 / 11));
             overflow: hidden;
             background: #0f172a;
         }
@@ -26,7 +26,7 @@
         .layout-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 22px; box-sizing: border-box; z-index: 3; pointer-events: none;
+            padding: 15px 12px; box-sizing: border-box; z-index: 3; pointer-events: none;
         }
         .side-column {
             display: flex; flex-direction: column; gap: 10px; height: 100%; justify-content: center;
@@ -41,9 +41,10 @@
         .slot-box.filled {
             border-color: #38bdf8; background: rgba(15, 23, 42, 0.95);
         }
+        /* Foto diperkecil menjadi ukuran 56px */
         .slot-photo {
-            width: 76px; height: 76px; border-radius: 50%; object-fit: cover;
-            border: 3px solid #38bdf8; background-color: #334155;
+            width: 56px; height: 56px; border-radius: 50%; object-fit: cover;
+            border: 2px solid #38bdf8; background-color: #334155;
         }
         .top-badge-icon {
             position: absolute;
@@ -56,6 +57,34 @@
             z-index: 20;
             display: none;
         }
+        /* Badge bulat di atas kotak bagian kiri: icon bintang putih + angka dengan format format K/M */
+        .top-left-badge {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: 2px solid #ffffff;
+            border-radius: 20px;
+            padding: 2px 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 25;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+            display: none;
+        }
+        .top-left-badge svg {
+            width: 12px;
+            height: 12px;
+            fill: #ffffff;
+        }
+        .top-left-badge span {
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
         .default-plus { font-size: 28px; color: #888; font-weight: bold; }
         .default-text { font-size: 10px; color: #888; margin-top: 4px; text-align: center; }
 
@@ -98,12 +127,22 @@
         const totalSlots = 8;
         const middleSlot = 4;
 
+        function formatNumber(num) {
+            if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+            if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+            return num.toString();
+        }
+
         for (let i = 1; i <= totalSlots; i++) {
-            slotsState[i] = { username: '', photo: '', topIcon: '' };
+            slotsState[i] = { username: '', photo: '', topIcon: '', counter: 0 };
             const box = document.createElement('div');
             box.className = 'slot-box'; 
             box.id = `display_slot_${i}`;
             box.innerHTML = `
+                <div class="top-left-badge" id="left_badge_${i}">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <span id="counter_text_${i}">0 0</span>
+                </div>
                 <img class="top-badge-icon" id="icon_badge_${i}" crossorigin="anonymous">
                 <div class="default-plus">+</div>
                 <div class="default-text">Permintaan</div>
@@ -117,6 +156,7 @@
         const ctx = giftCanvas.getContext('2d', { willReadFrequently: true });
         let renderInterval = null;
         let iconTimeouts = {};
+        let counterIntervals = {};
 
         channel.onmessage = function (event) {
             const data = event.data;
@@ -135,22 +175,43 @@
                 if (data.slots) {
                     for (let i = 1; i <= totalSlots; i++) {
                         if (data.slots[i]) {
-                            slotsState[i].topIcon = data.slots[i].topIcon;
-                            
-                            const iconEl = document.getElementById(`icon_badge_${i}`);
-                            const slot = slotsState[i];
+                            if (data.slots[i].topIcon) {
+                                slotsState[i].topIcon = data.slots[i].topIcon;
+                                const iconEl = document.getElementById(`icon_badge_${i}`);
+                                if (iconEl) {
+                                    iconEl.src = slotsState[i].topIcon;
+                                    iconEl.style.display = 'block';
+                                    if (iconTimeouts[i]) clearTimeout(iconTimeouts[i]);
+                                    iconTimeouts[i] = setTimeout(() => {
+                                        iconEl.style.display = 'none';
+                                        slotsState[i].topIcon = '';
+                                    }, 3000);
+                                }
+                            }
 
-                            if (slot.topIcon) {
-                                iconEl.src = slot.topIcon;
-                                iconEl.style.display = 'block';
-                                
-                                if (iconTimeouts[i]) clearTimeout(iconTimeouts[i]);
-                                
-                                iconTimeouts[i] = setTimeout(() => {
-                                    iconEl.style.display = 'none';
-                                }, 3000);
-                            } else {
-                                iconEl.style.display = 'none';
+                            // Trigger counter bertambah otomatis dengan format K/M
+                            if (slotsState[i].username) {
+                                const leftBadge = document.getElementById(`left_badge_${i}`);
+                                const counterText = document.getElementById(`counter_text_${i}`);
+                                if (leftBadge && counterText) {
+                                    leftBadge.style.display = 'flex';
+                                    let currentVal = 0;
+                                    slotsState[i].counter = 0;
+                                    counterText.innerText = "0 " + formatNumber(0);
+
+                                    if (counterIntervals[i]) clearInterval(counterIntervals[i]);
+                                    
+                                    // Simulasi pertambahan angka otomatis selama animasi gift berjalan
+                                    counterIntervals[i] = setInterval(() => {
+                                        currentVal += Math.floor(Math.random() * 2500) + 500;
+                                        slotsState[i].counter = currentVal;
+                                        counterText.innerText = "0 " + formatNumber(currentVal);
+                                    }, 150);
+
+                                    setTimeout(() => {
+                                        clearInterval(counterIntervals[i]);
+                                    }, 3500);
+                                }
                             }
                         }
                     }
@@ -188,13 +249,15 @@
             }
 
             if (data.type === 'UPDATE_SLOT') {
-                slotsState[data.slot] = data.data;
+                slotsState[data.slot] = { ...slotsState[data.slot], ...data.data };
                 const box = document.getElementById(`display_slot_${data.slot}`);
                 const slot = slotsState[data.slot];
                 const iconEl = document.getElementById(`icon_badge_${data.slot}`);
+                const leftBadge = document.getElementById(`left_badge_${data.slot}`);
 
                 if (slot.topIcon) {
                     iconEl.src = slot.topIcon;
+                    iconEl.style.display = 'block';
                 } else {
                     iconEl.style.display = 'none';
                 }
@@ -202,9 +265,16 @@
                 if (slot.username && slot.photo) {
                     box.classList.add('filled');
                     let currentIconDisplay = iconEl.style.display;
+                    let currentIconSrc = iconEl.src;
+                    let leftBadgeDisplay = leftBadge.style.display;
+                    
                     box.innerHTML = ``;
+                    box.appendChild(leftBadge);
                     box.appendChild(iconEl);
+                    
                     iconEl.style.display = currentIconDisplay;
+                    if(currentIconDisplay === 'block') iconEl.src = currentIconSrc;
+                    leftBadge.style.display = leftBadgeDisplay;
 
                     const photoImg = document.createElement('img');
                     photoImg.src = slot.photo;
@@ -214,9 +284,15 @@
                 } else {
                     box.classList.remove('filled');
                     let currentIconDisplay = iconEl.style.display;
+                    let currentIconSrc = iconEl.src;
+
                     box.innerHTML = ``;
+                    box.appendChild(leftBadge);
                     box.appendChild(iconEl);
+
                     iconEl.style.display = currentIconDisplay;
+                    if(currentIconDisplay === 'block') iconEl.src = currentIconSrc;
+                    leftBadge.style.display = 'none';
 
                     const plusDiv = document.createElement('div');
                     plusDiv.className = 'default-plus';
