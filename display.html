@@ -22,15 +22,17 @@
             width: 100vw;
             overflow: hidden;
             position: relative;
+            transform: scale(0.85); /* Skala keseluruhan diperkecil agar pas */
+            transform-origin: center center;
         }
 
         /* Container Utama disesuaikan agar pas di layar laptop 16:9 */
         .board-container { 
             display: flex; 
             flex-direction: row; 
-            gap: 16px; 
-            height: 90vh;
-            max-height: 750px;
+            gap: 12px; 
+            height: 85vh;
+            max-height: 650px;
             align-items: center;
             justify-content: center;
         }
@@ -39,8 +41,8 @@
         .side-column {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            width: 130px;
+            gap: 8px;
+            width: 110px;
             height: 100%;
             justify-content: space-between;
         }
@@ -180,11 +182,11 @@
             max-width: 100%;
         }
 
-        /* Banner Pop-up TikTok Gift */
+        /* Banner Pop-up TikTok Gift (Diposisikan di Kiri Bawah di dalam card-main) */
         .giftPopupContainer {
             position: absolute;
-            bottom: 20px;
-            left: 20px; 
+            bottom: 50px; /* Diatur berada di atas label nama host / sisi kiri bawah */
+            left: 14px; 
             background: linear-gradient(90deg, rgba(20,20,25,0.85) 0%, rgba(35,35,45,0.75) 100%);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -292,6 +294,7 @@
             <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
             <video id="displayHostVideo" autoplay muted loop playsinline></video>
 
+            <!-- Pop-up Gift di Kiri Bawah -->
             <div class="giftPopupContainer" id="giftPopupContainer">
                 <img class="popup-avatar" id="popupAvatar" src="" alt="Avatar">
                 <span class="popup-name" id="popupName">Nama</span>
