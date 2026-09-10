@@ -83,6 +83,7 @@
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.1); 
             border-radius: 99px; 
+            display: none; /* Awalnya disembunyikan sampai ada data */
         }
         .video-username { 
             font-size: 11px; 
@@ -174,10 +175,8 @@
         <!-- Kotak Video Host (Kiri) -->
         <div class="card-main">
             <div class="video-host-badge"><span>Host</span></div>
-            <div class="video-username-box"><span class="video-username" id="displayHostUser">JK O9O1O2.</span></div>
-            <video id="displayHostVideo" autoplay muted loop playsinline>
-                <source src="https://b.top4top.io/m_3899uvdp01.mp4" type="video/mp4">
-            </video>
+            <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
+            <video id="displayHostVideo" autoplay muted loop playsinline></video>
         </div>
 
         <!-- Kotak Permintaan / Target (Kanan) -->
@@ -201,6 +200,7 @@
         const channel = new BroadcastChannel('live_control_channel');
 
         const displayHostVideo = document.getElementById('displayHostVideo');
+        const displayHostUserBox = document.getElementById('displayHostUserBox');
         const displayHostUser = document.getElementById('displayHostUser');
         const requestPlaceholder = document.getElementById('requestPlaceholder');
         const targetDisplayContent = document.getElementById('targetDisplayContent');
@@ -219,7 +219,12 @@
             }
 
             if (type === 'UPDATE_HOST_USER') {
-                displayHostUser.innerText = data;
+                if (data && data.trim() !== '') {
+                    displayHostUser.innerText = data;
+                    displayHostUserBox.style.display = 'inline-flex';
+                } else {
+                    displayHostUserBox.style.display = 'none';
+                }
             }
 
             if (type === 'UPDATE_TARGET_SLOT') {
@@ -252,4 +257,5 @@
         };
     </script>
 </body>
+</html></body>
 </html>
