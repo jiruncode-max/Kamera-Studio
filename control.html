@@ -172,51 +172,52 @@
                 return;
             }
 
-            // Ekstrak username secara bersih dari link atau teks biasa
-            let username = inputVal.includes('tiktok.com/@') 
-                ? (inputVal.match(/@([a-zA-Z0-9._]+)/)?.[1] || inputVal) 
-                : inputVal.replace('@', '').trim();
+            let username = inputVal.includes('tiktok.com/@') ? (inputVal.match(/@([a-zA-Z0-9._]+)/)?.[1] || inputVal) : inputVal.replace('@', '');
 
-            statusSpan.innerText = "Memuat profil...";
+            statusSpan.innerText = "Mendeteksi akun...";
 
-            let formattedUsername = '@' + username;
-            let realName = username.charAt(0).toUpperCase() + username.slice(1);
-            let realThumb = `https://unavatar.io/tiktok/${username}`;
+            try {
+                // Menggunakan CORS proxy agar fetch oembed TikTok tidak diblokir browser
+                const targetUrl = `https://www.tiktok.com/@${username}`;
+                const oembedApi = `https://www.tiktok.com/oembed?url=${encodeURIComponent(targetUrl)}`;
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(oembedApi)}`;
 
-            // Validasi pemuatan gambar profil via unavatar
-            const imgCheck = new Image();
-            imgCheck.src = realThumb;
-            
-            imgCheck.onload = function() {
+                const response = await fetch(proxyUrl);
+                if (!response.ok) throw new Error('Gagal mengambil data');
+                
+                const proxyData = await response.json();
+                const data = JSON.parse(proxyData.contents);
+
                 if (pendingData[i].inputVal === inputVal) {
-                    applyProfileData(i, formattedUsername, realName, realThumb, "Berhasil terdeteksi!");
-                }
-            };
+                    let realName = data.author_name || username;
+                    let realThumb = data.thumbnail_url || `https://unavatar.io/tiktok/${username}`;
 
-            imgCheck.onerror = function() {
+                    pendingData[i].username = '@' + username;
+                    pendingData[i].name = realName;
+                    pendingData[i].photo = realThumb;
+                    
+                    previewImg.src = realThumb;
+                    nameEl.innerText = realName;
+                    usernameEl.innerText = '@' + username;
+                    targetCardInline.classList.add('show');
+                    statusSpan.innerText = "Berhasil akurat!";
+                }
+            } catch (error) {
                 if (pendingData[i].inputVal === inputVal) {
-                    let fallbackThumb = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
-                    applyProfileData(i, formattedUsername, realName, fallbackThumb, "Siap (Avatar Cadangan)");
+                    let fallbackName = username.charAt(0).toUpperCase() + username.slice(1);
+                    let fallbackAvatar = `https://unavatar.io/tiktok/${username}`;
+
+                    pendingData[i].username = '@' + username;
+                    pendingData[i].name = fallbackName;
+                    pendingData[i].photo = fallbackAvatar;
+                    
+                    previewImg.src = fallbackAvatar;
+                    nameEl.innerText = fallbackName;
+                    usernameEl.innerText = '@' + username;
+                    targetCardInline.classList.add('show');
+                    statusSpan.innerText = "Siap (Metode Alternatif)!";
                 }
-            };
-        }
-
-        function applyProfileData(i, username, name, photo, statusText) {
-            const statusSpan = document.getElementById(`status_${i}`);
-            const previewImg = document.getElementById(`preview_${i}`);
-            const targetCardInline = document.getElementById(`targetCardInline_${i}`);
-            const nameEl = document.getElementById(`targetName_${i}`);
-            const usernameEl = document.getElementById(`targetUsername_${i}`);
-
-            pendingData[i].username = username;
-            pendingData[i].name = name;
-            pendingData[i].photo = photo;
-            
-            previewImg.src = photo;
-            nameEl.innerText = name;
-            usernameEl.innerText = username;
-            targetCardInline.classList.add('show');
-            statusSpan.innerText = statusText;
+            }
         }
 
         window.installSlot = function(i) {
