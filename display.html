@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Screen - Username & Icons Layout (11:16)</title>
+    <title>Display Screen - Exact TikTok Live Layout (11:16)</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -29,89 +29,134 @@
             padding: 15px 12px; box-sizing: border-box; z-index: 3; pointer-events: none;
         }
         .side-column {
-            display: flex; flex-direction: column; gap: 18px; height: 100%; justify-content: center;
+            display: flex; flex-direction: column; gap: 12px; height: 100%; justify-content: center;
         }
-        .slot-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end; /* Supaya nama di bawah rata kanan/sesuai kotak */
-            position: relative;
-        }
+        
+        /* Slot Box Utama */
         .slot-box {
             position: relative;
-            width: 105px; height: 105px; background: rgba(15, 23, 42, 0.85);
-            border: 3px solid rgba(255, 255, 255, 0.25); border-radius: 16px;
+            width: 115px; height: 115px; 
+            background: rgba(30, 35, 45, 0.75);
+            border: 2px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 18px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; box-shadow: 0 6px 15px rgba(0,0,0,0.7); overflow: visible;
+            color: white; box-shadow: 0 6px 15px rgba(0,0,0,0.6); overflow: hidden;
         }
         .slot-box.filled {
-            border-color: #38bdf8; background: rgba(15, 23, 42, 0.95);
+            border-color: rgba(255, 255, 255, 0.35); 
+            background: rgba(20, 24, 33, 0.85);
+        }
+
+        /* Foto Profil di Tengah dengan Bingkai Emas Tebal */
+        .photo-frame {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fde047, #ca8a04, #eab308);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+            margin-bottom: 15px;
         }
         .slot-photo {
-            width: 50px; height: 50px; border-radius: 50%; object-fit: cover;
-            border: 2px solid #fbbf24; background-color: #334155;
+            width: 46px; height: 46px; border-radius: 50%; object-fit: cover;
+            background-color: #334155;
         }
-        .top-badge-icon {
-            position: absolute;
-            top: -12px;
-            right: -12px;
-            width: 36px;
-            height: 36px;
-            object-fit: contain;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.9));
-            z-index: 20;
-            display: none;
-        }
-        /* Badge pojok kiri atas (muncul saat gift) */
+
+        /* Badge Pojok Kiri Atas (Muncul Saat Gift) */
         .top-left-badge {
             position: absolute;
             top: 6px;
             left: 6px;
             background: rgba(0, 0, 0, 0.75);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 15px;
-            padding: 2px 7px;
+            border-radius: 12px;
+            padding: 2px 6px;
             display: flex;
             align-items: center;
             gap: 4px;
             z-index: 25;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
             display: none; 
         }
         .top-left-badge svg {
-            width: 11px;
-            height: 11px;
-            fill: #ffffff;
+            width: 10px; height: 10px; fill: #38bdf8;
         }
         .top-left-badge span {
             color: #ffffff;
             font-size: 9px;
             font-weight: bold;
             font-family: Arial, sans-serif;
-            letter-spacing: 0.3px;
         }
 
-        /* Ikon mikrofon di bagian kiri bawah dalam kotak */
-        .bottom-left-mic {
+        /* Top Badge Icon (Gift Animation Floating) */
+        .top-badge-icon {
             position: absolute;
-            bottom: 6px;
-            left: 6px;
-            width: 18px;
-            height: 18px;
-            fill: #ffffff;
-            opacity: 0.8;
-            z-index: 20;
+            top: -10px; right: -10px;
+            width: 32px; height: 32px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.9));
+            z-index: 30;
             display: none;
         }
 
-        /* Nama TikTok di bawah kotak bagian kanan ujung dengan ikon + */
-        .slot-username-container {
-            margin-top: 4px;
+        /* Panel Kontrol di Bagian Bawah Kotak (Sesuai Gambar) */
+        .bottom-control-bar {
+            position: absolute;
+            bottom: 6px;
+            left: 6px;
+            right: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.45);
+            border-radius: 12px;
+            padding: 3px 5px;
+            z-index: 20;
+        }
+        
+        .bottom-left-icons {
             display: flex;
             align-items: center;
             gap: 3px;
-            max-width: 110px;
-            display: none; /* Disembunyikan saat kosong */
+        }
+        .mini-icon-red {
+            width: 16px; height: 16px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .mini-icon-red svg { width: 10px; height: 10px; fill: white; }
+
+        .mini-icon-blue {
+            width: 16px; height: 16px;
+            background: #0ea5e9;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .mini-icon-blue svg { width: 10px; height: 10px; fill: white; }
+
+        .mini-icon-plus {
+            width: 16px; height: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .mini-icon-plus svg { width: 10px; height: 10px; fill: white; }
+
+        .bottom-right-mic {
+            width: 18px; height: 18px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .bottom-right-mic svg { width: 11px; height: 11px; fill: #94a3b8; }
+
+        /* Username di Bawah Kotak Sisi Kanan Ujung dengan Ikon + Merah */
+        .slot-username-container {
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            max-width: 115px;
+            display: none;
         }
         .slot-username {
             color: #ffffff;
@@ -122,35 +167,24 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .plus-icon-container {
-            background: #ff334b;
+        .plus-badge-red {
+            background: #ef4444;
             border-radius: 50%;
-            width: 12px;
-            height: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 12px; height: 12px;
+            display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
         }
-        .plus-icon-container svg {
-            width: 8px;
-            height: 8px;
-            fill: #ffffff;
-        }
+        .plus-badge-red svg { width: 8px; height: 8px; fill: white; }
 
-        .default-plus { font-size: 28px; color: #888; font-weight: bold; }
-        .default-text { font-size: 10px; color: #888; margin-top: 4px; text-align: center; }
+        .default-plus { font-size: 26px; color: #777; font-weight: bold; }
+        .default-text { font-size: 9px; color: #777; margin-top: 2px; text-align: center; }
 
         #giftOverlayContainer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 5; display: flex; justify-content: center; align-items: center;
             pointer-events: none; overflow: hidden;
         }
-        #giftCanvas {
-            width: 100%; height: 100%; 
-            object-fit: fill; 
-            display: none;
-        }
+        #giftCanvas { width: 100%; height: 100%; object-fit: fill; display: none; }
         #giftVideoSource { display: none; }
     </style>
 </head>
@@ -190,7 +224,9 @@
             slotsState[i] = { username: '', photo: '', topIcon: '', counter: 0 };
             
             const wrapper = document.createElement('div');
-            wrapper.className = 'slot-wrapper';
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.alignItems = 'flex-end';
 
             const box = document.createElement('div');
             box.className = 'slot-box'; 
@@ -200,7 +236,6 @@
                     <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     <span id="counter_text_${i}">0,0K</span>
                 </div>
-                <svg class="bottom-left-mic" id="mic_icon_${i}" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                 <img class="top-badge-icon" id="icon_badge_${i}" crossorigin="anonymous">
                 <div class="default-plus">+</div>
                 <div class="default-text">Permintaan</div>
@@ -211,7 +246,7 @@
             usernameContainer.id = `username_container_${i}`;
             usernameContainer.innerHTML = `
                 <span class="slot-username" id="username_text_${i}"></span>
-                <div class="plus-icon-container">
+                <div class="plus-badge-red">
                     <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                 </div>
             `;
@@ -237,7 +272,7 @@
             if (data.type === 'UPDATE_HOST_VIDEO') {
                 hostVideo.src = data.url;
                 hostVideo.load();
-                hostVideo.play().catch(err => console.log("Gagal memutar video host:", err));
+                hostVideo.play().catch(err => console.log(err));
             }
 
             if (data.type === 'TRIGGER_GIFT') {
@@ -313,8 +348,7 @@
                         }
                         ctx.putImageData(frame, 0, 0);
                     }, 30);
-
-                }).catch(err => console.log("Gagal memutar video gift:", err));
+                }).catch(err => console.log(err));
             }
 
             if (data.type === 'UPDATE_SLOT') {
@@ -323,7 +357,6 @@
                 const slot = slotsState[data.slot];
                 const iconEl = document.getElementById(`icon_badge_${data.slot}`);
                 const leftBadge = document.getElementById(`left_badge_${data.slot}`);
-                const micIcon = document.getElementById(`mic_icon_${data.slot}`);
                 const usernameContainer = document.getElementById(`username_container_${data.slot}`);
                 const usernameText = document.getElementById(`username_text_${data.slot}`);
 
@@ -340,35 +373,52 @@
                     let currentIconSrc = iconEl.src;
                     
                     leftBadge.style.display = 'none';
-                    micIcon.style.display = 'block'; // Tampilkan ikon mikrofon
                     usernameContainer.style.display = 'flex';
                     usernameText.innerText = slot.username;
 
-                    box.innerHTML = ``;
-                    box.appendChild(leftBadge);
-                    box.appendChild(micIcon);
+                    box.innerHTML = `
+                        <div class="top-left-badge" id="left_badge_${data.slot}">
+                            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <span id="counter_text_${data.slot}">0,0K</span>
+                        </div>
+                    `;
                     box.appendChild(iconEl);
-                    
-                    iconEl.style.display = currentIconDisplay;
-                    if(currentIconDisplay === 'block') iconEl.src = currentIconSrc;
 
+                    const photoFrame = document.createElement('div');
+                    photoFrame.className = 'photo-frame';
                     const photoImg = document.createElement('img');
                     photoImg.src = slot.photo;
                     photoImg.className = 'slot-photo';
                     photoImg.crossOrigin = 'anonymous';
-                    box.appendChild(photoImg);
+                    photoFrame.appendChild(photoImg);
+                    box.appendChild(photoFrame);
+
+                    // Panel Bawah Kotak (Ikon-ikon & Mikrofon Mute)
+                    const controlBar = document.createElement('div');
+                    controlBar.className = 'bottom-control-bar';
+                    controlBar.innerHTML = `
+                        <div class="bottom-left-icons">
+                            <div class="mini-icon-red"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
+                            <div class="mini-icon-blue"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+                            <div class="mini-icon-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+                        </div>
+                        <div class="bottom-right-mic">
+                            <svg viewBox="0 0 24 24"><path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.03.02-.06.02-.09V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.98zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.3 .52-2.76 0-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c1.02-.15 1.98-.51 2.84-1.03L19.73 21 21 19.73 4.27 3z"/></svg>
+                        </div>
+                    `;
+                    box.appendChild(controlBar);
+
+                    iconEl.style.display = currentIconDisplay;
+                    if(currentIconDisplay === 'block') iconEl.src = currentIconSrc;
                 } else {
                     box.classList.remove('filled');
                     let currentIconDisplay = iconEl.style.display;
                     let currentIconSrc = iconEl.src;
 
-                    leftBadge.style.display = 'none';
-                    micIcon.style.display = 'none';
                     usernameContainer.style.display = 'none';
 
                     box.innerHTML = ``;
                     box.appendChild(leftBadge);
-                    box.appendChild(micIcon);
                     box.appendChild(iconEl);
 
                     iconEl.style.display = currentIconDisplay;
