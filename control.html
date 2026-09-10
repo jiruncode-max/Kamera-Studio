@@ -30,7 +30,7 @@
         }
         .btn-action:hover { opacity: 0.9; }
         .btn-play { background: #10b981; margin-top: 8px; }
-        .btn-gift { background: #8b5cf6; margin-top: 8px; }
+        .btn-gift { background: #ec4899; margin-top: 8px; font-size: 1rem; padding: 12px; }
         .target-card-inline {
             display: none; align-items: center; gap: 10px; margin-top: 5px; margin-bottom: 8px;
             background: #0f172a; padding: 8px; border-radius: 6px; border: 1px solid #475569;
@@ -68,9 +68,9 @@
             <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host</button>
         </div>
 
-        <!-- Trigger Popup Gift Animasi (3 Detik) -->
+        <!-- Trigger Popup Gift Jari Hati (Spamable) -->
         <div class="form-group">
-            <label>Simulasi Muncul Gift Popup (3 Detik):</label>
+            <label>Kirim Gift Jari Hati (Spam Multiplier):</label>
             <select id="popupSlot">
                 <option value="1">Slot 1 (Kiri Atas)</option>
                 <option value="2">Slot 2</option>
@@ -82,13 +82,10 @@
                 <option value="8">Slot 8</option>
             </select>
             <select id="giftChoice">
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp">Gift 1</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/beaaa3a78a00b5b20661b00924ab0e7f~tplv-obj.webp">Gift 2</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/075e206d6da035f10ff5f8fecd82abcc.png~tplv-obj.webp">Gift 3</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/20b8f61246c7b6032777bb81bf4ee055~tplv-obj.webp">Gift 4</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp">Gift 5</option>
+                <!-- Ikon Gift Jari Hati (Finger Heart) -->
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp">Gift Jari Hati (Finger Heart)</option>
             </select>
-            <button class="btn-action btn-gift" onclick="triggerGiftPopup()">Munculkan Popup Gift (3 Detik)</button>
+            <button class="btn-action btn-gift" onclick="triggerGiftPopup()">Send Gift (Klik Berulang untuk Spam x2, x3...)</button>
         </div>
 
         <!-- Input Target Permintaan -->
