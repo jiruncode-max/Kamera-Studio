@@ -373,26 +373,17 @@
         const defaultCustomPhoto = "https://b.top4top.io/p_3905d2xmz1.jpeg";
         const randomNames = ["J.K 090102", "Siti Rahma", "Budi Santoso", "Dewi Lestari", "Rizky Pratama"];
 
-        // Fungsi Deteksi Otomatis Dinamis Berdasarkan Data yang Dikirim Controller
+        // Fungsi Deteksi Otomatis Dinamis Murni Berdasarkan Gift yang Dipilih/Dikirim
         function getGiftActionText(count, giftName, giftUrl) {
-            const numCount = Number(count) || 1;
             const cleanName = (giftName || "").trim();
             const cleanUrl = (giftUrl || "").toLowerCase();
 
-            // 1. Jika panel kontrol mengirimkan nama gift spesifik secara langsung, gunakan itu
+            // 1. Prioritas utama: jika nama gift spesifik dari controller tersedia dan bukan placeholder generik
             if (cleanName !== "" && !cleanName.toLowerCase().includes("gift")) {
                 return `Mengirim ${cleanName}`;
             }
 
-            // 2. Deteksi otomatis berdasarkan aturan jumlah (count) yang Anda tentukan
-            if (numCount === 5) return "Mengirim Finger Heart";
-            if (numCount === 10) return "Mengirim I love you";
-            if (numCount === 15) return "Mengirim Bravo!";
-            if (numCount === 20) return "Mengirim Perfume";
-            if (numCount === 30) return "Mengirim Doughnut";
-            if (numCount === 99) return "Mengirim Hat and Mustac";
-
-            // 3. Deteksi otomatis berdasarkan kata kunci pada nama/URL gift
+            // 2. Deteksi berdasarkan kata kunci pada URL atau nama gift
             const keywordCheck = (cleanName + " " + cleanUrl).toLowerCase();
             if (keywordCheck.includes('love') || keywordCheck.includes('ilu')) return "Mengirim I love you";
             if (keywordCheck.includes('bravo')) return "Mengirim Bravo!";
@@ -401,13 +392,13 @@
             if (keywordCheck.includes('hat') || keywordCheck.includes('mustac') || keywordCheck.includes('mustache')) return "Mengirim Hat and Mustac";
             if (keywordCheck.includes('finger') || keywordCheck.includes('heart')) return "Mengirim Finger Heart";
 
-            // 4. Deteksi otomatis universal jika ada nama gift lain yang masuk dari TikTok live stream event
+            // 3. Jika ada nama gift mentah apa pun dari TikTok live stream event
             if (cleanName !== "") {
                 return `Mengirim ${cleanName}`;
             }
 
-            // Fallback default jika tidak ada kecocokan
-            return "Mengirim Finger Heart";
+            // 4. Fallback jika sama sekali tidak ada data gift (Default netral tanpa memaksakan Finger Heart)
+            return "Mengirim Gift";
         }
 
         channel.onmessage = (event) => {
@@ -416,7 +407,7 @@
             if (type === 'UPDATE_HOST_VIDEO') {
                 displayHostVideo.src = url;
                 displayHostVideo.muted = false;
-                displayHostVideo.volume = 1.0; // Volume host diatur 100% penuh secara otomatis
+                displayHostVideo.volume = 1.0; 
                 displayHostVideo.play().catch(e => {
                     console.log("Autoplay dengan suara diblokir browser, klik sekali pada halaman.");
                 });
@@ -435,7 +426,7 @@
                 const currentHostName = displayHostUser.innerText.trim();
                 const chosenName = senderName || (currentHostName !== "" ? currentHostName : randomNames[Math.floor(Math.random() * randomNames.length)]);
                 
-                // Deteksi otomatis teks gift yang dipilih tanpa memaksa ke Finger Heart
+                // Deteksi otomatis teks gift murni pilihan saat ini
                 const giftActionMessage = getGiftActionText(count, giftName, giftUrl);
                 
                 popupAvatar.src = senderPhoto || defaultCustomPhoto;
@@ -484,7 +475,6 @@
             }
         };
 
-        // Memastikan suara video aktif pada volume 100% setelah interaksi pertama pengguna
         window.addEventListener('click', () => {
             if (displayHostVideo.paused && displayHostVideo.src) {
                 displayHostVideo.muted = false;
