@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Live Display (Responsive 9:16)</title>
+    <title>TikTok Live Display (9:16 Fullscreen Video Gift)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -23,7 +23,7 @@
             overflow: hidden;
         }
 
-        /* Seluruh tampilan web dikunci persis rasio 9:16 di tengah layar */
+        /* Tampilan utama web dikunci murni rasio 9:16 */
         .page-wrapper {
             position: relative;
             width: 100vw;
@@ -38,7 +38,7 @@
             justify-content: center;
             padding: 16px;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
         }
 
         .board-container { 
@@ -48,8 +48,10 @@
             width: 100%; 
             align-items: center;
             justify-content: center;
+            z-index: 2; /* Di bawah layer efek gift */
         }
 
+        /* Kedua kotak dibuat bentuk persegi/segi 4 sama sisi */
         .card-main, .card-small {
             flex: 1; 
             border: 2px solid #374151; 
@@ -60,7 +62,7 @@
             justify-content: center; 
             position: relative; 
             overflow: hidden; 
-            aspect-ratio: 9 / 16; 
+            aspect-ratio: 1 / 1; /* Diubah jadi 1:1 (segi 4 sama sisi) */
         }
 
         .card-main video { 
@@ -144,8 +146,8 @@
             display: flex;
         }
         .target-avatar {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             border: 2px solid #20D5EC;
             object-fit: cover;
@@ -155,12 +157,12 @@
             position: absolute;
             top: 8px;
             right: 8px;
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             object-fit: contain;
         }
         .target-name {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 3px;
@@ -170,12 +172,12 @@
             max-width: 100%;
         }
         .target-uname {
-            font-size: 10px;
+            font-size: 9px;
             color: #20D5EC;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .target-points {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
             color: #fbbf24;
             background: rgba(0,0,0,0.6);
@@ -183,6 +185,7 @@
             border-radius: 99px;
         }
 
+        /* Lapisan Canvas Gift FULLSCREEN 9:16 menutupi layar agar terlihat asli seperti di Live TikTok */
         #giftCanvasLayer {
             position: absolute;
             top: 0;
@@ -191,8 +194,8 @@
             height: 100%;
             display: none;
             pointer-events: none;
-            z-index: 99;
-            object-fit: contain;
+            z-index: 100; /* Paling atas menutupi segalanya */
+            object-fit: cover;
         }
     </style>
 </head>
@@ -200,14 +203,14 @@
 
     <div class="page-wrapper">
         <div class="board-container">
-            <!-- Kotak Video Host (Kiri) -->
+            <!-- Kotak Video Host (Kiri) - Segi 4 Sama Sisi (1:1) -->
             <div class="card-main">
                 <div class="video-host-badge"><span>Host</span></div>
                 <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
                 <video id="displayHostVideo" autoplay muted loop playsinline></video>
             </div>
 
-            <!-- Kotak Permintaan / Target (Kanan) -->
+            <!-- Kotak Permintaan / Target (Kanan) - Segi 4 Sama Sisi (1:1) -->
             <div class="card-small">
                 <div class="request-placeholder" id="requestPlaceholder">
                     <span class="plus-icon">+</span>
@@ -224,7 +227,7 @@
             </div>
         </div>
 
-        <!-- Layer Canvas Animasi Gift Menyeluruh -->
+        <!-- Layer Canvas Animasi Gift Fullscreen Layar 9:16 -->
         <video id="sourceGiftVideo" style="display:none;" playsinline></video>
         <canvas id="giftCanvasLayer"></canvas>
     </div>
@@ -312,6 +315,7 @@
         };
 
         function runGreenScreenEffect() {
+            // Menyesuaikan ukuran resolusi canvas dengan wrapper 9:16 agar gift tampil utuh menutupi layar
             giftCanvasLayer.width = giftCanvasLayer.clientWidth;
             giftCanvasLayer.height = giftCanvasLayer.clientHeight;
 
@@ -327,6 +331,7 @@
                     let green = frame.data[i + 1];
                     let blue = frame.data[i + 2];
 
+                    // Membersihkan background hijau (green screen) agar transparan
                     if (green > 90 && green > red * 1.2 && green > blue * 1.2) {
                         frame.data[i + 3] = 0;
                     }
