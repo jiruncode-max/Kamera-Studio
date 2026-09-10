@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Screen - Rasio 9:16 (Tampilan Laptop)</title>
+    <title>Display Screen - Sedikit Lebih Lebar</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -12,10 +12,11 @@
         }
         #displayScreen {
             position: relative;
-            width: calc(100vh * (9 / 16));
+            /* Melebarkan rasio sedikit dari 9:16 menjadi sekitar 10:16 agar lebih pas di layar laptop */
+            width: calc(100vh * (10 / 16));
             height: 100vh;
             max-width: 100vw;
-            max-height: calc(100vw * (16 / 9));
+            max-height: calc(100vw * (16 / 10));
             overflow: hidden;
             background: #0f172a;
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
@@ -27,14 +28,14 @@
         .layout-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px; box-sizing: border-box; z-index: 3; pointer-events: none;
+            padding: 22px; box-sizing: border-box; z-index: 3; pointer-events: none;
         }
         .side-column {
             display: flex; flex-direction: column; gap: 10px; height: 100%; justify-content: center;
         }
         .slot-box {
             position: relative;
-            width: 100px; height: 100px; background: rgba(15, 23, 42, 0.85);
+            width: 105px; height: 105px; background: rgba(15, 23, 42, 0.85);
             border: 3px solid rgba(255, 255, 255, 0.25); border-radius: 16px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: white; box-shadow: 0 6px 15px rgba(0,0,0,0.7); overflow: visible;
@@ -43,22 +44,22 @@
             border-color: #38bdf8; background: rgba(15, 23, 42, 0.95);
         }
         .slot-photo {
-            width: 72px; height: 72px; border-radius: 50%; object-fit: cover;
+            width: 76px; height: 76px; border-radius: 50%; object-fit: cover;
             border: 3px solid #38bdf8; background-color: #334155;
         }
         .top-badge-icon {
             position: absolute;
             top: -12px;
             right: -12px;
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             object-fit: contain;
             filter: drop-shadow(0 2px 5px rgba(0,0,0,0.9));
             z-index: 20;
             display: none;
         }
-        .default-plus { font-size: 26px; color: #888; font-weight: bold; }
-        .default-text { font-size: 9.5px; color: #888; margin-top: 4px; text-align: center; }
+        .default-plus { font-size: 28px; color: #888; font-weight: bold; }
+        .default-text { font-size: 10px; color: #888; margin-top: 4px; text-align: center; }
 
         #giftOverlayContainer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
