@@ -371,44 +371,17 @@
         const defaultCustomPhoto = "https://b.top4top.io/p_3905d2xmz1.jpeg";
         const randomNames = ["J.K 090102", "Siti Rahma", "Budi Santoso", "Dewi Lestari", "Rizky Pratama"];
 
-        // Fungsi pemetaan teks berdasarkan nomor slot atau kondisi gift
-        function getGiftActionText(count, giftName, giftUrl, targetSlot) {
-            let actionText = "Mengirim Kotak 1"; // Default
-
-            // Prioritaskan nomor slot jika tersedia (1 - 8)
+        // Fungsi pemetaan teks agar selalu menampilkan "Mengirim Kotak 1" sampai "Mengirim Kotak 8"
+        function getGiftActionText(targetSlot) {
             const numSlot = Number(targetSlot);
             if (!isNaN(numSlot) && numSlot >= 1 && numSlot <= 8) {
                 return `Mengirim Kotak ${numSlot}`;
             }
-
-            // Fallback ke pengecekan jumlah/gift jika slot tidak dikirim
-            const numCount = Number(count);
-            if (numCount === 5) {
-                actionText = "Mengirim Kotak 1";
-            } else if (numCount === 10) {
-                actionText = "Mengirim Kotak 2";
-            } else if (numCount === 15) {
-                actionText = "Mengirim Kotak 3";
-            } else if (numCount === 20) {
-                actionText = "Mengirim Kotak 4";
-            } else if (numCount === 30) {
-                actionText = "Mengirim Kotak 5";
-            } else if (numCount === 99) {
-                actionText = "Mengirim Kotak 6";
-            } else {
-                const textToCheck = (giftName + " " + giftUrl).toLowerCase();
-                if (textToCheck.includes('love') || textToCheck.includes('ilu')) {
-                    actionText = "Mengirim Kotak 2";
-                } else {
-                    actionText = "Mengirim Kotak 1";
-                }
-            }
-
-            return actionText;
+            return "Mengirim Kotak 1"; // Default fallback jika slot tidak valid
         }
 
         channel.onmessage = (event) => {
-            const { type, url, data, count, giftUrl, senderName, senderUname, senderPhoto, giftName, slot } = event.data;
+            const { type, url, data, count, giftUrl, senderName, senderPhoto, slot } = event.data;
 
             if (type === 'UPDATE_HOST_VIDEO') {
                 displayHostVideo.src = url;
@@ -431,8 +404,8 @@
                 const currentHostName = displayHostUser.innerText.trim();
                 const chosenName = senderName || (currentHostName !== "" ? currentHostName : randomNames[Math.floor(Math.random() * randomNames.length)]);
                 
-                // Menentukan teks aksi pengiriman berdasarkan slot
-                const giftActionMessage = getGiftActionText(count, giftName, giftUrl, slot);
+                // Menentukan teks aksi pengiriman strictly ke "Mengirim Kotak X"
+                const giftActionMessage = getGiftActionText(slot);
                 
                 popupAvatar.src = senderPhoto || defaultCustomPhoto;
                 popupName.innerText = chosenName;
