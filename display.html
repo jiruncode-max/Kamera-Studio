@@ -16,14 +16,15 @@
             background-color: #000000;
             color: #ffffff;
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* Digeser agak ke atas */
             justify-content: center;
+            padding-top: 3vh; /* Memberikan jarak atas agar posisi condong ke atas */
             height: 100vh;
             width: 100vw;
             overflow: hidden;
             position: relative;
-            transform: scale(0.85); /* Skala keseluruhan diperkecil agar pas */
-            transform-origin: center center;
+            transform: scale(0.85);
+            transform-origin: center top;
         }
 
         /* Container Utama disesuaikan agar pas di layar laptop 16:9 */
@@ -182,10 +183,10 @@
             max-width: 100%;
         }
 
-        /* Banner Pop-up TikTok Gift (Diposisikan di Kiri Bawah di dalam card-main) */
+        /* Banner Pop-up TikTok Gift di Kiri Bawah */
         .giftPopupContainer {
             position: absolute;
-            bottom: 50px; /* Diatur berada di atas label nama host / sisi kiri bawah */
+            bottom: 50px; 
             left: 14px; 
             background: linear-gradient(90deg, rgba(20,20,25,0.85) 0%, rgba(35,35,45,0.75) 100%);
             backdrop-filter: blur(8px);
@@ -215,10 +216,24 @@
             object-fit: cover;
             flex-shrink: 0;
         }
+        .popup-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
         .popup-name {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 800;
             color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 110px;
+        }
+        .popup-uname {
+            font-size: 9px;
+            color: #fbbf24;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -294,10 +309,13 @@
             <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
             <video id="displayHostVideo" autoplay muted loop playsinline></video>
 
-            <!-- Pop-up Gift di Kiri Bawah -->
+            <!-- Pop-up Gift di Kiri Bawah (Pengirim Gift) -->
             <div class="giftPopupContainer" id="giftPopupContainer">
                 <img class="popup-avatar" id="popupAvatar" src="" alt="Avatar">
-                <span class="popup-name" id="popupName">Nama</span>
+                <div class="popup-info">
+                    <span class="popup-name" id="popupName">Nama Pengirim</span>
+                    <span class="popup-uname" id="popupUname">@username</span>
+                </div>
                 <img class="popup-gift-img" id="popupGiftImg" src="" alt="Gift">
                 <span class="popup-count" id="popupCount">x1</span>
             </div>
@@ -349,13 +367,14 @@
         const giftPopupContainer = document.getElementById('giftPopupContainer');
         const popupAvatar = document.getElementById('popupAvatar');
         const popupName = document.getElementById('popupName');
+        const popupUname = document.getElementById('popupUname');
         const popupGiftImg = document.getElementById('popupGiftImg');
         const popupCount = document.getElementById('popupCount');
 
         let popupTimer = null;
 
         channel.onmessage = (event) => {
-            const { type, url, data, slot, count, giftUrl } = event.data;
+            const { type, url, data, count, giftUrl, senderName, senderUname, senderPhoto } = event.data;
 
             if (type === 'UPDATE_HOST_VIDEO') {
                 displayHostVideo.src = url;
@@ -372,29 +391,23 @@
             }
 
             if (type === 'TRIGGER_GIFT_POPUP') {
-                const targetSlotEl = document.getElementById(`slot-${slot}`);
-                if (targetSlotEl) {
-                    const avatarSrc = targetSlotEl.querySelector('.target-avatar').src;
-                    const nameText = targetSlotEl.querySelector('.target-name').innerText;
+                // Menggunakan data pengirim gift langsung (misal: J.K 090102) bukan dari slot target
+                popupAvatar.src = senderPhoto || '';
+                popupName.innerText = senderName || 'J.K';
+                popupUname.innerText = senderUname || '@090102';
+                popupGiftImg.src = giftUrl || '';
+                popupCount.innerText = `x${count || 1}`;
 
-                    if (avatarSrc && nameText && nameText !== 'Nama') {
-                        popupAvatar.src = avatarSrc;
-                        popupName.innerText = nameText;
-                        popupGiftImg.src = giftUrl;
-                        popupCount.innerText = `x${count}`;
+                popupCount.classList.remove('bounce');
+                void popupCount.offsetWidth; 
+                popupCount.classList.add('bounce');
 
-                        popupCount.classList.remove('bounce');
-                        void popupCount.offsetWidth; 
-                        popupCount.classList.add('bounce');
+                giftPopupContainer.classList.add('show');
 
-                        giftPopupContainer.classList.add('show');
-
-                        clearTimeout(popupTimer);
-                        popupTimer = setTimeout(() => {
-                            giftPopupContainer.classList.remove('show');
-                        }, 3000);
-                    }
-                }
+                clearTimeout(popupTimer);
+                popupTimer = setTimeout(() => {
+                    giftPopupContainer.classList.remove('show');
+                }, 3000);
             }
 
             if (type === 'UPDATE_TARGET_SLOT') {
