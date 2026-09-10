@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control Panel - Live TikTok with Accurate Lookup</title>
+    <title>Control Panel - Live TikTok with Points</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -50,7 +50,7 @@
 <body>
 
     <div class="container">
-        <h2>Control Panel Live TikTok (Akurat)</h2>
+        <h2>Control Panel Live TikTok (Poin Gift)</h2>
         
         <div class="form-group">
             <label for="hostVideoFile">Upload Video untuk Host (Background Full Layar):</label>
@@ -78,13 +78,13 @@
         let giftVideoUrl = '';
 
         const iconOptions = [
-            { name: "Pilih Ikon...", url: "" },
-            { name: "Paus", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp" },
-            { name: "Singa", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp" },
-            { name: "Robot", url: "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp" },
-            { name: "Pesawat", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d067d13988e8754ed6adbebd89b9ee8.png~tplv-obj.webp" },
-            { name: "Kuda", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp" },
-            { name: "Tiktok Tu", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp" }
+            { name: "Pilih Ikon...", url: "", points: 0 },
+            { name: "Paus", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp", points: 6000 },
+            { name: "Singa", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp", points: 29999 },
+            { name: "Robot", url: "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp", points: 18999 },
+            { name: "Pesawat", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d067d13988e8754ed6adbebd89b9ee8.png~tplv-obj.webp", points: 5000 },
+            { name: "Kuda", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp", points: 42999 },
+            { name: "Tiktok Tu", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp", points: 44999 }
         ];
 
         document.getElementById('hostVideoFile').addEventListener('change', (e) => {
@@ -106,9 +106,14 @@
             if (!giftVideoUrl) return alert('Silakan pilih file animasi video gift terlebih dahulu!');
             
             for (let i = 1; i <= 8; i++) {
-                const iconVal = document.getElementById(`icon_${i}`).value;
+                const selectEl = document.getElementById(`icon_${i}`);
+                const selectedOption = selectEl.options[selectEl.selectedIndex];
+                const iconVal = selectEl.value;
+                const pointVal = parseInt(selectedOption.getAttribute('data-points')) || 0;
+
                 if (slotData[i]) {
                     slotData[i].topIcon = iconVal;
+                    slotData[i].points = pointVal;
                 }
             }
 
@@ -117,7 +122,7 @@
 
         const slotsContainer = document.getElementById('slotsContainer');
         for (let i = 1; i <= 8; i++) {
-            slotData[i] = { username: '', name: '', photo: '', topIcon: '' };
+            slotData[i] = { username: '', name: '', photo: '', topIcon: '', points: 0 };
             pendingData[i] = { username: '', name: '', inputVal: '', photo: '' };
 
             const card = document.createElement('div');
@@ -125,7 +130,7 @@
             
             let optionsHtml = '';
             iconOptions.forEach((opt) => {
-                optionsHtml += `<option value="${opt.url}">${opt.name}</option>`;
+                optionsHtml += `<option value="${opt.url}" data-points="${opt.points}">${opt.name} (${opt.points ? opt.points : 0} Poin)</option>`;
             });
 
             card.innerHTML = `
@@ -209,12 +214,17 @@
         }
 
         window.installSlot = function(i) {
-            const iconVal = document.getElementById(`icon_${i}`).value;
+            const selectEl = document.getElementById(`icon_${i}`);
+            const selectedOption = selectEl.options[selectEl.selectedIndex];
+            const iconVal = selectEl.value;
+            const pointVal = parseInt(selectedOption.getAttribute('data-points')) || 0;
+
             slotData[i] = { 
                 username: pendingData[i].username, 
                 name: pendingData[i].name,
                 photo: pendingData[i].photo, 
-                topIcon: iconVal 
+                topIcon: iconVal,
+                points: pointVal
             };
             channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
             document.getElementById(`status_${i}`).innerText = "Terpasang di Display!";
@@ -225,7 +235,7 @@
             document.getElementById(`icon_${i}`).selectedIndex = 0;
             document.getElementById(`targetCardInline_${i}`).classList.remove('show');
             document.getElementById(`status_${i}`).innerText = 'Kosong';
-            slotData[i] = { username: '', name: '', photo: '', topIcon: '' };
+            slotData[i] = { username: '', name: '', photo: '', topIcon: '', points: 0 };
             pendingData[i] = { username: '', name: '', inputVal: '', photo: '' };
             channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
         }
