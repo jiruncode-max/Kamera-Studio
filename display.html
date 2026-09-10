@@ -72,19 +72,18 @@
             font-weight: 700;
         }
 
-        /* Posisi nama host tepat di tengah bawah kotak */
+        /* Posisi nama host di samping kiri bawah dan rata tengah secara vertikal pada pill-box */
         .video-username-box {
             position: absolute; 
-            bottom: 15px; 
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 10px; 
+            left: 10px; 
             z-index: 10; 
             display: inline-flex; 
             align-items: center;
-            padding: 4px 14px; 
+            padding: 3px 10px; 
             background-color: rgba(17, 24, 39, 0.85); 
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.15); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
             border-radius: 99px; 
             display: none; 
         }
@@ -92,6 +91,7 @@
             font-size: 11px; 
             font-weight: 700; 
             color: #ffffff; 
+            line-height: normal;
         }
 
         .request-placeholder {
@@ -171,20 +171,15 @@
             border-radius: 99px;
         }
 
-        /* Layer video gift di atas layar website */
-        #giftVideoLayerContainer {
+        /* Full Layer Green Screen untuk Video Gift */
+        #giftCanvasLayer {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.7);
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
             display: none;
-            align-items: center;
-            justify-content: center;
             z-index: 9999;
-        }
-        #giftVideoLayerContainer video {
-            max-width: 80%;
-            max-height: 80vh;
-            object-fit: contain;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -215,10 +210,9 @@
         </div>
     </div>
 
-    <!-- Layer Video Gift Mengambang di Website -->
-    <div id="giftVideoLayerContainer">
-        <video id="giftVideoLayer" playsinline></video>
-    </div>
+    <!-- Elemen Video Tersembunyi & Canvas Full Layar Green Screen -->
+    <video id="sourceGiftVideo" style="display:none;" playsinline></video>
+    <canvas id="giftCanvasLayer"></canvas>
 
     <script>
         const channel = new BroadcastChannel('live_control_channel');
@@ -234,8 +228,10 @@
         const targetDisplayUsername = document.getElementById('targetDisplayUsername');
         const targetDisplayPoints = document.getElementById('targetDisplayPoints');
 
-        const giftVideoLayerContainer = document.getElementById('giftVideoLayerContainer');
-        const giftVideoLayer = document.getElementById('giftVideoLayer');
+        const sourceGiftVideo = document.getElementById('sourceGiftVideo');
+        const giftCanvasLayer = document.getElementById('giftCanvasLayer');
+        const ctx = giftCanvasLayer.getContext('2d');
+        let animationId = null;
 
         channel.onmessage = (event) => {
             const { type, url, data } = event.data;
@@ -256,14 +252,17 @@
 
             if (type === 'PLAY_GIFT_LAYER') {
                 if (url) {
-                    giftVideoLayer.src = url;
-                    giftVideoLayerContainer.style.display = 'flex';
-                    giftVideoLayer.play().catch(e => console.log("Autoplay blocked"));
+                    sourceGiftVideo.src = url;
+                    giftCanvasLayer.style.display = 'block';
+                    sourceGiftVideo.play().then(() => {
+                        runGreenScreenEffect();
+                    }).catch(e => console.log("Autoplay blocked"));
 
-                    // Sembunyikan otomatis setelah video selesai diputar
-                    giftVideoLayer.onended = () => {
-                        giftVideoLayerContainer.style.display = 'none';
-                        giftVideoLayer.src = '';
+                    sourceGiftVideo.onended = () => {
+                        cancelAnimationFrame(animationId);
+                        giftCanvasLayer.style.display = 'none';
+                        ctx.clearRect(0, 0, giftCanvasLayer.width, giftCanvasLayer.height);
+                        sourceGiftVideo.src = '';
                     };
                 }
             }
@@ -296,6 +295,36 @@
                 }
             }
         };
+
+        // Algoritma Chroma Key (Menghilangkan Background Hijau) Secara Real-Time
+        function runGreenScreenEffect() {
+            giftCanvasLayer.width = window.innerWidth;
+            giftCanvasLayer.height = window.innerHeight;
+
+            function processFrame() {
+                if (sourceGiftVideo.paused || sourceGiftVideo.ended) return;
+
+                ctx.drawImage(sourceGiftVideo, 0, 0, giftCanvasLayer.width, giftCanvasLayer.height);
+                let frame = ctx.getImageData(0, 0, giftCanvasLayer.width, giftCanvasLayer.height);
+                let l = frame.data.length;
+
+                for (let i = 0; i < l; i += 4) {
+                    let red = frame.data[i];
+                    let green = frame.data[i + 1];
+                    let blue = frame.data[i + 2];
+
+                    // Deteksi warna hijau dominan (Green Screen)
+                    if (green > 90 && green > red * 1.2 && green > blue * 1.2) {
+                        frame.data[i + 3] = 0; // Buat transparan
+                    }
+                }
+
+                ctx.putImageData(frame, 0, 0);
+                animationId = requestAnimationFrame(processFrame);
+            }
+
+            processFrame();
+        }
     </script>
 </body>
 </html>
