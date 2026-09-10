@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Host & Permintaan (Display)</title>
+    <title>TikTok Host & Permintaan (Display 9:16)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,28 +16,42 @@
             background-color: #050505;
             color: #ffffff;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             min-height: 100vh;
             width: 100vw;
-            padding: 10px 15px;
-            overflow-x: hidden;
+            overflow: hidden;
+        }
+
+        /* Membungkus seluruh tampilan dengan rasio tetap 9:16 yang pas di layar */
+        .page-wrapper {
             position: relative;
+            width: 100vw;
+            height: 100vh;
+            max-width: calc(100vh * (9 / 16));
+            max-height: calc(100vw * (16 / 9));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            gap: 12px;
         }
 
         .board-container { 
             display: flex; 
             flex-direction: row; 
-            gap: 20px; 
+            gap: 12px; 
             width: 100%; 
-            max-width: 750px; 
-            align-items: flex-start;
+            flex: 1;
+            align-items: center;
             justify-content: center;
+            min-height: 0;
         }
 
         .card-main, .card-small {
             flex: 1; 
+            height: 100%;
             border: 2px solid #374151; 
             border-radius: 14px; 
             background-color: #000000;
@@ -46,9 +60,7 @@
             justify-content: center; 
             position: relative; 
             overflow: hidden; 
-            aspect-ratio: 9 / 16; /* Rasio vertikal 9:16 sesuai permintaan */
-            width: 100%;
-            max-height: calc(100vh - 170px); /* Merentang tinggi ke atas secara optimal dengan jarak aman */
+            aspect-ratio: 9 / 16; 
         }
 
         .card-main video { 
@@ -70,7 +82,7 @@
             background-color: #20D5EC; 
             border-radius: 99px; 
             color: #000000; 
-            font-size: 11px; 
+            font-size: 10px; 
             font-weight: 700;
         }
 
@@ -89,7 +101,7 @@
             display: none; 
         }
         .video-username { 
-            font-size: 11px; 
+            font-size: 10px; 
             font-weight: 700; 
             color: #ffffff; 
             line-height: normal;
@@ -100,20 +112,20 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            gap: 6px;
+            gap: 4px;
             color: #ffffff; 
             user-select: none; 
             width: 100%; 
             height: 100%;
         }
         .request-placeholder .plus-icon { 
-            font-size: 40px; 
+            font-size: 36px; 
             font-weight: 700; 
             line-height: 1; 
             color: #ffffff; 
         }
         .request-placeholder .request-text { 
-            font-size: 14px; 
+            font-size: 13px; 
             font-weight: 700; 
             color: #ffffff; 
         }
@@ -126,63 +138,62 @@
             width: 100%;
             height: 100%;
             position: relative;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
         }
         .target-display-content.show {
             display: flex;
         }
         .target-avatar {
-            width: 75px;
-            height: 75px;
+            width: 68px;
+            height: 68px;
             border-radius: 50%;
             border: 2px solid #20D5EC;
             object-fit: cover;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .target-icon-overlay {
             position: absolute;
             top: 10px;
             right: 10px;
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             object-fit: contain;
         }
         .target-name {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             max-width: 100%;
         }
         .target-uname {
-            font-size: 11px;
+            font-size: 10px;
             color: #20D5EC;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
         .target-points {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             color: #fbbf24;
             background: rgba(0,0,0,0.6);
-            padding: 2px 10px;
+            padding: 2px 8px;
             border-radius: 99px;
         }
 
-        /* Area Canvas Animasi Gift di Bawah Kotak */
+        /* Area Canvas Animasi Gift */
         .gift-container {
             width: 100%;
-            max-width: 750px;
             display: flex;
             justify-content: center;
-            margin-top: 8px;
+            flex-shrink: 0;
         }
         #giftCanvasLayer {
             width: 100%;
-            max-width: 420px;
+            max-height: 140px;
             height: auto;
             aspect-ratio: 16 / 9;
             display: none;
@@ -193,35 +204,37 @@
 </head>
 <body>
 
-    <div class="board-container">
-        <!-- Kotak Video Host (Kiri) -->
-        <div class="card-main">
-            <div class="video-host-badge"><span>Host</span></div>
-            <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
-            <video id="displayHostVideo" autoplay muted loop playsinline></video>
-        </div>
-
-        <!-- Kotak Permintaan / Target (Kanan) -->
-        <div class="card-small">
-            <div class="request-placeholder" id="requestPlaceholder">
-                <span class="plus-icon">+</span>
-                <span class="request-text">Permintaan</span>
+    <div class="page-wrapper">
+        <div class="board-container">
+            <!-- Kotak Video Host (Kiri) -->
+            <div class="card-main">
+                <div class="video-host-badge"><span>Host</span></div>
+                <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
+                <video id="displayHostVideo" autoplay muted loop playsinline></video>
             </div>
 
-            <div class="target-display-content" id="targetDisplayContent">
-                <img id="targetDisplayIcon" class="target-icon-overlay" src="" style="display: none;" alt="Icon">
-                <img id="targetDisplayAvatar" class="target-avatar" src="" alt="Avatar">
-                <div id="targetDisplayName" class="target-name">Nama Target</div>
-                <div id="targetDisplayUsername" class="target-uname">@username</div>
-                <div id="targetDisplayPoints" class="target-points" style="display: none;">0</div>
+            <!-- Kotak Permintaan / Target (Kanan) -->
+            <div class="card-small">
+                <div class="request-placeholder" id="requestPlaceholder">
+                    <span class="plus-icon">+</span>
+                    <span class="request-text">Permintaan</span>
+                </div>
+
+                <div class="target-display-content" id="targetDisplayContent">
+                    <img id="targetDisplayIcon" class="target-icon-overlay" src="" style="display: none;" alt="Icon">
+                    <img id="targetDisplayAvatar" class="target-avatar" src="" alt="Avatar">
+                    <div id="targetDisplayName" class="target-name">Nama Target</div>
+                    <div id="targetDisplayUsername" class="target-uname">@username</div>
+                    <div id="targetDisplayPoints" class="target-points" style="display: none;">0</div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Area Video Gift di Bawah Kotak -->
-    <div class="gift-container">
-        <video id="sourceGiftVideo" style="display:none;" playsinline></video>
-        <canvas id="giftCanvasLayer"></canvas>
+        <!-- Area Video Gift di Bagian Bawah -->
+        <div class="gift-container">
+            <video id="sourceGiftVideo" style="display:none;" playsinline></video>
+            <canvas id="giftCanvasLayer"></canvas>
+        </div>
     </div>
 
     <script>
