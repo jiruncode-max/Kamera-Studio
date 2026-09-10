@@ -195,64 +195,70 @@
             border-radius: 99px;
         }
 
-        /* Style Pop-up Gift di Bawah Layar (Gaya Referensi) */
+        /* Banner Pop-up TikTok Gift (Gaya Gambar Referensi) */
         #giftPopupContainer {
             position: absolute;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(30, 41, 59, 0.9);
+            bottom: 20px;
+            left: 15px; /* Samping Kiri Bagian Bawah */
+            background: linear-gradient(90deg, rgba(20,20,25,0.85) 0%, rgba(35,35,45,0.75) 100%);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 8px 18px;
+            padding: 4px 12px 4px 4px;
             border-radius: 99px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             z-index: 999;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateX(-120%);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
+            max-width: 85%;
         }
         #giftPopupContainer.show {
-            transform: translateX(-50%) translateY(0);
+            transform: translateX(0);
             opacity: 1;
         }
         .popup-avatar {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             border: 2px solid #fbbf24;
             object-fit: cover;
-        }
-        .popup-text-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            flex-shrink: 0;
         }
         .popup-name {
             font-size: 13px;
             font-weight: 800;
             color: #ffffff;
-            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 110px;
         }
         .popup-gift-img {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             object-fit: contain;
-            animation: bounce 0.5s infinite alternate;
+            flex-shrink: 0;
         }
         .popup-count {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 900;
-            color: #fbbf24;
+            color: #ffffff;
             font-style: italic;
+            text-shadow: 0 0 8px rgba(251, 191, 36, 0.8);
+            margin-left: 2px;
+        }
+        .popup-count.bounce {
+            animation: popSpam 0.2s ease-out;
         }
 
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-4px); }
+        @keyframes popSpam {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
@@ -309,14 +315,12 @@
             <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
             <video id="displayHostVideo" autoplay muted loop playsinline></video>
 
-            <!-- Pop-up Animasi Gift di Bawah Kotak Utama -->
+            <!-- Banner Gift Samping Kiri Bawah -->
             <div id="giftPopupContainer">
                 <img id="popupAvatar" class="popup-avatar" src="" alt="Avatar">
-                <div class="popup-text-group">
-                    <span id="popupName" class="popup-name">Nama</span>
-                    <img id="popupGiftImg" class="popup-gift-img" src="" alt="Gift">
-                    <span class="popup-count">x1</span>
-                </div>
+                <span id="popupName" class="popup-name">Nama</span>
+                <img id="popupGiftImg" class="popup-gift-img" src="" alt="Gift">
+                <span id="popupCount" class="popup-count">x1</span>
             </div>
         </div>
 
@@ -376,8 +380,11 @@
         const popupAvatar = document.getElementById('popupAvatar');
         const popupName = document.getElementById('popupName');
         const popupGiftImg = document.getElementById('popupGiftImg');
+        const popupCount = document.getElementById('popupCount');
 
         let popupTimer = null;
+        let activeSpamSlot = null;
+        let spamCount = 0;
 
         channel.onmessage = (event) => {
             const { type, url, data, slot, giftUrl } = event.data;
@@ -396,24 +403,42 @@
                 }
             }
 
-            // Menangani trigger gift pop-up selama 3 detik
+            // Menangani Gift Spam (x1, x2, x3...)
             if (type === 'TRIGGER_GIFT_POPUP') {
                 const targetSlotEl = document.getElementById(`slot-${slot}`);
                 if (targetSlotEl) {
                     const avatarSrc = targetSlotEl.querySelector('.target-avatar').src;
                     const nameText = targetSlotEl.querySelector('.target-name').innerText;
 
+                    // Pastikan slot terisi profil pengguna
                     if (avatarSrc && nameText && nameText !== 'Nama') {
+                        
+                        if (activeSpamSlot === slot) {
+                            spamCount++;
+                        } else {
+                            activeSpamSlot = slot;
+                            spamCount = 1;
+                        }
+
                         popupAvatar.src = avatarSrc;
                         popupName.innerText = nameText;
                         popupGiftImg.src = giftUrl;
+                        popupCount.innerText = `x${spamCount}`;
+
+                        // Animasi pop saat dikirim berulang
+                        popupCount.classList.remove('bounce');
+                        void popupCount.offsetWidth; // trigger reflow
+                        popupCount.classList.add('bounce');
 
                         giftPopupContainer.classList.add('show');
 
+                        // Reset timer 3 detik jika diklik lagi
                         clearTimeout(popupTimer);
                         popupTimer = setTimeout(() => {
                             giftPopupContainer.classList.remove('show');
-                        }, 3000); // Tampil selama 3 detik
+                            activeSpamSlot = null;
+                            spamCount = 0;
+                        }, 3000);
                     }
                 }
             }
