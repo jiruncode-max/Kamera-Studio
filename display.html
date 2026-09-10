@@ -16,21 +16,22 @@
             background-color: #050505;
             color: #ffffff;
             display: flex;
-            align-items: flex-start;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
             min-height: 100vh;
             width: 100vw;
-            padding: 12px 10px 0 10px;
-            overflow: hidden;
+            padding: 20px 15px;
+            overflow-x: hidden;
             position: relative;
         }
 
         .board-container { 
             display: flex; 
             flex-direction: row; 
-            gap: 16px; 
+            gap: 20px; 
             width: 100%; 
-            max-width: 700px; 
+            max-width: 900px; 
             align-items: flex-start;
             justify-content: center;
         }
@@ -38,7 +39,7 @@
         .card-main, .card-small {
             flex: 1; 
             border: 2px solid #374151; 
-            border-radius: 12px; 
+            border-radius: 14px; 
             background-color: #000000;
             display: flex; 
             align-items: center; 
@@ -46,7 +47,7 @@
             position: relative; 
             overflow: hidden; 
             aspect-ratio: 9 / 16;
-            max-height: 85vh;
+            max-height: 75vh;
         }
 
         .card-main video { 
@@ -58,29 +59,28 @@
 
         .video-host-badge {
             position: absolute; 
-            top: 10px; 
-            left: 10px; 
+            top: 12px; 
+            left: 12px; 
             z-index: 10; 
             display: inline-flex; 
             align-items: center; 
             justify-content: center;
-            padding: 3px 10px; 
+            padding: 4px 12px; 
             background-color: #20D5EC; 
             border-radius: 99px; 
             color: #000000; 
-            font-size: 10px; 
+            font-size: 11px; 
             font-weight: 700;
         }
 
-        /* Posisi nama host di samping kiri bawah dan rata tengah secara vertikal pada pill-box */
         .video-username-box {
             position: absolute; 
-            bottom: 10px; 
-            left: 10px; 
+            bottom: 12px; 
+            left: 12px; 
             z-index: 10; 
             display: inline-flex; 
             align-items: center;
-            padding: 3px 10px; 
+            padding: 4px 12px; 
             background-color: rgba(17, 24, 39, 0.85); 
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.1); 
@@ -88,7 +88,7 @@
             display: none; 
         }
         .video-username { 
-            font-size: 11px; 
+            font-size: 12px; 
             font-weight: 700; 
             color: #ffffff; 
             line-height: normal;
@@ -99,20 +99,20 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            gap: 4px;
+            gap: 6px;
             color: #ffffff; 
             user-select: none; 
             width: 100%; 
             height: 100%;
         }
         .request-placeholder .plus-icon { 
-            font-size: 32px; 
+            font-size: 36px; 
             font-weight: 700; 
             line-height: 1; 
             color: #ffffff; 
         }
         .request-placeholder .request-text { 
-            font-size: 13px; 
+            font-size: 14px; 
             font-weight: 700; 
             color: #ffffff; 
         }
@@ -132,54 +132,61 @@
             display: flex;
         }
         .target-avatar {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             border: 2px solid #20D5EC;
             object-fit: cover;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         .target-icon-overlay {
             position: absolute;
             top: 15px;
             right: 15px;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             object-fit: contain;
         }
         .target-name {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             max-width: 100%;
         }
         .target-uname {
-            font-size: 10px;
+            font-size: 11px;
             color: #20D5EC;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .target-points {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             color: #fbbf24;
             background: rgba(0,0,0,0.6);
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 99px;
         }
 
-        /* Full Layer Green Screen untuk Video Gift */
+        /* Area Canvas Animasi Gift di Bawah Kotak */
+        .gift-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
         #giftCanvasLayer {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            pointer-events: none;
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            aspect-ratio: 16 / 9;
             display: none;
-            z-index: 9999;
-            object-fit: cover;
+            object-fit: contain;
+            background: transparent;
         }
     </style>
 </head>
@@ -210,9 +217,11 @@
         </div>
     </div>
 
-    <!-- Elemen Video Tersembunyi & Canvas Full Layar Green Screen -->
-    <video id="sourceGiftVideo" style="display:none;" playsinline></video>
-    <canvas id="giftCanvasLayer"></canvas>
+    <!-- Area Video Gift di Bawah Kotak -->
+    <div class="gift-container">
+        <video id="sourceGiftVideo" style="display:none;" playsinline></video>
+        <canvas id="giftCanvasLayer"></canvas>
+    </div>
 
     <script>
         const channel = new BroadcastChannel('live_control_channel');
@@ -296,10 +305,9 @@
             }
         };
 
-        // Algoritma Chroma Key (Menghilangkan Background Hijau) Secara Real-Time
         function runGreenScreenEffect() {
-            giftCanvasLayer.width = window.innerWidth;
-            giftCanvasLayer.height = window.innerHeight;
+            giftCanvasLayer.width = 800;
+            giftCanvasLayer.height = 450;
 
             function processFrame() {
                 if (sourceGiftVideo.paused || sourceGiftVideo.ended) return;
@@ -313,9 +321,8 @@
                     let green = frame.data[i + 1];
                     let blue = frame.data[i + 2];
 
-                    // Deteksi warna hijau dominan (Green Screen)
                     if (green > 90 && green > red * 1.2 && green > blue * 1.2) {
-                        frame.data[i + 3] = 0; // Buat transparan
+                        frame.data[i + 3] = 0;
                     }
                 }
 
