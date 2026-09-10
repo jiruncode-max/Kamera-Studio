@@ -3,41 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Streaming Controller - Menu Utama</title>
+    <title>Panel Kontrol - Live Streaming</title>
     <style>
-        body {
-            margin: 0; padding: 0; width: 100vw; height: 100vh;
-            background: #0f172a; color: #ffffff; font-family: Arial, sans-serif;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-        h1 { margin-bottom: 10px; font-size: 24px; text-align: center; }
-        p { color: #94a3b8; margin-bottom: 30px; font-size: 14px; text-align: center; }
-        .menu-container {
-            display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
-        }
-        .menu-btn {
-            background: #1e293b; border: 2px solid #334155; color: white;
-            padding: 20px 40px; border-radius: 12px; font-size: 16px; font-weight: bold;
-            cursor: pointer; text-decoration: none; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
-        }
-        .menu-btn:hover { background: #334155; border-color: #38bdf8; transform: translateY(-3px); }
-        .menu-btn span { font-size: 12px; color: #94a3b8; font-weight: normal; }
+        body { font-family: Arial, sans-serif; background: #0f172a; color: white; margin: 0; padding: 20px; }
+        h2 { border-bottom: 2px solid #334155; padding-bottom: 10px; margin-top: 0; }
+        .section { background: #1e293b; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #334155; }
+        label { display: block; margin-top: 10px; font-size: 13px; color: #cbd5e1; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 6px; box-sizing: border-box; }
+        button { background: #0284c7; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 15px; width: 100%; }
+        button:hover { background: #0ea5e9; }
+        .slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+        .slot-card { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; }
     </style>
 </head>
 <body>
-    <h1>Sistem Live Streaming Controller</h1>
-    <p>Silakan pilih halaman yang ingin Anda buka:</p>
-    
-    <div class="menu-container">
-        <a href="control.html" target="_blank" class="menu-btn">
-            🎛️ Buka Panel Kontrol
-            <span>(Control Panel untuk Input Target & Gift)</span>
-        </a>
-        <a href="display.html" target="_blank" class="menu-btn">
-            📺 Buka Layar Tampilan
-            <span>(Display Screen untuk OBS / Live View)</span>
-        </a>
+
+    <h2>🎛️ Panel Kontrol Live Streaming</h2>
+
+    <div class="section">
+        <h3>Pengaturan Video Host</h3>
+        <label>URL Video Host (MP4 / Link):</label>
+        <input type="text" id="hostVideoUrl" placeholder="Masukkan link video host...">
+        <button onclick="updateHostVideo()">Terapkan Video Host</button>
     </div>
+
+    <div class="section">
+        <h3>Pengaturan Slot Target (1 - 8)</h3>
+        <div class="slot-grid" id="controlSlotsContainer"></div>
+    </div>
+
+    <div class="section">
+        <h3>Pemicu Animasi Gift</h3>
+        <label>URL Video Gift (Green Screen):</label>
+        <input type="text" id="giftVideoUrl" placeholder="Masukkan link video gift...">
+        <button onclick="triggerGift()" style="background: #16a34a;">Jalankan Gift ke Slot Aktif</button>
+    </div>
+
+    <script>
+        const channel = new BroadcastChannel('live_control_channel');
+        const totalSlots = 8;
+        const container = document.getElementById('controlSlotsContainer');
+
+        for (let i = 1; i <= totalSlots; i++) {
+            const card = document.createElement('div');
+            card.className = 'slot-card';
+            card.innerHTML = `
+                <strong>Slot ${i}</strong>
+                <label>Username / Link Profil Target:</label>
+                <input type="text" id="input_username_${i}" placeholder="@username atau link profil...">
+                <label>URL Foto Profil:</label>
+                <input type="text" id="input_photo_${i}" placeholder="Link foto...">
+                <label>Icon Gift Top:</label>
+                <input type="text" id="input_icon_${i}" placeholder="Link icon gift...">
+                <button onclick="updateSlot(${i})">Simpan Slot ${i}</button>
+            `;
+            container.appendChild(card);
+        }
+
+        function updateHostVideo() {
+            const url = document.getElementById('hostVideoUrl').value;
+            channel.postMessage({ type: 'UPDATE_HOST_VIDEO', url: url });
+        }
+
+        function updateSlot(slotNum) {
+            const usernameInput = document.getElementById(`input_username_${slotNum}`).value;
+            const photo = document.getElementById(`input_photo_${slotNum}`).value;
+            const topIcon = document.getElementById(`input_icon_${slotNum}`).value;
+
+            channel.postMessage({
+                type: 'UPDATE_SLOT',
+                slot: slotNum,
+                data: { username: usernameInput, photo: photo, topIcon: topIcon }
+            });
+            alert(`Slot ${slotNum} diperbarui! Nama akun akan disesuaikan otomatis.`);
+        }
+
+        function triggerGift() {
+            const url = document.getElementById('giftVideoUrl').value;
+            const activeSlots = {};
+            for (let i = 1; i <= totalSlots; i++) {
+                const topIcon = document.getElementById(`input_icon_${i}`).value;
+                activeSlots[i] = { topIcon: topIcon };
+            }
+            channel.postMessage({ type: 'TRIGGER_GIFT', url: url, slots: activeSlots });
+        }
+    </script>
 </body>
 </html>
