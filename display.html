@@ -71,6 +71,29 @@
             font-weight: 700;
         }
 
+        /* Ikon Bulat Biru dengan Bintang Putih dan Angka 0 di pojok kanan atas kotak host */
+        .host-star-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: #0066ff;
+            border-radius: 99px;
+            padding: 2px 8px 2px 4px;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .host-star-badge svg {
+            width: 12px;
+            height: 12px;
+            fill: #ffffff;
+        }
+
         .video-username-box {
             position: absolute; 
             bottom: 10px; 
@@ -78,18 +101,45 @@
             z-index: 10; 
             display: inline-flex; 
             align-items: center;
-            padding: 3px 10px; 
+            padding: 4px 10px; 
             background-color: rgba(17, 24, 39, 0.85); 
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.1); 
             border-radius: 99px; 
+            max-width: calc(100% - 60px);
         }
         .video-username { 
             font-size: 11px; 
             font-weight: 700; 
             color: #ffffff; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
+        /* Icon Mikrofon di sebelah kanan bawah kotak host */
+        .host-mic-box {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 10;
+            width: 28px;
+            height: 28px;
+            background-color: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .host-mic-box svg {
+            width: 14px;
+            height: 14px;
+            fill: #20D5EC;
+        }
+
+        /* Kotak Permintaan */
         .request-placeholder {
             display: flex; 
             flex-direction: column; 
@@ -174,7 +224,23 @@
         <!-- Kotak Video Host (Kiri) -->
         <div class="card-main">
             <div class="video-host-badge"><span>Host</span></div>
-            <div class="video-username-box"><span class="video-username" id="displayHostUser">JK O9O1O2.</span></div>
+            
+            <!-- Ikon Bulat Biru: Bintang Putih & Angka 0 -->
+            <div class="host-star-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <span id="hostStarCount">0</span>
+            </div>
+
+            <!-- Nama Akun TikTok Target di bawah kotak sebelah kiri, contoh: Sultan + -->
+            <div class="video-username-box">
+                <span class="video-username" id="displayHostUser">Sultan +</span>
+            </div>
+
+            <!-- Icon Mikrofon di sebelah kanan bawah kotak host -->
+            <div class="host-mic-box">
+                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.39-.9.89 0 2.76-2.24 5-5 5s-5-2.24-5-5c0-.5-.4-.89-.9-.89s-.9.39-.9.89c0 3.33 2.54 6.08 5.75 6.46V21h-2.1v2h6.1v-2h-2.1v-2.58c3.21-.38 5.75-3.13 5.75-6.46 0-.5-.41-.89-.9-.89z"/></svg>
+            </div>
+
             <video id="displayHostVideo" autoplay muted loop playsinline>
                 <source src="https://b.top4top.io/m_3899uvdp01.mp4" type="video/mp4">
             </video>
@@ -202,6 +268,7 @@
 
         const displayHostVideo = document.getElementById('displayHostVideo');
         const displayHostUser = document.getElementById('displayHostUser');
+        const hostStarCount = document.getElementById('hostStarCount');
         const requestPlaceholder = document.getElementById('requestPlaceholder');
         const targetDisplayContent = document.getElementById('targetDisplayContent');
         const targetDisplayAvatar = document.getElementById('targetDisplayAvatar');
@@ -220,6 +287,10 @@
 
             if (type === 'UPDATE_HOST_USER') {
                 displayHostUser.innerText = data;
+            }
+
+            if (type === 'UPDATE_HOST_POINTS') {
+                hostStarCount.innerText = data;
             }
 
             if (type === 'UPDATE_TARGET_SLOT') {
