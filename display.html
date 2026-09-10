@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Live Display (Compact 9:16)</title>
+    <title>TikTok Live Display (Responsive 9:16)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -33,17 +33,17 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 20px;
             overflow: hidden;
         }
 
-        /* Container utama untuk 2 kotak kecil berdampingan */
+        /* Container kotak mengikuti proporsi orientasi layar 9:16 */
         .board-container { 
             display: flex; 
             flex-direction: row; 
             gap: 12px; 
             width: 100%; 
-            max-width: 340px; /* Ukuran diperkecil agar pas dan compact */
+            max-width: 400px;
             align-items: center;
             justify-content: center;
         }
@@ -58,7 +58,9 @@
             justify-content: center; 
             position: relative; 
             overflow: hidden; 
-            aspect-ratio: 3 / 4; /* Kotak lebih ringkas/proporsional */
+            /* Mengubah rasio agar tidak kotak persegi, melainkan menyesuaikan bentuk vertikal */
+            aspect-ratio: 9 / 16; 
+            max-height: 65vh;
         }
 
         .card-main video { 
@@ -70,28 +72,28 @@
 
         .video-host-badge {
             position: absolute; 
-            top: 6px; 
-            left: 6px; 
+            top: 8px; 
+            left: 8px; 
             z-index: 10; 
             display: inline-flex; 
             align-items: center; 
             justify-content: center;
-            padding: 2px 8px; 
+            padding: 3px 10px; 
             background-color: #20D5EC; 
             border-radius: 99px; 
             color: #000000; 
-            font-size: 9px; 
+            font-size: 10px; 
             font-weight: 700;
         }
 
         .video-username-box {
             position: absolute; 
-            bottom: 6px; 
-            left: 6px; 
+            bottom: 8px; 
+            left: 8px; 
             z-index: 10; 
             display: inline-flex; 
             align-items: center;
-            padding: 2px 8px; 
+            padding: 3px 10px; 
             background-color: rgba(17, 24, 39, 0.85); 
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.1); 
@@ -99,7 +101,7 @@
             display: none; 
         }
         .video-username { 
-            font-size: 9px; 
+            font-size: 10px; 
             font-weight: 700; 
             color: #ffffff; 
         }
@@ -109,20 +111,20 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            gap: 4px;
+            gap: 6px;
             color: #ffffff; 
             user-select: none; 
             width: 100%; 
             height: 100%;
         }
         .request-placeholder .plus-icon { 
-            font-size: 28px; 
+            font-size: 32px; 
             font-weight: 700; 
             line-height: 1; 
             color: #ffffff; 
         }
         .request-placeholder .request-text { 
-            font-size: 11px; 
+            font-size: 12px; 
             font-weight: 700; 
             color: #ffffff; 
         }
@@ -135,53 +137,53 @@
             width: 100%;
             height: 100%;
             position: relative;
-            padding: 8px;
+            padding: 10px;
             text-align: center;
         }
         .target-display-content.show {
             display: flex;
         }
         .target-avatar {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             border: 2px solid #20D5EC;
             object-fit: cover;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .target-icon-overlay {
             position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 22px;
-            height: 22px;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
             object-fit: contain;
         }
         .target-name {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             max-width: 100%;
         }
         .target-uname {
-            font-size: 9px;
+            font-size: 10px;
             color: #20D5EC;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .target-points {
-            font-size: 9px;
+            font-size: 10px;
             font-weight: 700;
             color: #fbbf24;
             background: rgba(0,0,0,0.6);
-            padding: 2px 6px;
+            padding: 2px 8px;
             border-radius: 99px;
         }
 
-        /* Canvas Efek Animasi Menyatu di Atas Layar */
+        /* Canvas Efek Animasi Menyatu */
         #giftCanvasLayer {
             position: absolute;
             top: 0;
