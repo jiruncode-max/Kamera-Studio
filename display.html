@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Screen - Final Accurate Match (11:16)</title>
+    <title>Display Screen - Final Fixed (11:16)</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -68,7 +68,7 @@
             background-color: #334155;
         }
 
-        /* Badge Kiri Atas: Langsung Muncul Saat Target Dipasang */
+        /* Badge Kiri Atas */
         .top-left-badge {
             position: absolute;
             top: 6px; left: 6px;
@@ -78,7 +78,7 @@
             padding: 2px 6px 2px 2px;
             display: flex; align-items: center; gap: 4px;
             z-index: 25;
-            display: none; /* Otomatis flex saat slot terisi */
+            display: none;
         }
         .blue-star-circle {
             width: 18px; height: 18px;
@@ -89,7 +89,7 @@
         .blue-star-circle svg { width: 11px; height: 11px; fill: #ffffff; }
         .top-left-badge span { color: #ffffff; font-size: 9.5px; font-weight: bold; }
 
-        /* Icon Gift di Kanan Atas (Hanya muncul saat Gift ditekan) */
+        /* Icon Gift Kanan Atas */
         .top-badge-icon {
             position: absolute;
             top: -10px; right: -10px;
@@ -100,7 +100,7 @@
             display: none;
         }
 
-        /* Control Bar di Bagian Bawah Kotak (Dipisah antara Nama dan Mikrofon) */
+        /* Control Bar Bawah */
         .bottom-control-bar {
             position: absolute;
             bottom: 6px; left: 6px; right: 6px;
@@ -113,17 +113,21 @@
         
         /* Sisi Kiri Bawah: Nama Akun & Icon Plus */
         .bottom-left-area {
-            display: flex; align-items: center; gap: 4px;
-            max-width: 72px;
+            display: flex; align-items: center; gap: 3px;
+            max-width: 74px;
             background: rgba(255, 255, 255, 0.1);
-            padding: 2px 5px;
+            padding: 2px 4px;
             border-radius: 10px;
+            overflow: hidden;
         }
         .slot-nickname {
             color: #ffffff;
             font-size: 8.5px;
             font-weight: bold;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; /* Otomatis jadi ... jika panjang */
+            display: block;
         }
         .mini-icon-plus {
             width: 14px; height: 14px; background: rgba(255, 255, 255, 0.3); border-radius: 50%;
@@ -131,13 +135,14 @@
         }
         .mini-icon-plus svg { width: 8px; height: 8px; fill: white; }
 
-        /* Sisi Kanan Bawah: Mikrofon dengan Icon Bulat Sendiri */
+        /* Sisi Kanan Bawah: Mikrofon Bulat */
         .bottom-right-mic-wrapper {
             width: 22px; height: 22px; 
             background: rgba(40, 45, 55, 0.85); 
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
         }
         .bottom-right-mic-wrapper svg { width: 11px; height: 11px; fill: #94a3b8; }
 
@@ -186,7 +191,6 @@
         }
 
         for (let i = 1; i <= totalSlots; i++) {
-            // Menyimpan variabel nickname, username, photo, topIcon, counter
             slotsState[i] = { nickname: '', username: '', photo: '', topIcon: '', counter: 0 };
             
             const wrapper = document.createElement('div');
@@ -302,7 +306,6 @@
             }
 
             if (data.type === 'UPDATE_SLOT') {
-                // Mendukung update nickname/nama akun dan username
                 slotsState[data.slot] = { ...slotsState[data.slot], ...data.data };
                 const box = document.getElementById(`display_slot_${data.slot}`);
                 const slot = slotsState[data.slot];
@@ -313,14 +316,13 @@
 
                 if (slot.photo) {
                     box.classList.add('filled');
-                    // Langsung tampilkan badge bintang biru di pojok kiri atas saat slot terisi foto
                     leftBadge.style.display = 'flex';
 
                     box.innerHTML = ``;
                     box.appendChild(leftBadge);
                     box.appendChild(iconEl);
 
-                    // Bingkai Foto Profil Emas di Tengah
+                    // Bingkai Foto Profil Emas
                     const photoFrame = document.createElement('div');
                     photoFrame.className = 'photo-frame';
                     const photoImg = document.createElement('img');
@@ -330,13 +332,14 @@
                     photoFrame.appendChild(photoImg);
                     box.appendChild(photoFrame);
 
-                    // Control Bar Bawah: Nama Akun (Nickname) dipisah dengan Icon Mikrofon Bulat
+                    // PRIORITAS UTAMA: Menampilkan Nama Akun (Nickname), fallback ke username jika kosong
                     const displayName = slot.nickname ? slot.nickname : (slot.username || 'User');
+
                     const controlBar = document.createElement('div');
                     controlBar.className = 'bottom-control-bar';
                     controlBar.innerHTML = `
                         <div class="bottom-left-area">
-                            <span class="slot-nickname">${displayName}</span>
+                            <span class="slot-nickname" title="${displayName}">${displayName}</span>
                             <div class="mini-icon-plus"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
                         </div>
                         <div class="bottom-right-mic-wrapper">
