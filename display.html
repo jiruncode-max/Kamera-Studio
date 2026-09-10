@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Screen - Lebih Lebar (11:16)</title>
+    <title>Display Screen - Fixed Icon Badge (11:16)</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -14,7 +14,6 @@
             position: relative;
             width: 100%;
             height: 100%;
-            /* Memperlebar rasio menjadi 11:16 agar video host dan gift lebih luas ke samping */
             max-width: calc(100vh * (11 / 16));
             max-height: calc(100vw * (16 / 11));
             overflow: hidden;
@@ -27,7 +26,6 @@
         .layout-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: space-between; align-items: center;
-            /* Mengurangi padding samping agar jarak kotak ke pinggir layar sedikit merapat */
             padding: 15px 12px; box-sizing: border-box; z-index: 3; pointer-events: none;
         }
         .side-column {
@@ -136,23 +134,20 @@
                 
                 if (data.slots) {
                     for (let i = 1; i <= totalSlots; i++) {
-                        if (data.slots[i]) {
+                        if (data.slots[i] && data.slots[i].topIcon) {
                             slotsState[i].topIcon = data.slots[i].topIcon;
                             
                             const iconEl = document.getElementById(`icon_badge_${i}`);
-                            const slot = slotsState[i];
-
-                            if (slot.topIcon) {
-                                iconEl.src = slot.topIcon;
+                            if (iconEl) {
+                                iconEl.src = slotsState[i].topIcon;
                                 iconEl.style.display = 'block';
                                 
                                 if (iconTimeouts[i]) clearTimeout(iconTimeouts[i]);
                                 
                                 iconTimeouts[i] = setTimeout(() => {
                                     iconEl.style.display = 'none';
+                                    slotsState[i].topIcon = '';
                                 }, 3000);
-                            } else {
-                                iconEl.style.display = 'none';
                             }
                         }
                     }
@@ -197,6 +192,7 @@
 
                 if (slot.topIcon) {
                     iconEl.src = slot.topIcon;
+                    iconEl.style.display = 'block';
                 } else {
                     iconEl.style.display = 'none';
                 }
@@ -204,9 +200,13 @@
                 if (slot.username && slot.photo) {
                     box.classList.add('filled');
                     let currentIconDisplay = iconEl.style.display;
+                    let currentIconSrc = iconEl.src;
+                    
                     box.innerHTML = ``;
                     box.appendChild(iconEl);
+                    
                     iconEl.style.display = currentIconDisplay;
+                    if(currentIconDisplay === 'block') iconEl.src = currentIconSrc;
 
                     const photoImg = document.createElement('img');
                     photoImg.src = slot.photo;
@@ -216,9 +216,13 @@
                 } else {
                     box.classList.remove('filled');
                     let currentIconDisplay = iconEl.style.display;
+                    let currentIconSrc = iconEl.src;
+
                     box.innerHTML = ``;
                     box.appendChild(iconEl);
+
                     iconEl.style.display = currentIconDisplay;
+                    if(currentIconDisplay === 'block') iconEl.src = currentIconSrc;
 
                     const plusDiv = document.createElement('div');
                     plusDiv.className = 'default-plus';
