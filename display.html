@@ -225,7 +225,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 130px;
+            max-width: 140px;
         }
         .popup-uname {
             font-size: 9px;
@@ -233,7 +233,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 130px;
+            max-width: 140px;
         }
         .popup-gift-img {
             width: 32px;
@@ -303,6 +303,7 @@
         <div class="card-main">
             <div class="video-host-badge"><span>Host</span></div>
             <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
+            <!-- Video diatur dengan volume maksimal (1.0) -->
             <video id="displayHostVideo" autoplay loop playsinline></video>
 
             <!-- Pop-up Gift di Kiri Bawah -->
@@ -372,43 +373,34 @@
         const defaultCustomPhoto = "https://b.top4top.io/p_3905d2xmz1.jpeg";
         const randomNames = ["J.K 090102", "Siti Rahma", "Budi Santoso", "Dewi Lestari", "Rizky Pratama"];
 
-        // Fungsi pemetaan teks berdasarkan jumlah gift (count) atau nama/url gift
+        // Fungsi pemetaan deteksi akurat sesuai pilihan gift yang masuk tanpa paksaan ke satu jenis
         function getGiftActionText(count, giftName, giftUrl) {
-            let actionText = "Mengirim Finger Heart"; // Default
-
-            // Pengecekan berdasarkan jumlah (count) yang masuk
             const numCount = Number(count);
-            if (numCount === 5) {
-                actionText = "Mengirim Finger Heart";
-            } else if (numCount === 10) {
-                actionText = "Mengirim I love you";
-            } else if (numCount === 15) {
-                actionText = "Mengirim Bravo!";
-            } else if (numCount === 20) {
-                actionText = "Mengirim Perfume";
-            } else if (numCount === 30) {
-                actionText = "Mengirim Doughnut";
-            } else if (numCount === 99) {
-                actionText = "Mengirim Hat and Mustac";
-            } else {
-                // Deteksi berdasarkan nama/URL jika count tidak pas dengan angka di atas
-                const textToCheck = (giftName + " " + giftUrl).toLowerCase();
-                if (textToCheck.includes('love') || textToCheck.includes('ilu')) {
-                    actionText = "Mengirim I love you";
-                } else if (textToCheck.includes('bravo')) {
-                    actionText = "Mengirim Bravo!";
-                } else if (textToCheck.includes('perfume')) {
-                    actionText = "Mengirim Perfume";
-                } else if (textToCheck.includes('doughnut') || textToCheck.includes('donut')) {
-                    actionText = "Mengirim Doughnut";
-                } else if (textToCheck.includes('hat') || textToCheck.includes('mustac') || textToCheck.includes('mustache')) {
-                    actionText = "Mengirim Hat and Mustac";
-                } else {
-                    actionText = "Mengirim Finger Heart";
-                }
+            
+            // Pencocokan presisi berdasarkan opsi angka count yang Anda berikan
+            if (numCount === 5) return "Mengirim Finger Heart";
+            if (numCount === 10) return "Mengirim I love you";
+            if (numCount === 15) return "Mengirim Bravo!";
+            if (numCount === 20) return "Mengirim Perfume";
+            if (numCount === 30) return "Mengirim Doughnut";
+            if (numCount === 99) return "Mengirim Hat and Mustac";
+
+            // Deteksi berdasarkan teks nama gift atau URL jika dikirim spesifik dari panel kontrol
+            const checkStr = ((giftName || "") + " " + (giftUrl || "")).toLowerCase();
+            if (checkStr.includes('love') || checkStr.includes('ilu')) return "Mengirim I love you";
+            if (checkStr.includes('bravo')) return "Mengirim Bravo!";
+            if (checkStr.includes('perfume')) return "Mengirim Perfume";
+            if (checkStr.includes('doughnut') || checkStr.includes('donut')) return "Mengirim Doughnut";
+            if (checkStr.includes('hat') || checkStr.includes('mustac') || checkStr.includes('mustache')) return "Mengirim Hat and Mustac";
+            if (checkStr.includes('heart') || checkStr.includes('finger')) return "Mengirim Finger Heart";
+
+            // Jika ada nama gift kustom dari input controller, tampilkan langsung
+            if (giftName && giftName.trim() !== "") {
+                return `Mengirim ${giftName}`;
             }
 
-            return actionText;
+            // Fallback dinamis berdasarkan angka count jika tidak terdaftar di atas
+            return `Mengirim Gift (${numCount || 1})`;
         }
 
         channel.onmessage = (event) => {
@@ -417,6 +409,7 @@
             if (type === 'UPDATE_HOST_VIDEO') {
                 displayHostVideo.src = url;
                 displayHostVideo.muted = false;
+                displayHostVideo.volume = 1.0; // Volume maksimal 100%
                 displayHostVideo.play().catch(e => {
                     console.log("Autoplay dengan suara diblokir browser, klik sekali pada halaman.");
                 });
@@ -435,12 +428,12 @@
                 const currentHostName = displayHostUser.innerText.trim();
                 const chosenName = senderName || (currentHostName !== "" ? currentHostName : randomNames[Math.floor(Math.random() * randomNames.length)]);
                 
-                // Menentukan teks aksi pengiriman berdasarkan ketentuan angka/gift
+                // Mendeteksi jenis teks gift secara akurat sesuai opsi yang dipilih
                 const giftActionMessage = getGiftActionText(count, giftName, giftUrl);
                 
                 popupAvatar.src = senderPhoto || defaultCustomPhoto;
                 popupName.innerText = chosenName;
-                popupUname.innerText = giftActionMessage; // Menampilkan teks pengiriman di bawah nama host
+                popupUname.innerText = giftActionMessage; 
                 popupGiftImg.src = giftUrl || '';
                 popupCount.innerText = `x${count || 1}`;
 
@@ -484,9 +477,11 @@
             }
         };
 
+        // Mengaktifkan suara secara otomatis pada volume 100% saat interaksi pertama
         window.addEventListener('click', () => {
             if (displayHostVideo.paused && displayHostVideo.src) {
                 displayHostVideo.muted = false;
+                displayHostVideo.volume = 1.0;
                 displayHostVideo.play().catch(e => {});
             }
         }, { once: true });
