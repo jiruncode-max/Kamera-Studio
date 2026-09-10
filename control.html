@@ -18,7 +18,7 @@
         h2 { border-bottom: 2px solid #334155; padding-bottom: 10px; margin-top: 0; font-size: 1.2rem; color: #38bdf8; }
         .form-group { margin-bottom: 20px; background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; }
         label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.9rem; color: #94a3b8; }
-        input[type="text"], select {
+        input[type="text"], select, input[type="file"] {
             width: 100%; padding: 10px; background: #020617;
             border: 1px solid #475569; color: white; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px; outline: none;
         }
@@ -56,7 +56,7 @@
         <!-- Input Username Host -->
         <div class="form-group">
             <label for="hostUserInput">Username Host:</label>
-            <input type="text" id="hostUserInput" value="JK O9O1O2." placeholder="Masukkan teks username host...">
+            <input type="text" id="hostUserInput" placeholder="Masukkan teks username host...">
             <button class="btn-action btn-play" onclick="updateHostUser()">Ubah Nama Host</button>
         </div>
 
@@ -67,7 +67,7 @@
             <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host</button>
         </div>
 
-        <!-- Input Target Permintaan (Satuan / 1 per 1) -->
+        <!-- Input Target Permintaan -->
         <div class="form-group">
             <label>Atur Target Permintaan:</label>
             <select id="targetIcon">
