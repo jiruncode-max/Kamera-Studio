@@ -289,7 +289,6 @@
                     <div class="target-uname">@username</div>
                 </div>
             </div>
-            <!-- Kotak Paling Bawah Kiri (Slot 4) -->
             <div class="slot-box" id="slot-4">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
@@ -304,7 +303,6 @@
         <div class="card-main">
             <div class="video-host-badge"><span>Host</span></div>
             <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
-            <!-- Diubah menjadi tidak muted agar suara terdengar otomatis, autoplay & loop tetap aktif -->
             <video id="displayHostVideo" autoplay loop playsinline></video>
 
             <!-- Pop-up Gift di Kiri Bawah -->
@@ -312,7 +310,7 @@
                 <img class="popup-avatar" id="popupAvatar" src="" alt="Avatar">
                 <div class="popup-info">
                     <span class="popup-name" id="popupName">Nama</span>
-                    <span class="popup-uname" id="popupUname">@username</span>
+                    <span class="popup-uname" id="popupUname">Finger Heart</span>
                 </div>
                 <img class="popup-gift-img" id="popupGiftImg" src="" alt="Gift">
                 <span class="popup-count" id="popupCount">x1</span>
@@ -339,7 +337,7 @@
             </div>
             <div class="slot-box" id="slot-7">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
-                <div class="target-display-content">
+                    <div class="target-display-content">
                     <img class="target-avatar" src="" alt="Avatar">
                     <div class="target-name">Nama</div>
                     <div class="target-uname">@username</div>
@@ -371,16 +369,31 @@
 
         let popupTimer = null;
 
-        // Foto kustom yang Anda berikan
         const defaultCustomPhoto = "https://b.top4top.io/p_3905d2xmz1.jpeg";
         const randomNames = ["J.K 090102", "Siti Rahma", "Budi Santoso", "Dewi Lestari", "Rizky Pratama"];
 
+        // Fungsi otomatis mendeteksi nama animasi/gift berdasarkan URL atau teks gift
+        function detectGiftName(giftUrl, originalName) {
+            if (originalName && originalName.trim() !== "") return originalName;
+            if (!giftUrl) return "Finger Heart";
+            
+            const lowerUrl = giftUrl.toLowerCase();
+            if (lowerUrl.includes('rose')) return 'Rose';
+            if (lowerUrl.includes('lion')) return 'Lion';
+            if (lowerUrl.includes('universe')) return 'Universe';
+            if (lowerUrl.includes('ice cream') || lowerUrl.includes('icecream')) return 'Ice Cream';
+            if (lowerUrl.includes('galaxy')) return 'Galaxy';
+            if (lowerUrl.includes('TikTok') || lowerUrl.includes('heart')) return 'Finger Heart';
+            
+            return 'Finger Heart'; // Default fallback
+        }
+
         channel.onmessage = (event) => {
-            const { type, url, data, count, giftUrl, senderName, senderUname, senderPhoto } = event.data;
+            const { type, url, data, count, giftUrl, senderName, senderUname, senderPhoto, giftName } = event.data;
 
             if (type === 'UPDATE_HOST_VIDEO') {
                 displayHostVideo.src = url;
-                displayHostVideo.muted = false; // Memastikan suara aktif otomatis
+                displayHostVideo.muted = false;
                 displayHostVideo.play().catch(e => {
                     console.log("Autoplay dengan suara diblokir browser, klik sekali pada halaman.");
                 });
@@ -396,15 +409,15 @@
             }
 
             if (type === 'TRIGGER_GIFT_POPUP') {
-                // Mengambil nama host yang sedang aktif untuk disamakan (jika ada), atau menggunakan nama acak bergaya J.K
                 const currentHostName = displayHostUser.innerText.trim();
                 const chosenName = senderName || (currentHostName !== "" ? currentHostName : randomNames[Math.floor(Math.random() * randomNames.length)]);
-                const chosenUname = senderUname || "@" + chosenName.toLowerCase().replace(/[^a-z0-9]/g, '');
                 
-                // Menggunakan foto kustom dari link yang Anda berikan
+                // Mendeteksi nama animasi gift otomatis sesuai gift yang masuk (menggantikan format '@')
+                const detectedGift = detectGiftName(giftUrl, giftName);
+                
                 popupAvatar.src = senderPhoto || defaultCustomPhoto;
                 popupName.innerText = chosenName;
-                popupUname.innerText = chosenUname;
+                popupUname.innerText = detectedGift; // Tampil nama gift di bawah nama pengirim
                 popupGiftImg.src = giftUrl || '';
                 popupCount.innerText = `x${count || 1}`;
 
@@ -448,7 +461,6 @@
             }
         };
 
-        // Otomatis mencoba memutar video dengan suara saat pertama kali halaman dimuat / interaksi pertama
         window.addEventListener('click', () => {
             if (displayHostVideo.paused && displayHostVideo.src) {
                 displayHostVideo.muted = false;
