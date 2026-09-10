@@ -72,19 +72,19 @@
         <div class="form-group">
             <label>Pilih Slot Penerima Gift:</label>
             <select id="popupSlot">
-                <option value="1">Slot 1 (Kiri Atas)</option>
-                <option value="2">Slot 2</option>
-                <option value="3">Slot 3</option>
-                <option value="4">Slot 4</option>
-                <option value="5">Slot 5 (Kanan Atas)</option>
-                <option value="6">Slot 6</option>
-                <option value="7">Slot 7</option>
-                <option value="8">Slot 8</option>
+                <option value="1">Mengirim Kotak 1</option>
+                <option value="2">Mengirim Kotak 2</option>
+                <option value="3">Mengirim Kotak 3</option>
+                <option value="4">Mengirim Kotak 4</option>
+                <option value="5">Mengirim Kotak 5</option>
+                <option value="6">Mengirim Kotak 6</option>
+                <option value="7">Mengirim Kotak 7</option>
+                <option value="8">Mengirim Kotak 8</option>
             </select>
             
             <label style="margin-top:8px;">Pilih Jenis Gift (Ikon):</label>
             <select id="giftChoice">
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp" data-name="Finger Heart">Gift: Finger Heart (Nilai 5)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp" data-name="Mengirim Kotak">Mengirim Kotak (Nilai 5)</option>
                 <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/beaaa3a78a00b5b20661b00924ab0e7f~tplv-obj.webp" data-name="I love you">Gift: I love you (Nilai 10)</option>
                 <option value="https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/075e206d6da035f10ff5f8fecd82abcc.png~tplv-obj.webp" data-name="Bravo!">Gift: Bravo! (Nilai 15)</option>
                 <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/20b8f61246c7b6032777bb81bf4ee055~tplv-obj.webp" data-name="Perfume">Gift: Perfume (Nilai 20)</option>
@@ -99,14 +99,14 @@
         <div class="form-group">
             <label for="targetSlot">Pilih Slot Target (1 - 8):</label>
             <select id="targetSlot">
-                <option value="1">Slot 1 (Kiri Atas)</option>
-                <option value="2">Slot 2</option>
-                <option value="3">Slot 3</option>
-                <option value="4">Slot 4</option>
-                <option value="5">Slot 5 (Kanan Atas)</option>
-                <option value="6">Slot 6</option>
-                <option value="7">Slot 7</option>
-                <option value="8">Slot 8</option>
+                <option value="1">Mengirim Kotak 1</option>
+                <option value="2">Mengirim Kotak 2</option>
+                <option value="3">Mengirim Kotak 3</option>
+                <option value="4">Mengirim Kotak 4</option>
+                <option value="5">Mengirim Kotak 5</option>
+                <option value="6">Mengirim Kotak 6</option>
+                <option value="7">Mengirim Kotak 7</option>
+                <option value="8">Mengirim Kotak 8</option>
             </select>
 
             <label style="margin-top:10px;">Username / Link TikTok Target:</label>
@@ -258,7 +258,7 @@
             };
 
             channel.postMessage({ type: 'UPDATE_TARGET_SLOT', data: finalData });
-            statusMsg.innerText = `Slot ${slotId} Berhasil Dipasang!`;
+            statusMsg.innerText = `Kotak ${slotId} Berhasil Dipasang!`;
         }
 
         function clearTarget() {
