@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Screen - Custom Layout (11:16)</title>
+    <title>Display Screen - Badge Permanen & Animasi Counter (11:16)</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -41,7 +41,7 @@
         .slot-box.filled {
             border-color: #38bdf8; background: rgba(15, 23, 42, 0.95);
         }
-        /* Foto diperkecil menjadi ukuran 56px */
+        /* Foto diperkecil menjadi 56px */
         .slot-photo {
             width: 56px; height: 56px; border-radius: 50%; object-fit: cover;
             border: 2px solid #38bdf8; background-color: #334155;
@@ -57,30 +57,30 @@
             z-index: 20;
             display: none;
         }
-        /* Badge bulat di atas kotak bagian kiri: icon bintang putih + angka dengan format format K/M */
+        /* Badge pojok kiri atas: tampil permanen saat slot terisi */
         .top-left-badge {
             position: absolute;
-            top: -10px;
-            left: -10px;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            border: 2px solid #ffffff;
-            border-radius: 20px;
-            padding: 2px 8px;
+            top: 6px;
+            left: 6px;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2px 6px;
             display: flex;
             align-items: center;
             gap: 4px;
             z-index: 25;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-            display: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            display: none; /* Default tersembunyi sebelum slot diisi */
         }
         .top-left-badge svg {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             fill: #ffffff;
         }
         .top-left-badge span {
             color: #ffffff;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: bold;
             font-family: monospace;
         }
@@ -141,7 +141,7 @@
             box.innerHTML = `
                 <div class="top-left-badge" id="left_badge_${i}">
                     <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <span id="counter_text_${i}">0 0</span>
+                    <span id="counter_text_${i}">0</span>
                 </div>
                 <img class="top-badge-icon" id="icon_badge_${i}" crossorigin="anonymous">
                 <div class="default-plus">+</div>
@@ -189,23 +189,17 @@
                                 }
                             }
 
-                            // Trigger counter bertambah otomatis dengan format K/M
+                            // Counter angka bertambah otomatis saat gift diputar (hanya jika slot terisi)
                             if (slotsState[i].username) {
-                                const leftBadge = document.getElementById(`left_badge_${i}`);
                                 const counterText = document.getElementById(`counter_text_${i}`);
-                                if (leftBadge && counterText) {
-                                    leftBadge.style.display = 'flex';
-                                    let currentVal = 0;
-                                    slotsState[i].counter = 0;
-                                    counterText.innerText = "0 " + formatNumber(0);
-
+                                if (counterText) {
+                                    let currentVal = slotsState[i].counter || 0;
                                     if (counterIntervals[i]) clearInterval(counterIntervals[i]);
                                     
-                                    // Simulasi pertambahan angka otomatis selama animasi gift berjalan
                                     counterIntervals[i] = setInterval(() => {
-                                        currentVal += Math.floor(Math.random() * 2500) + 500;
+                                        currentVal += Math.floor(Math.random() * 3000) + 1000;
                                         slotsState[i].counter = currentVal;
-                                        counterText.innerText = "0 " + formatNumber(currentVal);
+                                        counterText.innerText = formatNumber(currentVal);
                                     }, 150);
 
                                     setTimeout(() => {
@@ -254,6 +248,7 @@
                 const slot = slotsState[data.slot];
                 const iconEl = document.getElementById(`icon_badge_${data.slot}`);
                 const leftBadge = document.getElementById(`left_badge_${data.slot}`);
+                const counterText = document.getElementById(`counter_text_${data.slot}`);
 
                 if (slot.topIcon) {
                     iconEl.src = slot.topIcon;
@@ -266,15 +261,17 @@
                     box.classList.add('filled');
                     let currentIconDisplay = iconEl.style.display;
                     let currentIconSrc = iconEl.src;
-                    let leftBadgeDisplay = leftBadge.style.display;
                     
+                    // Tampilkan badge kiri secara permanen saat slot terisi
+                    leftBadge.style.display = 'flex';
+                    counterText.innerText = formatNumber(slot.counter || 0);
+
                     box.innerHTML = ``;
                     box.appendChild(leftBadge);
                     box.appendChild(iconEl);
                     
                     iconEl.style.display = currentIconDisplay;
                     if(currentIconDisplay === 'block') iconEl.src = currentIconSrc;
-                    leftBadge.style.display = leftBadgeDisplay;
 
                     const photoImg = document.createElement('img');
                     photoImg.src = slot.photo;
@@ -286,13 +283,14 @@
                     let currentIconDisplay = iconEl.style.display;
                     let currentIconSrc = iconEl.src;
 
+                    leftBadge.style.display = 'none'; // Sembunyikan jika kosong
+
                     box.innerHTML = ``;
                     box.appendChild(leftBadge);
                     box.appendChild(iconEl);
 
                     iconEl.style.display = currentIconDisplay;
                     if(currentIconDisplay === 'block') iconEl.src = currentIconSrc;
-                    leftBadge.style.display = 'none';
 
                     const plusDiv = document.createElement('div');
                     plusDiv.className = 'default-plus';
