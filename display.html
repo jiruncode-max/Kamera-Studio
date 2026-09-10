@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Screen - Final Fixed (11:16)</title>
+    <title>Display Screen - Auto Nickname Resolution (11:16)</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -111,7 +111,7 @@
             z-index: 20;
         }
         
-        /* Sisi Kiri Bawah: Nama Akun & Icon Plus */
+        /* Sisi Kiri Bawah: Nama Akun (Nickname) & Icon Plus */
         .bottom-left-area {
             display: flex; align-items: center; gap: 3px;
             max-width: 74px;
@@ -126,7 +126,7 @@
             font-weight: bold;
             white-space: nowrap; 
             overflow: hidden; 
-            text-overflow: ellipsis; /* Otomatis jadi ... jika panjang */
+            text-overflow: ellipsis; /* Otomatis jadi ... jika panjang seperti Jirun... */
             display: block;
         }
         .mini-icon-plus {
@@ -188,6 +188,31 @@
             if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace('.', ',') + 'M';
             if (num >= 1_000) return (num / 1_000).toFixed(1).replace('.', ',') + 'K';
             return num.toString();
+        }
+
+        // Fungsi pintar untuk mendeteksi dan membersihkan input dari Username / Link Profil TikTok
+        function parseTargetInput(input) {
+            if (!input) return { username: '', cleanName: '' };
+            let clean = input.trim();
+            
+            // Jika berupa link profil (misal: https://www.tiktok.com/@namatarget atau tiktok.com/@namatarget)
+            if (clean.includes('tiktok.com/')) {
+                const parts = clean.split('[@/]');
+                // Ambil bagian setelah '@'
+                const match = clean.match(/@([a-zA-Z0-9_.−]+)/);
+                if (match) {
+                    clean = '@' + match[1];
+                }
+            }
+
+            // Hilangkan karakter '@' di depan untuk dijadikan basis nama jika belum ada nickname khusus
+            let baseName = clean.startsWith('@') ? clean.substring(1) : clean;
+            
+            // Format kapitalisasi rapi (ubah huruf awal jadi kapital atau pertahankan)
+            return {
+                username: clean,
+                cleanName: baseName
+            };
         }
 
         for (let i = 1; i <= totalSlots; i++) {
@@ -306,7 +331,18 @@
             }
 
             if (data.type === 'UPDATE_SLOT') {
-                slotsState[data.slot] = { ...slotsState[data.slot], ...data.data };
+                // Pemrosesan sistem kontrol input username / link profil
+                let rawInput = data.data.username || data.data.nickname || '';
+                let parsed = parseTargetInput(rawInput);
+
+                slotsState[data.slot] = { 
+                    ...slotsState[data.slot], 
+                    ...data.data,
+                    username: parsed.username,
+                    // Sistem kontrol otomatis memetakan nama akun yang bersih dari hasil parsing link/username
+                    nickname: data.data.nickname ? data.data.nickname : parsed.cleanName 
+                };
+
                 const box = document.getElementById(`display_slot_${data.slot}`);
                 const slot = slotsState[data.slot];
                 const iconEl = document.getElementById(`icon_badge_${data.slot}`);
@@ -332,8 +368,8 @@
                     photoFrame.appendChild(photoImg);
                     box.appendChild(photoFrame);
 
-                    // PRIORITAS UTAMA: Menampilkan Nama Akun (Nickname), fallback ke username jika kosong
-                    const displayName = slot.nickname ? slot.nickname : (slot.username || 'User');
+                    // Nama Akun (Nickname) yang akan tampil di kotak (jika panjang otomatis terpotong jadi ...)
+                    const displayName = slot.nickname || slot.username || 'User';
 
                     const controlBar = document.createElement('div');
                     controlBar.className = 'bottom-control-bar';
