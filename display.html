@@ -18,32 +18,35 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            height: 100vh;
             width: 100vw;
             overflow: hidden;
         }
 
+        /* Memaksa wrapper utama memiliki rasio persis 9:16 dan memenuhi layar secara vertikal */
         .page-wrapper {
             position: relative;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
+            max-height: 100vh;
             max-width: calc(100vh * (9 / 16));
-            max-height: calc(100vw * (16 / 9));
+            aspect-ratio: 9 / 16;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 16px;
             overflow: hidden;
+            margin: auto;
         }
 
-        /* Container kotak mengikuti proporsi orientasi layar 9:16 */
         .board-container { 
             display: flex; 
             flex-direction: row; 
             gap: 12px; 
             width: 100%; 
-            max-width: 400px;
+            height: 100%;
+            max-height: 75vh;
             align-items: center;
             justify-content: center;
         }
@@ -51,16 +54,15 @@
         .card-main, .card-small {
             flex: 1; 
             border: 2px solid #374151; 
-            border-radius: 12px; 
+            border-radius: 16px; 
             background-color: #0f172a;
             display: flex; 
             align-items: center; 
             justify-content: center; 
             position: relative; 
             overflow: hidden; 
-            /* Mengubah rasio agar tidak kotak persegi, melainkan menyesuaikan bentuk vertikal */
+            height: 100%;
             aspect-ratio: 9 / 16; 
-            max-height: 65vh;
         }
 
         .card-main video { 
@@ -72,28 +74,28 @@
 
         .video-host-badge {
             position: absolute; 
-            top: 8px; 
-            left: 8px; 
+            top: 10px; 
+            left: 10px; 
             z-index: 10; 
             display: inline-flex; 
             align-items: center; 
             justify-content: center;
-            padding: 3px 10px; 
+            padding: 4px 12px; 
             background-color: #20D5EC; 
             border-radius: 99px; 
             color: #000000; 
-            font-size: 10px; 
+            font-size: 11px; 
             font-weight: 700;
         }
 
         .video-username-box {
             position: absolute; 
-            bottom: 8px; 
-            left: 8px; 
+            bottom: 10px; 
+            left: 10px; 
             z-index: 10; 
             display: inline-flex; 
             align-items: center;
-            padding: 3px 10px; 
+            padding: 4px 12px; 
             background-color: rgba(17, 24, 39, 0.85); 
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.1); 
@@ -101,7 +103,7 @@
             display: none; 
         }
         .video-username { 
-            font-size: 10px; 
+            font-size: 11px; 
             font-weight: 700; 
             color: #ffffff; 
         }
@@ -111,20 +113,20 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            gap: 6px;
+            gap: 8px;
             color: #ffffff; 
             user-select: none; 
             width: 100%; 
             height: 100%;
         }
         .request-placeholder .plus-icon { 
-            font-size: 32px; 
+            font-size: 36px; 
             font-weight: 700; 
             line-height: 1; 
             color: #ffffff; 
         }
         .request-placeholder .request-text { 
-            font-size: 12px; 
+            font-size: 13px; 
             font-weight: 700; 
             color: #ffffff; 
         }
@@ -137,53 +139,52 @@
             width: 100%;
             height: 100%;
             position: relative;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
         }
         .target-display-content.show {
             display: flex;
         }
         .target-avatar {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             border: 2px solid #20D5EC;
             object-fit: cover;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .target-icon-overlay {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 24px;
-            height: 24px;
+            top: 10px;
+            right: 10px;
+            width: 26px;
+            height: 26px;
             object-fit: contain;
         }
         .target-name {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             max-width: 100%;
         }
         .target-uname {
-            font-size: 10px;
+            font-size: 11px;
             color: #20D5EC;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .target-points {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             color: #fbbf24;
             background: rgba(0,0,0,0.6);
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 99px;
         }
 
-        /* Canvas Efek Animasi Menyatu */
         #giftCanvasLayer {
             position: absolute;
             top: 0;
