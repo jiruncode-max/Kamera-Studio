@@ -69,11 +69,12 @@
 
         const iconOptions = [
             { name: "Pilih Ikon...", url: "" },
-            { name: "Ikon 1 (Mawar/Gift)", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp" },
-            { name: "Ikon 2", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp" },
-            { name: "Ikon 3", url: "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp" },
-            { name: "Ikon 4", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d067d13988e8754ed6adbebd89b9ee8.png~tplv-obj.webp" },
-            { name: "Ikon 5", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp" }
+            { name: "Paus", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp" },
+            { name: "Singa", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp" },
+            { name: "Robot", url: "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp" },
+            { name: "Pesawat", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d067d13988e8754ed6adbebd89b9ee8.png~tplv-obj.webp" },
+            { name: "Kuda", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp" },
+            { name: "Tiktok Tu", url: "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp" }
         ];
 
         document.getElementById('hostVideoFile').addEventListener('change', (e) => {
@@ -94,7 +95,6 @@
         function playGiftVideo() {
             if (!giftVideoUrl) return alert('Silakan pilih file animasi video gift terlebih dahulu!');
             
-            // Ambil pilihan ikon terbaru saat tombol putar gift ditekan
             for (let i = 1; i <= 8; i++) {
                 const iconVal = document.getElementById(`icon_${i}`).value;
                 if (slotData[i]) {
@@ -173,10 +173,11 @@
         }
 
         window.installSlot = function(i) {
+            const iconVal = document.getElementById(`icon_${i}`).value;
             slotData[i] = { 
                 username: pendingData[i].username, 
                 photo: pendingData[i].photo, 
-                topIcon: '' 
+                topIcon: iconVal 
             };
             channel.postMessage({ type: 'UPDATE_SLOT', slot: i, data: slotData[i] });
             document.getElementById(`status_${i}`).innerText = "Terpasang di Display!";
