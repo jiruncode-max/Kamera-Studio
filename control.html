@@ -53,11 +53,15 @@
     <div class="control-panel">
         <h2>Control Panel (Pro System)</h2>
         
-        <!-- Input Username Host -->
+        <!-- Input Nama Host & Poin Bintang -->
         <div class="form-group">
-            <label for="hostUserInput">Username Host:</label>
-            <input type="text" id="hostUserInput" value="JK O9O1O2." placeholder="Masukkan teks username host...">
+            <label for="hostUserInput">Nama Akun Host (Contoh: Sultan +):</label>
+            <input type="text" id="hostUserInput" value="Sultan +" placeholder="Masukkan teks nama host...">
             <button class="btn-action btn-play" onclick="updateHostUser()">Ubah Nama Host</button>
+            
+            <label for="hostPointsInput" style="margin-top:12px;">Jumlah Poin Bintang (Ikon Bulat Biru):</label>
+            <input type="text" id="hostPointsInput" value="0" placeholder="0">
+            <button class="btn-action btn-play" onclick="updateHostPoints()" style="background:#3b82f6;">Ubah Poin Bintang</button>
         </div>
 
         <!-- Input Video Host -->
@@ -67,7 +71,7 @@
             <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host</button>
         </div>
 
-        <!-- Input Target Permintaan (Satuan / 1 per 1) -->
+        <!-- Input Target Permintaan (Satuan) -->
         <div class="form-group">
             <label>Atur Target Permintaan:</label>
             <select id="targetIcon">
@@ -249,6 +253,11 @@
         function updateHostUser() {
             const val = document.getElementById('hostUserInput').value;
             channel.postMessage({ type: 'UPDATE_HOST_USER', data: val });
+        }
+
+        function updateHostPoints() {
+            const val = document.getElementById('hostPointsInput').value;
+            channel.postMessage({ type: 'UPDATE_HOST_POINTS', data: val });
         }
 
         document.getElementById('hostVideoFile').addEventListener('change', (e) => {
