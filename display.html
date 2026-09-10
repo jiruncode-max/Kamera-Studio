@@ -225,7 +225,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 110px;
+            max-width: 130px;
         }
         .popup-uname {
             font-size: 9px;
@@ -233,7 +233,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 110px;
+            max-width: 130px;
         }
         .popup-gift-img {
             width: 32px;
@@ -310,7 +310,7 @@
                 <img class="popup-avatar" id="popupAvatar" src="" alt="Avatar">
                 <div class="popup-info">
                     <span class="popup-name" id="popupName">Nama</span>
-                    <span class="popup-uname" id="popupUname">Finger Heart</span>
+                    <span class="popup-uname" id="popupUname">Mengirim Finger Heart</span>
                 </div>
                 <img class="popup-gift-img" id="popupGiftImg" src="" alt="Gift">
                 <span class="popup-count" id="popupCount">x1</span>
@@ -337,7 +337,7 @@
             </div>
             <div class="slot-box" id="slot-7">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
-                    <div class="target-display-content">
+                <div class="target-display-content">
                     <img class="target-avatar" src="" alt="Avatar">
                     <div class="target-name">Nama</div>
                     <div class="target-uname">@username</div>
@@ -372,20 +372,43 @@
         const defaultCustomPhoto = "https://b.top4top.io/p_3905d2xmz1.jpeg";
         const randomNames = ["J.K 090102", "Siti Rahma", "Budi Santoso", "Dewi Lestari", "Rizky Pratama"];
 
-        // Fungsi otomatis mendeteksi nama animasi/gift berdasarkan URL atau teks gift
-        function detectGiftName(giftUrl, originalName) {
-            if (originalName && originalName.trim() !== "") return originalName;
-            if (!giftUrl) return "Finger Heart";
-            
-            const lowerUrl = giftUrl.toLowerCase();
-            if (lowerUrl.includes('rose')) return 'Rose';
-            if (lowerUrl.includes('lion')) return 'Lion';
-            if (lowerUrl.includes('universe')) return 'Universe';
-            if (lowerUrl.includes('ice cream') || lowerUrl.includes('icecream')) return 'Ice Cream';
-            if (lowerUrl.includes('galaxy')) return 'Galaxy';
-            if (lowerUrl.includes('TikTok') || lowerUrl.includes('heart')) return 'Finger Heart';
-            
-            return 'Finger Heart'; // Default fallback
+        // Fungsi pemetaan teks berdasarkan jumlah gift (count) atau nama/url gift
+        function getGiftActionText(count, giftName, giftUrl) {
+            let actionText = "Mengirim Finger Heart"; // Default
+
+            // Pengecekan berdasarkan jumlah (count) yang masuk
+            const numCount = Number(count);
+            if (numCount === 5) {
+                actionText = "Mengirim Finger Heart";
+            } else if (numCount === 10) {
+                actionText = "Mengirim I love you";
+            } else if (numCount === 15) {
+                actionText = "Mengirim Bravo!";
+            } else if (numCount === 20) {
+                actionText = "Mengirim Perfume";
+            } else if (numCount === 30) {
+                actionText = "Mengirim Doughnut";
+            } else if (numCount === 99) {
+                actionText = "Mengirim Hat and Mustac";
+            } else {
+                // Deteksi berdasarkan nama/URL jika count tidak pas dengan angka di atas
+                const textToCheck = (giftName + " " + giftUrl).toLowerCase();
+                if (textToCheck.includes('love') || textToCheck.includes('ilu')) {
+                    actionText = "Mengirim I love you";
+                } else if (textToCheck.includes('bravo')) {
+                    actionText = "Mengirim Bravo!";
+                } else if (textToCheck.includes('perfume')) {
+                    actionText = "Mengirim Perfume";
+                } else if (textToCheck.includes('doughnut') || textToCheck.includes('donut')) {
+                    actionText = "Mengirim Doughnut";
+                } else if (textToCheck.includes('hat') || textToCheck.includes('mustac') || textToCheck.includes('mustache')) {
+                    actionText = "Mengirim Hat and Mustac";
+                } else {
+                    actionText = "Mengirim Finger Heart";
+                }
+            }
+
+            return actionText;
         }
 
         channel.onmessage = (event) => {
@@ -412,12 +435,12 @@
                 const currentHostName = displayHostUser.innerText.trim();
                 const chosenName = senderName || (currentHostName !== "" ? currentHostName : randomNames[Math.floor(Math.random() * randomNames.length)]);
                 
-                // Mendeteksi nama animasi gift otomatis sesuai gift yang masuk (menggantikan format '@')
-                const detectedGift = detectGiftName(giftUrl, giftName);
+                // Menentukan teks aksi pengiriman berdasarkan ketentuan angka/gift
+                const giftActionMessage = getGiftActionText(count, giftName, giftUrl);
                 
                 popupAvatar.src = senderPhoto || defaultCustomPhoto;
                 popupName.innerText = chosenName;
-                popupUname.innerText = detectedGift; // Tampil nama gift di bawah nama pengirim
+                popupUname.innerText = giftActionMessage; // Menampilkan teks pengiriman di bawah nama host
                 popupGiftImg.src = giftUrl || '';
                 popupCount.innerText = `x${count || 1}`;
 
