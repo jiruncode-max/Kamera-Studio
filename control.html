@@ -68,24 +68,49 @@
             <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host</button>
         </div>
 
-        <!-- Input Video Gift (Layer Layar) -->
+        <!-- Trigger Popup Gift Animasi (3 Detik) -->
         <div class="form-group">
-            <label for="giftVideoFile">Upload Video Efek Gift (Layer Layar):</label>
-            <input type="file" id="giftVideoFile" accept="video/*">
-            <button class="btn-action btn-gift" onclick="playGiftVideoLayer()">Putar Video Gift di Layar</button>
+            <label>Simulasi Muncul Gift Popup (3 Detik):</label>
+            <select id="popupSlot">
+                <option value="1">Slot 1 (Kiri Atas)</option>
+                <option value="2">Slot 2</option>
+                <option value="3">Slot 3</option>
+                <option value="4">Slot 4</option>
+                <option value="5">Slot 5 (Kanan Atas)</option>
+                <option value="6">Slot 6</option>
+                <option value="7">Slot 7</option>
+                <option value="8">Slot 8</option>
+            </select>
+            <select id="giftChoice">
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp">Gift 1</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/beaaa3a78a00b5b20661b00924ab0e7f~tplv-obj.webp">Gift 2</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/075e206d6da035f10ff5f8fecd82abcc.png~tplv-obj.webp">Gift 3</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/20b8f61246c7b6032777bb81bf4ee055~tplv-obj.webp">Gift 4</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp">Gift 5</option>
+            </select>
+            <button class="btn-action btn-gift" onclick="triggerGiftPopup()">Munculkan Popup Gift (3 Detik)</button>
         </div>
 
         <!-- Input Target Permintaan -->
         <div class="form-group">
-            <label>Atur Target Permintaan:</label>
+            <label for="targetSlot">Pilih Slot Target (1 - 8):</label>
+            <select id="targetSlot">
+                <option value="1">Slot 1 (Kiri Atas)</option>
+                <option value="2">Slot 2</option>
+                <option value="3">Slot 3</option>
+                <option value="4">Slot 4</option>
+                <option value="5">Slot 5 (Kanan Atas)</option>
+                <option value="6">Slot 6</option>
+                <option value="7">Slot 7</option>
+                <option value="8">Slot 8</option>
+            </select>
+
+            <label style="margin-top:10px;">Atur Target Permintaan:</label>
             <select id="targetIcon">
-                <option value="" data-points="0">Pilih Ikon Gift...</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/291de897e4a8c3b72c358a9734c5b7d8.png~tplv-obj.webp" data-points="6000">Paus (6,000)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4fb89af2082a290b37d704e20f4fe729~tplv-obj.webp" data-points="29999">Singa (29,999)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/0a295ee8674ff2a9a05ef8e9151bbe75.png~tplv-obj.webp" data-points="18999">Robot (18,999)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/1d067d13988e8754ed6adbebd89b9ee8.png~tplv-obj.webp" data-points="5000">Pesawat (5,000)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/f600a2495ab5d250e7da2066484a9383.png~tplv-obj.webp" data-points="42999">Kuda (42,999)</option>
-                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/8f471afbcebfda3841a6cc515e381f58~tplv-obj.webp" data-points="44999">Tiktok Tu (44,999)</option>
+                <option value="" data-points="0">Pilih Ikon Gift Target...</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp" data-points="1000">Gift A (1,000)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/beaaa3a78a00b5b20661b00924ab0e7f~tplv-obj.webp" data-points="5000">Gift B (5,000)</option>
+                <option value="https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/075e206d6da035f10ff5f8fecd82abcc.png~tplv-obj.webp" data-points="10000">Gift C (10,000)</option>
             </select>
             <input type="text" placeholder="Username / Link TikTok Target..." id="targetInput">
             
@@ -99,14 +124,13 @@
             <div id="statusMsg" class="status-msg">Siap</div>
 
             <button class="btn-action" id="btnInstall" onclick="installTarget()" style="background:#3b82f6; margin-top:8px;" disabled>Pasang ke Display</button>
-            <button class="btn-action" onclick="clearTarget()" style="background:#64748b; margin-top:8px;">Reset / Kosongkan</button>
+            <button class="btn-action" onclick="clearTarget()" style="background:#64748b; margin-top:8px;">Reset / Kosongkan Slot Ini</button>
         </div>
     </div>
 
     <script>
         const channel = new BroadcastChannel('live_control_channel');
         let hostVideoUrl = '';
-        let giftVideoUrl = '';
         let pendingTargetData = { username: '', name: '', photo: '' };
 
         function normalize(v) {
@@ -225,12 +249,14 @@
         function installTarget() {
             if (!pendingTargetData.username) return;
 
+            const slotId = document.getElementById('targetSlot').value;
             const selectEl = document.getElementById('targetIcon');
             const selectedOption = selectEl.options[selectEl.selectedIndex];
             const iconVal = selectEl.value;
             const pointVal = parseInt(selectedOption.getAttribute('data-points')) || 0;
 
             const finalData = {
+                slot: slotId,
                 username: pendingTargetData.username,
                 name: pendingTargetData.name,
                 photo: pendingTargetData.photo,
@@ -239,10 +265,11 @@
             };
 
             channel.postMessage({ type: 'UPDATE_TARGET_SLOT', data: finalData });
-            statusMsg.innerText = "Berhasil Dipasang!";
+            statusMsg.innerText = `Slot ${slotId} Berhasil Dipasang!`;
         }
 
         function clearTarget() {
+            const slotId = document.getElementById('targetSlot').value;
             targetInput.value = '';
             document.getElementById('targetIcon').selectedIndex = 0;
             targetCardInline.classList.remove('show');
@@ -252,7 +279,7 @@
             btnInstall.disabled = true;
 
             pendingTargetData = { username: '', name: '', photo: '' };
-            channel.postMessage({ type: 'UPDATE_TARGET_SLOT', data: null });
+            channel.postMessage({ type: 'UPDATE_TARGET_SLOT', data: { slot: slotId, clear: true } });
         }
 
         function updateHostUser() {
@@ -270,14 +297,10 @@
             channel.postMessage({ type: 'UPDATE_HOST_VIDEO', url: hostVideoUrl });
         }
 
-        document.getElementById('giftVideoFile').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) giftVideoUrl = URL.createObjectURL(file);
-        });
-
-        function playGiftVideoLayer() {
-            if (!giftVideoUrl) return alert('Pilih file video gift dulu!');
-            channel.postMessage({ type: 'PLAY_GIFT_LAYER', url: giftVideoUrl });
+        function triggerGiftPopup() {
+            const slotId = document.getElementById('popupSlot').value;
+            const giftImgUrl = document.getElementById('giftChoice').value;
+            channel.postMessage({ type: 'TRIGGER_GIFT_POPUP', slot: slotId, giftUrl: giftImgUrl });
         }
     </script>
 </body>
