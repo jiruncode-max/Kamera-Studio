@@ -71,8 +71,8 @@
             font-weight: 700;
         }
 
-        /* Ikon Bulat Biru dengan Bintang Putih dan Angka di pojok kanan atas */
-        .host-star-badge, .target-star-badge {
+        /* Ikon Bulat Biru dengan Bintang Putih & Angka (Host) */
+        .host-star-badge {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -88,7 +88,30 @@
             font-weight: 700;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .host-star-badge svg, .target-star-badge svg {
+        .host-star-badge svg {
+            width: 12px;
+            height: 12px;
+            fill: #ffffff;
+        }
+
+        /* Ikon Bulat Biru dengan Bintang Putih & Angka di Sebelah Kiri (Target) */
+        .target-star-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: #0066ff;
+            border-radius: 99px;
+            padding: 2px 8px 2px 4px;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .target-star-badge svg {
             width: 12px;
             height: 12px;
             fill: #ffffff;
@@ -165,27 +188,33 @@
 
         .target-display-content {
             display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             width: 100%;
             height: 100%;
             position: relative;
-            align-items: center;
-            justify-content: center;
+            padding: 15px;
+            text-align: center;
         }
         .target-display-content.show {
             display: flex;
         }
-        
-        /* Background Foto Target Full / Cover seperti Video Host */
-        .target-bg-img {
-            width: 100%;
-            height: 100%;
+
+        /* Foto Target Bulat Crop */
+        .target-avatar-crop {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #20D5EC;
             object-fit: cover;
-            display: block;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
 
         .target-icon-overlay {
             position: absolute;
-            top: 45px;
+            top: 10px;
             right: 10px;
             width: 28px;
             height: 28px;
@@ -227,7 +256,7 @@
             </div>
 
             <div class="target-display-content" id="targetDisplayContent">
-                <!-- Ikon Bulat Biru: Bintang Putih & Poin Target -->
+                <!-- Ikon Bulat Biru: Bintang Putih & Poin Target di Sebelah Kiri -->
                 <div class="target-star-badge">
                     <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     <span id="targetDisplayPoints">0</span>
@@ -236,18 +265,18 @@
                 <!-- Gift Icon di kanan atas -->
                 <img id="targetDisplayIcon" class="target-icon-overlay" src="" style="display: none;" alt="Icon">
 
-                <!-- Nama Akun Target di bawah kotak sebelah kanan -->
+                <!-- Foto Target Bulat Crop di Tengah -->
+                <img id="targetDisplayAvatar" class="target-avatar-crop" src="" alt="Avatar Target">
+
+                <!-- Nama Akun Target di bawah dengan akhiran ' +' -->
                 <div class="video-username-box">
-                    <span class="video-username" id="targetDisplayName">Nama Target</span>
+                    <span class="video-username" id="targetDisplayName">Nama Target +</span>
                 </div>
 
                 <!-- Icon Mikrofon di sebelah kanan bawah kotak target -->
                 <div class="target-mic-box">
                     <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.39-.9.89 0 2.76-2.24 5-5 5s-5-2.24-5-5c0-.5-.4-.89-.9-.89s-.9.39-.9.89c0 3.33 2.54 6.08 5.75 6.46V21h-2.1v2h6.1v-2h-2.1v-2.58c3.21-.38 5.75-3.13 5.75-6.46 0-.5-.41-.89-.9-.89z"/></svg>
                 </div>
-
-                <!-- Foto Target Full Cover -->
-                <img id="targetDisplayAvatar" class="target-bg-img" src="" alt="Avatar Target">
             </div>
         </div>
     </div>
@@ -287,7 +316,13 @@
                     targetDisplayContent.classList.add('show');
 
                     targetDisplayAvatar.src = data.photo || '';
-                    targetDisplayName.innerText = data.name || data.username || '';
+                    
+                    // Format nama target agar berakhiran " +"
+                    let rawName = data.name || data.username || '';
+                    if (!rawName.endsWith('+')) {
+                        rawName = rawName + ' +';
+                    }
+                    targetDisplayName.innerText = rawName;
 
                     if (data.topIcon) {
                         targetDisplayIcon.src = data.topIcon;
