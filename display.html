@@ -179,7 +179,7 @@
             max-width: 100%;
         }
 
-        /* Banner Pop-up TikTok Gift di Kiri Bawah, menempel di atas label host */
+        /* Banner Pop-up TikTok Gift di Kiri Bawah */
         .giftPopupContainer {
             position: absolute;
             bottom: 52px; 
@@ -263,7 +263,7 @@
 <body>
 
     <div class="board-container">
-        <!-- Kolom Kiri (Slot 1 sampai 4) -->
+        <!-- Kolom Kiri -->
         <div class="side-column">
             <div class="slot-box" id="slot-1">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
@@ -289,7 +289,7 @@
                     <div class="target-uname">@username</div>
                 </div>
             </div>
-            <!-- Kotak Paling Bawah Sebelah Kiri (Slot 4) Sekaligus Tempat Tampil Gift Animasi -->
+            <!-- Kotak Paling Bawah Kiri (Slot 4) -->
             <div class="slot-box" id="slot-4">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
@@ -304,9 +304,10 @@
         <div class="card-main">
             <div class="video-host-badge"><span>Host</span></div>
             <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
-            <video id="displayHostVideo" autoplay muted loop playsinline></video>
+            <!-- Diubah menjadi tidak muted agar suara terdengar otomatis, autoplay & loop tetap aktif -->
+            <video id="displayHostVideo" autoplay loop playsinline></video>
 
-            <!-- Pop-up Gift di Kiri Bawah Video Utama -->
+            <!-- Pop-up Gift di Kiri Bawah -->
             <div class="giftPopupContainer" id="giftPopupContainer">
                 <img class="popup-avatar" id="popupAvatar" src="" alt="Avatar">
                 <div class="popup-info">
@@ -318,7 +319,7 @@
             </div>
         </div>
 
-        <!-- Kolom Kanan (Slot 5 sampai 8) -->
+        <!-- Kolom Kanan -->
         <div class="side-column">
             <div class="slot-box" id="slot-5">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
@@ -370,7 +371,8 @@
 
         let popupTimer = null;
 
-        // Daftar nama acak jika pengirim gift tidak ditentukan
+        // Foto kustom yang Anda berikan
+        const defaultCustomPhoto = "https://b.top4top.io/p_3905d2xmz1.jpeg";
         const randomNames = ["J.K 090102", "Siti Rahma", "Budi Santoso", "Dewi Lestari", "Rizky Pratama"];
 
         channel.onmessage = (event) => {
@@ -378,7 +380,10 @@
 
             if (type === 'UPDATE_HOST_VIDEO') {
                 displayHostVideo.src = url;
-                displayHostVideo.play().catch(e => console.log("Autoplay blocked"));
+                displayHostVideo.muted = false; // Memastikan suara aktif otomatis
+                displayHostVideo.play().catch(e => {
+                    console.log("Autoplay dengan suara diblokir browser, klik sekali pada halaman.");
+                });
             }
 
             if (type === 'UPDATE_HOST_USER') {
@@ -391,12 +396,13 @@
             }
 
             if (type === 'TRIGGER_GIFT_POPUP') {
-                // Mengambil atau membuat nama dan foto acak bergaya seperti contoh J.K
-                const chosenName = senderName || randomNames[Math.floor(Math.random() * randomNames.length)];
+                // Mengambil nama host yang sedang aktif untuk disamakan (jika ada), atau menggunakan nama acak bergaya J.K
+                const currentHostName = displayHostUser.innerText.trim();
+                const chosenName = senderName || (currentHostName !== "" ? currentHostName : randomNames[Math.floor(Math.random() * randomNames.length)]);
                 const chosenUname = senderUname || "@" + chosenName.toLowerCase().replace(/[^a-z0-9]/g, '');
                 
-                // Gunakan foto bawaan atau avatar acak
-                popupAvatar.src = senderPhoto || '';
+                // Menggunakan foto kustom dari link yang Anda berikan
+                popupAvatar.src = senderPhoto || defaultCustomPhoto;
                 popupName.innerText = chosenName;
                 popupUname.innerText = chosenUname;
                 popupGiftImg.src = giftUrl || '';
@@ -441,6 +447,14 @@
                 }
             }
         };
+
+        // Otomatis mencoba memutar video dengan suara saat pertama kali halaman dimuat / interaksi pertama
+        window.addEventListener('click', () => {
+            if (displayHostVideo.paused && displayHostVideo.src) {
+                displayHostVideo.muted = false;
+                displayHostVideo.play().catch(e => {});
+            }
+        }, { once: true });
     </script>
 </body>
 </html>
