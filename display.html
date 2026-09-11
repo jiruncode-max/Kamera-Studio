@@ -910,7 +910,7 @@
                 url,
                 data,
                 count,
-                points,
+                giftPoints,
                 giftUrl,
                 senderName,
                 senderUname,
@@ -984,7 +984,7 @@
                  */
                 const giftActionMessage =
                     getGiftActionText(
-                        Number.isFinite(Number(points)) ? Number(points) : Number(count),
+                        count,
                         giftName,
                         giftUrl,
                         slot
@@ -1019,7 +1019,7 @@
                  * count = 99 -> x99
                  */
                 const popupGiftCount =
-                    Number.isFinite(Number(points)) ? Number(points) : Number(count);
+                    Number(giftPoints ?? count);
 
                 popupCount.innerText =
                     Number.isFinite(popupGiftCount) &&
@@ -1128,7 +1128,7 @@
                              * Ambil COUNT ASLI.
                              */
                             // COUNT = POIN. Jangan memakai slot/kotak sebagai poin.
-                            const addScore = Number.isFinite(Number(points)) ? Number(points) : Number(count);
+                            const addScore = Number(giftPoints ?? count);
 
                             /*
                              * Abaikan event jika count tidak valid.
