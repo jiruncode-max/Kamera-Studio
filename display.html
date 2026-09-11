@@ -127,8 +127,8 @@
             height: 100%;
         }
         .request-placeholder .plus-icon { 
-            font-size: 26px; 
-            font-weight: 700; 
+            font-size: 34px; 
+            font-weight: 800; 
             line-height: 1; 
             color: #ffffff; 
         }
@@ -153,7 +153,6 @@
             display: flex;
         }
 
-        /* Elemen baru sesuai contoh foto referensi */
         .target-top-left {
             position: absolute;
             top: 6px;
@@ -172,7 +171,7 @@
         .target-top-left svg {
             width: 10px;
             height: 10px;
-            fill: #20D5EC;
+            fill: #ffffff;
         }
 
         .target-avatar {
@@ -215,11 +214,25 @@
             align-items: center;
             justify-content: center;
             z-index: 5;
+            position: relative;
         }
         .target-bottom-right svg {
             width: 10px;
             height: 10px;
             fill: #ffffff;
+        }
+        /* Garis coret (mute) pada ikon mikrofon */
+        .target-bottom-right::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 2px;
+            background-color: #ffffff;
+            transform: rotate(-45deg);
+            top: 50%;
+            left: 50%;
+            margin-top: -1px;
+            margin-left: -6px;
         }
 
         .giftPopupContainer {
@@ -311,7 +324,7 @@
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         <span>0</span>
                     </div>
                     <img class="target-avatar" src="" alt="Avatar">
@@ -327,7 +340,7 @@
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         <span>0</span>
                     </div>
                     <img class="target-avatar" src="" alt="Avatar">
@@ -343,7 +356,7 @@
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         <span>0</span>
                     </div>
                     <img class="target-avatar" src="" alt="Avatar">
@@ -359,7 +372,7 @@
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         <span>0</span>
                     </div>
                     <img class="target-avatar" src="" alt="Avatar">
@@ -397,7 +410,7 @@
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         <span>0</span>
                     </div>
                     <img class="target-avatar" src="" alt="Avatar">
@@ -413,7 +426,7 @@
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         <span>0</span>
                     </div>
                     <img class="target-avatar" src="" alt="Avatar">
@@ -429,7 +442,7 @@
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         <span>0</span>
                     </div>
                     <img class="target-avatar" src="" alt="Avatar">
@@ -445,7 +458,7 @@
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         <span>0</span>
                     </div>
                     <img class="target-avatar" src="" alt="Avatar">
