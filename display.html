@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TikTok Host & Permintaan - Advan Workmate Ryzen 5 Display</title>
+
     <style>
         * {
             box-sizing: border-box;
@@ -27,10 +28,10 @@
             transform-origin: center top;
         }
 
-        .board-container { 
-            display: flex; 
-            flex-direction: row; 
-            gap: 12px; 
+        .board-container {
+            display: flex;
+            flex-direction: row;
+            gap: 12px;
             height: 85vh;
             max-height: 650px;
             align-items: center;
@@ -47,14 +48,14 @@
         }
 
         .slot-box {
-            border: 2px solid #ffffff; 
-            border-radius: 10px; 
+            border: 2px solid #ffffff;
+            border-radius: 10px;
             background-color: #6b7280;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            position: relative; 
-            overflow: visible; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: visible;
             flex: 1;
         }
 
@@ -64,83 +65,86 @@
         }
 
         .card-main {
-            flex: 1; 
-            border: 2px solid #ffffff; 
-            border-radius: 14px; 
+            flex: 1;
+            border: 2px solid #ffffff;
+            border-radius: 14px;
             background-color: #000000;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            position: relative; 
-            overflow: hidden; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
             aspect-ratio: 9 / 16;
             height: 100%;
         }
 
-        .card-main video { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            display: block; 
+        .card-main video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         .video-host-badge {
-            position: absolute; 
-            top: 12px; 
-            left: 12px; 
-            z-index: 10; 
-            display: inline-flex; 
-            align-items: center; 
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
-            padding: 4px 12px; 
-            background-color: #20D5EC; 
-            border-radius: 99px; 
-            color: #000000; 
-            font-size: 11px; 
+            padding: 4px 12px;
+            background-color: #20D5EC;
+            border-radius: 99px;
+            color: #000000;
+            font-size: 11px;
             font-weight: 700;
         }
 
         .video-username-box {
-            position: absolute; 
-            bottom: 14px; 
+            position: absolute;
+            bottom: 14px;
             left: 14px;
-            z-index: 10; 
-            display: inline-flex; 
+            z-index: 10;
+            display: inline-flex;
             align-items: center;
-            padding: 5px 14px; 
-            background-color: rgba(20, 20, 25, 0.85); 
+            padding: 5px 14px;
+            background-color: rgba(20, 20, 25, 0.85);
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.3); 
-            border-radius: 99px; 
-            display: none; 
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 99px;
+            display: none;
         }
-        .video-username { 
-            font-size: 12px; 
-            font-weight: 700; 
-            color: #ffffff; 
+
+        .video-username {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffffff;
         }
 
         .request-placeholder {
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             gap: 4px;
-            color: #ffffff; 
-            user-select: none; 
-            width: 100%; 
+            color: #ffffff;
+            user-select: none;
+            width: 100%;
             height: 100%;
         }
-        .request-placeholder .plus-icon { 
-            font-size: 34px; 
-            font-weight: 800; 
-            line-height: 1; 
-            color: #ffffff; 
+
+        .request-placeholder .plus-icon {
+            font-size: 34px;
+            font-weight: 800;
+            line-height: 1;
+            color: #ffffff;
         }
-        .request-placeholder .request-text { 
-            font-size: 11px; 
-            font-weight: 700; 
-            color: #ffffff; 
+
+        .request-placeholder .request-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
         }
 
         .target-display-content {
@@ -154,11 +158,11 @@
             padding: 4px;
             text-align: center;
         }
+
         .target-display-content.show {
             display: flex;
         }
 
-        /* Elemen Atas Kiri: Kotak Angka */
         .target-top-left {
             position: absolute;
             top: 4px;
@@ -174,9 +178,11 @@
             color: #ffffff;
             z-index: 5;
         }
+
         .target-top-left span {
             color: #ffffff;
         }
+
         .target-top-left .star-circle {
             width: 12px;
             height: 12px;
@@ -187,13 +193,13 @@
             justify-content: center;
             flex-shrink: 0;
         }
+
         .target-top-left svg {
             width: 8px;
             height: 8px;
             fill: #ffffff;
         }
 
-        /* Animasi Ikon Gift Saja di Atas Kanan Kotak Target */
         .floating-gift-anim {
             position: absolute;
             top: -12px;
@@ -207,10 +213,12 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
         }
+
         .floating-gift-anim.show {
             opacity: 1;
             transform: translateY(0) scale(1);
         }
+
         .floating-gift-anim img {
             width: 24px;
             height: 24px;
@@ -218,7 +226,6 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
         }
 
-        /* Foto Target Bulat */
         .target-avatar-wrapper {
             width: 52px;
             height: 52px;
@@ -229,10 +236,11 @@
             justify-content: center;
             flex-shrink: 0;
             margin-top: 2px;
-            border: 2px solid #ffffff; 
+            border: 2px solid #ffffff;
             background-color: #555555;
             box-shadow: 0 0 10px rgba(130, 130, 130, 0.7);
         }
+
         .target-avatar {
             width: 100%;
             height: 100%;
@@ -240,7 +248,6 @@
             display: block;
         }
 
-        /* Bagian Bawah: Nama Target di Kiri, Ikon Mikrofon di Kanan */
         .target-bottom-bar {
             position: absolute;
             bottom: 4px;
@@ -252,7 +259,6 @@
             z-index: 5;
         }
 
-        /* Kotak Segi Panjang untuk Nama Target */
         .target-name-box {
             background: rgba(30, 30, 30, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -263,12 +269,14 @@
             max-width: 65px;
             overflow: hidden;
         }
+
         .target-name-container {
             display: flex;
             align-items: center;
             gap: 2px;
             overflow: hidden;
         }
+
         .target-name {
             font-size: 8px;
             font-weight: 600;
@@ -277,6 +285,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
         .target-name-container .name-plus-icon {
             font-size: 9px;
             font-weight: 800;
@@ -285,7 +294,6 @@
             flex-shrink: 0;
         }
 
-        /* Ikon Mikrofon Terpisah di Kanan */
         .target-mic-container {
             position: relative;
             background: rgba(30, 30, 30, 0.95);
@@ -298,11 +306,13 @@
             justify-content: center;
             flex-shrink: 0;
         }
+
         .target-mic-container svg {
             width: 9px;
             height: 9px;
             fill: #ffffff;
         }
+
         .target-mic-container::after {
             content: '';
             position: absolute;
@@ -318,9 +328,13 @@
 
         .giftPopupContainer {
             position: absolute;
-            bottom: 52px; 
-            left: 14px; 
-            background: linear-gradient(90deg, rgba(20,20,25,0.9) 0%, rgba(35,35,45,0.8) 100%);
+            bottom: 52px;
+            left: 14px;
+            background: linear-gradient(
+                90deg,
+                rgba(20,20,25,0.9) 0%,
+                rgba(35,35,45,0.8) 100%
+            );
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.25);
             padding: 6px 14px 6px 6px;
@@ -336,10 +350,12 @@
             pointer-events: none;
             max-width: 85%;
         }
+
         .giftPopupContainer.show {
             transform: translateX(0);
             opacity: 1;
         }
+
         .popup-avatar {
             width: 34px;
             height: 34px;
@@ -348,12 +364,14 @@
             object-fit: cover;
             flex-shrink: 0;
         }
+
         .popup-info {
             display: flex;
             flex-direction: column;
             justify-content: center;
             overflow: hidden;
         }
+
         .popup-name {
             font-size: 11px;
             font-weight: 800;
@@ -363,6 +381,7 @@
             text-overflow: ellipsis;
             max-width: 130px;
         }
+
         .popup-uname {
             font-size: 9px;
             color: #fbbf24;
@@ -371,12 +390,14 @@
             text-overflow: ellipsis;
             max-width: 130px;
         }
+
         .popup-gift-img {
             width: 32px;
             height: 32px;
             object-fit: contain;
             flex-shrink: 0;
         }
+
         .popup-count {
             font-size: 18px;
             font-weight: 900;
@@ -385,37 +406,60 @@
             text-shadow: 0 0 8px rgba(251, 191, 36, 0.8);
             margin-left: 2px;
         }
+
         .popup-count.bounce {
             animation: popSpam 0.2s ease-out;
         }
 
         @keyframes popSpam {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.4); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.4);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="board-container">
-        <!-- Kolom Kiri -->
+
+        <!-- KOLOM KIRI -->
+
         <div class="side-column">
+
             <div class="slot-box empty" id="slot-1">
-                <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
+                <div class="request-placeholder">
+                    <span class="plus-icon">+</span>
+                    <span class="request-text">Permintaan</span>
+                </div>
+
                 <div class="target-display-content">
+
                     <div class="target-top-left">
                         <div class="star-circle">
-                            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
                         </div>
                         <span class="slot-score">0</span>
                     </div>
+
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
                     </div>
+
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
                     </div>
+
                     <div class="target-bottom-bar">
                         <div class="target-name-box">
                             <div class="target-name-container">
@@ -423,27 +467,43 @@
                                 <span class="name-plus-icon">+</span>
                             </div>
                         </div>
+
                         <div class="target-mic-container">
-                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
+
+
             <div class="slot-box empty" id="slot-2">
-                <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
+                <div class="request-placeholder">
+                    <span class="plus-icon">+</span>
+                    <span class="request-text">Permintaan</span>
+                </div>
+
                 <div class="target-display-content">
+
                     <div class="target-top-left">
                         <div class="star-circle">
-                            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
                         </div>
                         <span class="slot-score">0</span>
                     </div>
+
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
                     </div>
+
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
                     </div>
+
                     <div class="target-bottom-bar">
                         <div class="target-name-box">
                             <div class="target-name-container">
@@ -451,27 +511,43 @@
                                 <span class="name-plus-icon">+</span>
                             </div>
                         </div>
+
                         <div class="target-mic-container">
-                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
+
+
             <div class="slot-box empty" id="slot-3">
-                <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
+                <div class="request-placeholder">
+                    <span class="plus-icon">+</span>
+                    <span class="request-text">Permintaan</span>
+                </div>
+
                 <div class="target-display-content">
+
                     <div class="target-top-left">
                         <div class="star-circle">
-                            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
                         </div>
                         <span class="slot-score">0</span>
                     </div>
+
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
                     </div>
+
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
                     </div>
+
                     <div class="target-bottom-bar">
                         <div class="target-name-box">
                             <div class="target-name-container">
@@ -479,27 +555,43 @@
                                 <span class="name-plus-icon">+</span>
                             </div>
                         </div>
+
                         <div class="target-mic-container">
-                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
+
+
             <div class="slot-box empty" id="slot-4">
-                <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
+                <div class="request-placeholder">
+                    <span class="plus-icon">+</span>
+                    <span class="request-text">Permintaan</span>
+                </div>
+
                 <div class="target-display-content">
+
                     <div class="target-top-left">
                         <div class="star-circle">
-                            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
                         </div>
                         <span class="slot-score">0</span>
                     </div>
+
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
                     </div>
+
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
                     </div>
+
                     <div class="target-bottom-bar">
                         <div class="target-name-box">
                             <div class="target-name-container">
@@ -507,49 +599,91 @@
                                 <span class="name-plus-icon">+</span>
                             </div>
                         </div>
+
                         <div class="target-mic-container">
-                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
 
-        <!-- Bagian Tengah (Video Host Utama) -->
+
+        <!-- BAGIAN TENGAH -->
+
         <div class="card-main">
-            <div class="video-host-badge"><span>Host</span></div>
-            <div class="video-username-box" id="displayHostUserBox"><span class="video-username" id="displayHostUser"></span></div>
+
+            <div class="video-host-badge">
+                <span>Host</span>
+            </div>
+
+            <div class="video-username-box" id="displayHostUserBox">
+                <span class="video-username" id="displayHostUser"></span>
+            </div>
+
             <video id="displayHostVideo" autoplay loop playsinline></video>
 
-            <!-- Pop-up Gift di Kiri Bawah -->
             <div class="giftPopupContainer" id="giftPopupContainer">
-                <img class="popup-avatar" id="popupAvatar" src="" alt="Avatar">
+
+                <img
+                    class="popup-avatar"
+                    id="popupAvatar"
+                    src=""
+                    alt="Avatar"
+                >
+
                 <div class="popup-info">
                     <span class="popup-name" id="popupName">Nama</span>
                     <span class="popup-uname" id="popupUname">Mengirim Kotak 1</span>
                 </div>
-                <img class="popup-gift-img" id="popupGiftImg" src="" alt="Gift">
+
+                <img
+                    class="popup-gift-img"
+                    id="popupGiftImg"
+                    src=""
+                    alt="Gift"
+                >
+
                 <span class="popup-count" id="popupCount">x1</span>
+
             </div>
+
         </div>
 
-        <!-- Kolom Kanan -->
+
+        <!-- KOLOM KANAN -->
+
         <div class="side-column">
+
             <div class="slot-box empty" id="slot-5">
-                <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
+                <div class="request-placeholder">
+                    <span class="plus-icon">+</span>
+                    <span class="request-text">Permintaan</span>
+                </div>
+
                 <div class="target-display-content">
+
                     <div class="target-top-left">
                         <div class="star-circle">
-                            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
                         </div>
                         <span class="slot-score">0</span>
                     </div>
+
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
                     </div>
+
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
                     </div>
+
                     <div class="target-bottom-bar">
                         <div class="target-name-box">
                             <div class="target-name-container">
@@ -557,27 +691,43 @@
                                 <span class="name-plus-icon">+</span>
                             </div>
                         </div>
+
                         <div class="target-mic-container">
-                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
+
+
             <div class="slot-box empty" id="slot-6">
-                <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
+                <div class="request-placeholder">
+                    <span class="plus-icon">+</span>
+                    <span class="request-text">Permintaan</span>
+                </div>
+
                 <div class="target-display-content">
+
                     <div class="target-top-left">
                         <div class="star-circle">
-                            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
                         </div>
                         <span class="slot-score">0</span>
                     </div>
+
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
                     </div>
+
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
                     </div>
+
                     <div class="target-bottom-bar">
                         <div class="target-name-box">
                             <div class="target-name-container">
@@ -585,27 +735,43 @@
                                 <span class="name-plus-icon">+</span>
                             </div>
                         </div>
+
                         <div class="target-mic-container">
-                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
+
+
             <div class="slot-box empty" id="slot-7">
-                <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
+                <div class="request-placeholder">
+                    <span class="plus-icon">+</span>
+                    <span class="request-text">Permintaan</span>
+                </div>
+
                 <div class="target-display-content">
+
                     <div class="target-top-left">
                         <div class="star-circle">
-                            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
                         </div>
                         <span class="slot-score">0</span>
                     </div>
+
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
                     </div>
+
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
                     </div>
+
                     <div class="target-bottom-bar">
                         <div class="target-name-box">
                             <div class="target-name-container">
@@ -613,27 +779,43 @@
                                 <span class="name-plus-icon">+</span>
                             </div>
                         </div>
+
                         <div class="target-mic-container">
-                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
+
+
             <div class="slot-box empty" id="slot-8">
-                <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span>`</div>
+                <div class="request-placeholder">
+                    <span class="plus-icon">+</span>
+                    <span class="request-text">Permintaan</span>
+                </div>
+
                 <div class="target-display-content">
+
                     <div class="target-top-left">
                         <div class="star-circle">
-                            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
                         </div>
                         <span class="slot-score">0</span>
                     </div>
+
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
                     </div>
+
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
                     </div>
+
                     <div class="target-bottom-bar">
                         <div class="target-name-box">
                             <div class="target-name-container">
@@ -641,42 +823,94 @@
                                 <span class="name-plus-icon">+</span>
                             </div>
                         </div>
+
                         <div class="target-mic-container">
-                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
+
     </div>
+
 
     <script>
         const channel = new BroadcastChannel('live_control_channel');
 
-        const displayHostVideo = document.getElementById('displayHostVideo');
-        const displayHostUserBox = document.getElementById('displayHostUserBox');
-        const displayHostUser = document.getElementById('displayHostUser');
-        const giftPopupContainer = document.getElementById('giftPopupContainer');
-        const popupAvatar = document.getElementById('popupAvatar');
-        const popupName = document.getElementById('popupName');
-        const popupUname = document.getElementById('popupUname');
-        const popupGiftImg = document.getElementById('popupGiftImg');
-        const popupCount = document.getElementById('popupCount');
+        const displayHostVideo =
+            document.getElementById('displayHostVideo');
+
+        const displayHostUserBox =
+            document.getElementById('displayHostUserBox');
+
+        const displayHostUser =
+            document.getElementById('displayHostUser');
+
+        const giftPopupContainer =
+            document.getElementById('giftPopupContainer');
+
+        const popupAvatar =
+            document.getElementById('popupAvatar');
+
+        const popupName =
+            document.getElementById('popupName');
+
+        const popupUname =
+            document.getElementById('popupUname');
+
+        const popupGiftImg =
+            document.getElementById('popupGiftImg');
+
+        const popupCount =
+            document.getElementById('popupCount');
+
 
         let popupTimer = null;
+
         const slotTimers = {};
 
-        const defaultCustomPhoto = "https://b.top4top.io/p_3905d2xmz1.jpeg";
-        const randomNames = ["J.K 090102", "Siti Rahma", "Budi Santoso", "Dewi Lestari", "Rizky Pratama"];
 
-        function getGiftActionText(count, giftName, giftUrl, targetSlot) {
+        const defaultCustomPhoto =
+            "https://b.top4top.io/p_3905d2xmz1.jpeg";
+
+
+        const randomNames = [
+            "J.K 090102",
+            "Siti Rahma",
+            "Budi Santoso",
+            "Dewi Lestari",
+            "Rizky Pratama"
+        ];
+
+
+        /*
+         * Menentukan teks popup berdasarkan slot/count.
+         */
+        function getGiftActionText(
+            count,
+            giftName,
+            giftUrl,
+            targetSlot
+        ) {
             let actionText = "Mengirim Kotak 1";
+
             const numSlot = Number(targetSlot);
-            if (!isNaN(numSlot) && numSlot >= 1 && numSlot <= 8) {
+
+            if (
+                Number.isInteger(numSlot) &&
+                numSlot >= 1 &&
+                numSlot <= 8
+            ) {
                 return `Mengirim Kotak ${numSlot}`;
             }
 
             const numCount = Number(count);
+
             if (numCount === 5) {
                 actionText = "Mengirim Kotak 1";
             } else if (numCount === 15) {
@@ -690,116 +924,450 @@
             } else {
                 actionText = "Mengirim Kotak 1";
             }
+
             return actionText;
         }
 
-        channel.onmessage = (event) => {
-            const { type, url, data, count, giftUrl, senderName, senderUname, senderPhoto, giftName, slot } = event.data;
 
+        channel.onmessage = (event) => {
+
+            const {
+                type,
+                url,
+                data,
+                count,
+                giftUrl,
+                senderName,
+                senderUname,
+                senderPhoto,
+                giftName,
+                slot
+            } = event.data;
+
+
+            /*
+             * UPDATE VIDEO HOST
+             */
             if (type === 'UPDATE_HOST_VIDEO') {
+
                 displayHostVideo.src = url;
+
                 displayHostVideo.muted = false;
+
                 displayHostVideo.play().catch(e => {
-                    console.log("Autoplay dengan suara diblokir browser, klik sekali pada halaman.");
+                    console.log(
+                        "Autoplay dengan suara diblokir browser, klik sekali pada halaman."
+                    );
                 });
             }
 
+
+            /*
+             * UPDATE USER HOST
+             */
             if (type === 'UPDATE_HOST_USER') {
+
                 displayHostUser.innerText = data || '';
-                if (data && data.trim() !== '') {
-                    displayHostUserBox.style.display = 'inline-flex';
+
+                if (
+                    data &&
+                    data.trim() !== ''
+                ) {
+                    displayHostUserBox.style.display =
+                        'inline-flex';
                 } else {
-                    displayHostUserBox.style.display = 'none';
+                    displayHostUserBox.style.display =
+                        'none';
                 }
             }
 
+
+            /*
+             * TRIGGER GIFT
+             */
             if (type === 'TRIGGER_GIFT_POPUP') {
-                const currentHostName = displayHostUser.innerText.trim();
-                const chosenName = senderName || (currentHostName !== "" ? currentHostName : randomNames[Math.floor(Math.random() * randomNames.length)]);
-                
-                const giftActionMessage = getGiftActionText(count, giftName, giftUrl, slot);
-                
-                popupAvatar.src = senderPhoto || defaultCustomPhoto;
-                popupName.innerText = chosenName;
-                popupUname.innerText = giftActionMessage; 
-                popupGiftImg.src = giftUrl || '';
-                popupCount.innerText = `x${count || 1}`;
 
-                popupCount.classList.remove('bounce');
-                void popupCount.offsetWidth; 
-                popupCount.classList.add('bounce');
+                const currentHostName =
+                    displayHostUser.innerText.trim();
 
-                giftPopupContainer.classList.add('show');
+                const chosenName =
+                    senderName ||
+                    (
+                        currentHostName !== ""
+                            ? currentHostName
+                            : randomNames[
+                                Math.floor(
+                                    Math.random() *
+                                    randomNames.length
+                                )
+                            ]
+                    );
+
+
+                /*
+                 * Teks popup.
+                 */
+                const giftActionMessage =
+                    getGiftActionText(
+                        count,
+                        giftName,
+                        giftUrl,
+                        slot
+                    );
+
+
+                /*
+                 * Data popup.
+                 */
+                popupAvatar.src =
+                    senderPhoto ||
+                    defaultCustomPhoto;
+
+                popupName.innerText =
+                    chosenName;
+
+                popupUname.innerText =
+                    giftActionMessage;
+
+                popupGiftImg.src =
+                    giftUrl || '';
+
+
+                /*
+                 * Tampilkan jumlah gift asli.
+                 *
+                 * Contoh:
+                 * count = 5  -> x5
+                 * count = 15 -> x15
+                 * count = 20 -> x20
+                 * count = 30 -> x30
+                 * count = 99 -> x99
+                 */
+                const popupGiftCount =
+                    Number(count);
+
+                popupCount.innerText =
+                    Number.isFinite(popupGiftCount) &&
+                    popupGiftCount > 0
+                        ? `x${popupGiftCount}`
+                        : 'x0';
+
+
+                /*
+                 * Animasi angka popup.
+                 */
+                popupCount.classList.remove(
+                    'bounce'
+                );
+
+                void popupCount.offsetWidth;
+
+                popupCount.classList.add(
+                    'bounce'
+                );
+
+
+                /*
+                 * Tampilkan popup.
+                 */
+                giftPopupContainer.classList.add(
+                    'show'
+                );
+
 
                 clearTimeout(popupTimer);
+
                 popupTimer = setTimeout(() => {
-                    giftPopupContainer.classList.remove('show');
+
+                    giftPopupContainer.classList.remove(
+                        'show'
+                    );
+
                 }, 3000);
 
-                // PENAMBAHAN POIN: Pastikan mengambil nilai asli dari `count` (5, 15, 20, 30, 99, dst)
-                const targetSlotNum = Number(slot);
-                if (!isNaN(targetSlotNum) && targetSlotNum >= 1 && targetSlotNum <= 8) {
-                    const slotEl = document.getElementById(`slot-${targetSlotNum}`);
+
+                /*
+                 * =====================================================
+                 * POIN SLOT
+                 * =====================================================
+                 *
+                 * PENTING:
+                 *
+                 * count digunakan langsung sebagai poin.
+                 *
+                 * 5  -> +5
+                 * 15 -> +15
+                 * 20 -> +20
+                 * 30 -> +30
+                 * 99 -> +99
+                 *
+                 * Tidak ada lagi fallback:
+                 *
+                 * Number(count) || 1
+                 *
+                 * =====================================================
+                 */
+
+                const targetSlotNum =
+                    Number(slot);
+
+
+                if (
+                    Number.isInteger(targetSlotNum) &&
+                    targetSlotNum >= 1 &&
+                    targetSlotNum <= 8
+                ) {
+
+                    const slotEl =
+                        document.getElementById(
+                            `slot-${targetSlotNum}`
+                        );
+
+
                     if (slotEl) {
-                        const scoreEl = slotEl.querySelector('.slot-score');
-                        const floatAnim = slotEl.querySelector('.floating-gift-anim');
-                        const floatIcon = slotEl.querySelector('.float-gift-icon');
 
-                        if (scoreEl && floatAnim && floatIcon) {
-                            const addScore = Number(count) || 1; // Mengambil nilai dari tombol kontrol panel (5, 15, 20, 30, 99)
-                            let currentScore = parseInt(scoreEl.innerText) || 0;
-                            currentScore += addScore;
-                            scoreEl.innerText = currentScore;
+                        const scoreEl =
+                            slotEl.querySelector(
+                                '.slot-score'
+                            );
 
-                            // Set ikon gift dan tampilkan animasi selama 3 detik
-                            floatIcon.src = giftUrl || '';
-                            floatAnim.classList.add('show');
+                        const floatAnim =
+                            slotEl.querySelector(
+                                '.floating-gift-anim'
+                            );
 
-                            clearTimeout(slotTimers[targetSlotNum]);
-                            slotTimers[targetSlotNum] = setTimeout(() => {
-                                floatAnim.classList.remove('show');
+                        const floatIcon =
+                            slotEl.querySelector(
+                                '.float-gift-icon'
+                            );
+
+
+                        if (
+                            scoreEl &&
+                            floatAnim &&
+                            floatIcon
+                        ) {
+
+                            /*
+                             * Ambil COUNT ASLI.
+                             */
+                            const addScore =
+                                Number(count);
+
+
+                            /*
+                             * Abaikan event jika count
+                             * tidak valid.
+                             */
+                            if (
+                                !Number.isFinite(addScore) ||
+                                addScore <= 0
+                            ) {
+                                console.warn(
+                                    'Count gift tidak valid:',
+                                    count
+                                );
+
+                                return;
+                            }
+
+
+                            /*
+                             * Ambil poin saat ini.
+                             */
+                            const currentScore =
+                                parseInt(
+                                    scoreEl.innerText,
+                                    10
+                                ) || 0;
+
+
+                            /*
+                             * Tambahkan count asli.
+                             */
+                            const newScore =
+                                currentScore +
+                                addScore;
+
+
+                            /*
+                             * Tampilkan hasil.
+                             */
+                            scoreEl.innerText =
+                                newScore;
+
+
+                            /*
+                             * Tampilkan ikon gift.
+                             */
+                            floatIcon.src =
+                                giftUrl || '';
+
+
+                            floatAnim.classList.add(
+                                'show'
+                            );
+
+
+                            /*
+                             * Reset timer animasi.
+                             */
+                            clearTimeout(
+                                slotTimers[
+                                    targetSlotNum
+                                ]
+                            );
+
+
+                            slotTimers[
+                                targetSlotNum
+                            ] = setTimeout(() => {
+
+                                floatAnim.classList.remove(
+                                    'show'
+                                );
+
                             }, 3000);
+
                         }
                     }
                 }
             }
 
-            if (type === 'UPDATE_TARGET_SLOT') {
-                if (!data || !data.slot) return;
-                const slotEl = document.getElementById(`slot-${data.slot}`);
-                if (!slotEl) return;
 
-                const placeholder = slotEl.querySelector('.request-placeholder');
-                const content = slotEl.querySelector('.target-display-content');
-                const avatar = slotEl.querySelector('.target-avatar');
-                const nameEl = slotEl.querySelector('.target-name');
-                const scoreEl = slotEl.querySelector('.slot-score');
+            /*
+             * UPDATE TARGET SLOT
+             */
+            if (
+                type === 'UPDATE_TARGET_SLOT'
+            ) {
 
-                if (data.clear) {
-                    content.classList.remove('show');
-                    placeholder.style.display = 'flex';
-                    slotEl.classList.add('empty');
-                    if (scoreEl) scoreEl.innerText = '0';
+                if (
+                    !data ||
+                    !data.slot
+                ) {
                     return;
                 }
 
-                if (data.username) {
-                    placeholder.style.display = 'none';
-                    content.classList.add('show');
-                    slotEl.classList.remove('empty');
 
-                    avatar.src = data.photo || '';
-                    nameEl.innerText = data.name || '';
+                const slotEl =
+                    document.getElementById(
+                        `slot-${data.slot}`
+                    );
+
+
+                if (!slotEl) {
+                    return;
+                }
+
+
+                const placeholder =
+                    slotEl.querySelector(
+                        '.request-placeholder'
+                    );
+
+                const content =
+                    slotEl.querySelector(
+                        '.target-display-content'
+                    );
+
+                const avatar =
+                    slotEl.querySelector(
+                        '.target-avatar'
+                    );
+
+                const nameEl =
+                    slotEl.querySelector(
+                        '.target-name'
+                    );
+
+                const scoreEl =
+                    slotEl.querySelector(
+                        '.slot-score'
+                    );
+
+
+                /*
+                 * CLEAR SLOT
+                 */
+                if (data.clear) {
+
+                    content.classList.remove(
+                        'show'
+                    );
+
+                    placeholder.style.display =
+                        'flex';
+
+                    slotEl.classList.add(
+                        'empty'
+                    );
+
+
+                    if (scoreEl) {
+                        scoreEl.innerText =
+                            '0';
+                    }
+
+
+                    return;
+                }
+
+
+                /*
+                 * TAMPILKAN TARGET
+                 */
+                if (data.username) {
+
+                    placeholder.style.display =
+                        'none';
+
+                    content.classList.add(
+                        'show'
+                    );
+
+                    slotEl.classList.remove(
+                        'empty'
+                    );
+
+
+                    avatar.src =
+                        data.photo || '';
+
+                    nameEl.innerText =
+                        data.name || '';
                 }
             }
         };
 
-        window.addEventListener('click', () => {
-            if (displayHostVideo.paused && displayHostVideo.src) {
-                displayHostVideo.muted = false;
-                displayHostVideo.play().catch(e => {});
+
+        /*
+         * Klik halaman untuk mengaktifkan
+         * video dengan suara jika autoplay
+         * diblokir browser.
+         */
+        window.addEventListener(
+            'click',
+            () => {
+
+                if (
+                    displayHostVideo.paused &&
+                    displayHostVideo.src
+                ) {
+
+                    displayHostVideo.muted =
+                        false;
+
+                    displayHostVideo.play()
+                        .catch(e => {});
+                }
+
+            },
+            {
+                once: true
             }
-        }, { once: true });
+        );
     </script>
+
 </body>
 </html>
