@@ -210,7 +210,7 @@
             display: block;
         }
 
-        /* Bagian Bawah: Nama Target (Kotak Segi Panjang) Dipisah dengan Ikon Mikrofon */
+        /* Bagian Bawah: Nama Target di Kiri, Ikon Mikrofon di Kanan */
         .target-bottom-bar {
             position: absolute;
             bottom: 4px;
@@ -219,20 +219,18 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 3px;
             z-index: 5;
         }
 
-        /* Kotak Segi Panjang untuk Nama Target */
+        /* Kotak Segi Panjang untuk Nama Target (Lebar Dibatasi agar Tidak Menempel ke Mikrofon) */
         .target-name-box {
-            flex: 1;
             background: rgba(30, 30, 30, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 3px 5px;
+            padding: 3px 6px;
             border-radius: 5px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            max-width: 65px; /* Memastikan kotak segi panjang tidak terlalu lebar dan tidak menyentuh mikrofon */
             overflow: hidden;
         }
         .target-name-container {
@@ -248,7 +246,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            max-width: 45px;
         }
         .target-name-container .name-plus-icon {
             font-size: 9px;
@@ -258,7 +255,7 @@
             flex-shrink: 0;
         }
 
-        /* Ikon Mikrofon Terpisah (Berdiri Sendiri) */
+        /* Ikon Mikrofon Terpisah di Kanan */
         .target-mic-container {
             position: relative;
             background: rgba(30, 30, 30, 0.95);
