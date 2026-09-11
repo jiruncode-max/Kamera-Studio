@@ -49,13 +49,18 @@
         .slot-box {
             border: 2px solid #ffffff; 
             border-radius: 10px; 
-            background-color: #000000;
+            background-color: #6b7280; /* Mengubah latar belakang kotak slot menjadi abu-abu saat foto/konten muncul */
             display: flex; 
             align-items: center; 
             justify-content: center; 
             position: relative; 
             overflow: hidden; 
             flex: 1;
+        }
+
+        /* Saat slot kosong, latar belakang dikembalikan ke hitam */
+        .slot-box.empty {
+            background-color: #000000;
         }
 
         .card-main {
@@ -188,7 +193,7 @@
             fill: #ffffff;
         }
 
-        /* Foto Target Bulat dengan Latar Belakang Abu-abu Langsung di Luar Gambar */
+        /* Foto Target Bulat */
         .target-avatar-wrapper {
             width: 52px;
             height: 52px;
@@ -200,7 +205,7 @@
             flex-shrink: 0;
             margin-top: 2px;
             border: 2px solid #ffffff; 
-            background-color: #6b7280; /* Warna latar belakang abu-abu di balik area transparan/luar foto bulat */
+            background-color: #555555;
             box-shadow: 0 0 10px rgba(130, 130, 130, 0.7);
         }
         .target-avatar {
@@ -222,7 +227,7 @@
             z-index: 5;
         }
 
-        /* Kotak Segi Panjang untuk Nama Target (Lebar Dibatasi agar Tidak Menempel ke Mikrofon) */
+        /* Kotak Segi Panjang untuk Nama Target */
         .target-name-box {
             background: rgba(30, 30, 30, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -230,7 +235,7 @@
             border-radius: 5px;
             display: flex;
             align-items: center;
-            max-width: 65px; /* Memastikan kotak segi panjang tidak terlalu lebar dan tidak menyentuh mikrofon */
+            max-width: 65px;
             overflow: hidden;
         }
         .target-name-container {
@@ -371,7 +376,7 @@
     <div class="board-container">
         <!-- Kolom Kiri -->
         <div class="side-column">
-            <div class="slot-box" id="slot-1">
+            <div class="slot-box empty" id="slot-1">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
@@ -396,7 +401,7 @@
                     </div>
                 </div>
             </div>
-            <div class="slot-box" id="slot-2">
+            <div class="slot-box empty" id="slot-2">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
@@ -421,7 +426,7 @@
                     </div>
                 </div>
             </div>
-            <div class="slot-box" id="slot-3">
+            <div class="slot-box empty" id="slot-3">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
@@ -446,7 +451,7 @@
                     </div>
                 </div>
             </div>
-            <div class="slot-box" id="slot-4">
+            <div class="slot-box empty" id="slot-4">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
@@ -493,7 +498,7 @@
 
         <!-- Kolom Kanan -->
         <div class="side-column">
-            <div class="slot-box" id="slot-5">
+            <div class="slot-box empty" id="slot-5">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
@@ -518,7 +523,7 @@
                     </div>
                 </div>
             </div>
-            <div class="slot-box" id="slot-6">
+            <div class="slot-box empty" id="slot-6">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
@@ -543,7 +548,7 @@
                     </div>
                 </div>
             </div>
-            <div class="slot-box" id="slot-7">
+            <div class="slot-box empty" id="slot-7">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
@@ -568,7 +573,7 @@
                     </div>
                 </div>
             </div>
-            <div class="slot-box" id="slot-8">
+            <div class="slot-box empty" id="slot-8">
                 <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
                 <div class="target-display-content">
                     <div class="target-top-left">
@@ -702,12 +707,14 @@
                 if (data.clear) {
                     content.classList.remove('show');
                     placeholder.style.display = 'flex';
+                    slotEl.classList.add('empty'); // Kembalikan ke warna hitam jika dikosongkan
                     return;
                 }
 
                 if (data.username) {
                     placeholder.style.display = 'none';
                     content.classList.add('show');
+                    slotEl.classList.remove('empty'); // Ubah latar kotak slot utama menjadi abu-abu saat isi foto tampil
 
                     avatar.src = data.photo || '';
                     nameEl.innerText = data.name || '';
