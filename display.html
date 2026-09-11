@@ -153,7 +153,7 @@
             display: flex;
         }
 
-        /* Elemen Atas Kiri: Kotak Angka */
+        /* Elemen Atas Kiri: Kotak Angka (Warna font putih) */
         .target-top-left {
             position: absolute;
             top: 4px;
@@ -168,6 +168,9 @@
             font-weight: 700;
             color: #ffffff;
             z-index: 5;
+        }
+        .target-top-left span {
+            color: #ffffff;
         }
         .target-top-left .star-circle {
             width: 12px;
@@ -204,7 +207,7 @@
             display: block;
         }
 
-        /* Nama Target di Bawah Kiri (Icon Plus Warna Putih) */
+        /* Nama Target di Bawah Kiri (Warna font & Icon Plus Putih) */
         .target-bottom-left {
             position: absolute;
             bottom: 4px;
@@ -227,6 +230,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             max-width: 60px;
+            color: #ffffff;
         }
         .target-bottom-left .name-plus-icon {
             font-size: 10px;
@@ -236,10 +240,10 @@
             flex-shrink: 0;
         }
 
-        /* Ikon Mikrofon di Bawah Kanan (Kembali ke posisi semula) */
+        /* Ikon Mikrofon di Bawah Kanan dengan Garis Coretan Warna Putih */
         .target-bottom-right {
             position: absolute;
-            bottom: 26px;
+            bottom: 4px;
             right: 4px;
             background: rgba(0, 0, 0, 0.6);
             border-radius: 50%;
@@ -260,7 +264,7 @@
             position: absolute;
             width: 12px;
             height: 2px;
-            background-color: #ff4d4d;
+            background-color: #ffffff; /* Diubah menjadi warna putih */
             transform: rotate(-45deg);
             top: 50%;
             left: 50%;
