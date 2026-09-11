@@ -891,41 +891,15 @@
         /*
          * Menentukan teks popup berdasarkan slot/count.
          */
-        function getGiftActionText(
-            count,
-            giftName,
-            giftUrl,
-            targetSlot
-        ) {
-            let actionText = "Mengirim Kotak 1";
-
+        function getGiftActionText(count, giftName, giftUrl, targetSlot) {
             const numSlot = Number(targetSlot);
 
-            if (
-                Number.isInteger(numSlot) &&
-                numSlot >= 1 &&
-                numSlot <= 8
-            ) {
+            // Kotak/slot hanya menentukan tempat efek muncul.
+            if (Number.isInteger(numSlot) && numSlot >= 1 && numSlot <= 8) {
                 return `Mengirim Kotak ${numSlot}`;
             }
 
-            const numCount = Number(count);
-
-            if (numCount === 5) {
-                actionText = "Mengirim Kotak 1";
-            } else if (numCount === 15) {
-                actionText = "Mengirim Kotak 2";
-            } else if (numCount === 20) {
-                actionText = "Mengirim Kotak 3";
-            } else if (numCount === 30) {
-                actionText = "Mengirim Kotak 4";
-            } else if (numCount === 99) {
-                actionText = "Mengirim Kotak 5";
-            } else {
-                actionText = "Mengirim Kotak 1";
-            }
-
-            return actionText;
+            return 'Mengirim Gift';
         }
 
 
@@ -1108,8 +1082,9 @@
                  * =====================================================
                  */
 
-                const targetSlotNum =
-                    Number(slot);
+                // SLOT HANYA MENENTUKAN LOKASI EFEK.
+                // JUMLAH POIN SELALU MENGIKUTI COUNT GIFT.
+                const targetSlotNum = Number(slot);
 
 
                 if (
@@ -1151,13 +1126,12 @@
                             /*
                              * Ambil COUNT ASLI.
                              */
-                            const addScore =
-                                Number(count);
-
+                            // COUNT = POIN. Jangan memakai slot/kotak sebagai poin.
+                            const addScore = Number(count);
 
                             /*
-                             * Abaikan event jika count
-                             * tidak valid.
+                             * Abaikan event jika count tidak valid.
+                             * Contoh: pilih gift 5 => sender WAJIB mengirim count: 5.
                              */
                             if (
                                 !Number.isFinite(addScore) ||
