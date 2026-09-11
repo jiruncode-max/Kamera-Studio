@@ -49,18 +49,18 @@
         .slot-box {
             border: 2px solid #ffffff; 
             border-radius: 10px; 
-            background-color: #6b7280; /* Mengubah latar belakang kotak slot menjadi abu-abu saat foto/konten muncul */
+            background-color: #6b7280;
             display: flex; 
             align-items: center; 
             justify-content: center; 
             position: relative; 
-            overflow: hidden; 
+            overflow: visible; /* Diubah jadi visible agar animasi gift melayang keluar kotak bisa terlihat */
             flex: 1;
         }
 
-        /* Saat slot kosong, latar belakang dikembalikan ke hitam */
         .slot-box.empty {
             background-color: #000000;
+            overflow: hidden;
         }
 
         .card-main {
@@ -191,6 +191,39 @@
             width: 8px;
             height: 8px;
             fill: #ffffff;
+        }
+
+        /* Animasi Ikon Gift Melayang di Atas Kanan Kotak Target */
+        .floating-gift-anim {
+            position: absolute;
+            top: -10px;
+            right: -8px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: rgba(20, 20, 25, 0.9);
+            border: 1.5px solid #fbbf24;
+            padding: 2px 6px;
+            border-radius: 12px;
+            z-index: 20;
+            opacity: 0;
+            transform: translateY(10px) scale(0.6);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+        .floating-gift-anim.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .floating-gift-anim img {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+        .floating-gift-anim span {
+            font-size: 9px;
+            font-weight: 900;
+            color: #fbbf24;
         }
 
         /* Foto Target Bulat */
@@ -383,7 +416,11 @@
                         <div class="star-circle">
                             <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
-                        <span>0</span>
+                        <span class="slot-score">0</span>
+                    </div>
+                    <div class="floating-gift-anim">
+                        <img class="float-gift-icon" src="" alt="Gift">
+                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -408,7 +445,11 @@
                         <div class="star-circle">
                             <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
-                        <span>0</span>
+                        <span class="slot-score">0</span>
+                    </div>
+                    <div class="floating-gift-anim">
+                        <img class="float-gift-icon" src="" alt="Gift">
+                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -433,7 +474,11 @@
                         <div class="star-circle">
                             <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
-                        <span>0</span>
+                        <span class="slot-score">0</span>
+                    </div>
+                    <div class="floating-gift-anim">
+                        <img class="float-gift-icon" src="" alt="Gift">
+                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -458,7 +503,11 @@
                         <div class="star-circle">
                             <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
-                        <span>0</span>
+                        <span class="slot-score">0</span>
+                    </div>
+                    <div class="floating-gift-anim">
+                        <img class="float-gift-icon" src="" alt="Gift">
+                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -505,7 +554,11 @@
                         <div class="star-circle">
                             <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
-                        <span>0</span>
+                        <span class="slot-score">0</span>
+                    </div>
+                    <div class="floating-gift-anim">
+                        <img class="float-gift-icon" src="" alt="Gift">
+                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -530,7 +583,11 @@
                         <div class="star-circle">
                             <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
-                        <span>0</span>
+                        <span class="slot-score">0</span>
+                    </div>
+                    <div class="floating-gift-anim">
+                        <img class="float-gift-icon" src="" alt="Gift">
+                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -555,7 +612,11 @@
                         <div class="star-circle">
                             <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
-                        <span>0</span>
+                        <span class="slot-score">0</span>
+                    </div>
+                    <div class="floating-gift-anim">
+                        <img class="float-gift-icon" src="" alt="Gift">
+                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -580,7 +641,11 @@
                         <div class="star-circle">
                             <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
-                        <span>0</span>
+                        <span class="slot-score">0</span>
+                    </div>
+                    <div class="floating-gift-anim">
+                        <img class="float-gift-icon" src="" alt="Gift">
+                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -615,6 +680,7 @@
         const popupCount = document.getElementById('popupCount');
 
         let popupTimer = null;
+        const slotTimers = {};
 
         const defaultCustomPhoto = "https://b.top4top.io/p_3905d2xmz1.jpeg";
         const randomNames = ["J.K 090102", "Siti Rahma", "Budi Santoso", "Dewi Lestari", "Rizky Pratama"];
@@ -692,6 +758,36 @@
                 popupTimer = setTimeout(() => {
                     giftPopupContainer.classList.remove('show');
                 }, 3000);
+
+                // Tambahkan poin ke kotak target jika slot ditentukan (misal slot 1-8)
+                const targetSlotNum = Number(slot);
+                if (!isNaN(targetSlotNum) && targetSlotNum >= 1 && targetSlotNum <= 8) {
+                    const slotEl = document.getElementById(`slot-${targetSlotNum}`);
+                    if (slotEl) {
+                        const scoreEl = slotEl.querySelector('.slot-score');
+                        const floatAnim = slotEl.querySelector('.floating-gift-anim');
+                        const floatIcon = slotEl.querySelector('.float-gift-icon');
+                        const floatVal = slotEl.querySelector('.float-gift-val');
+
+                        if (scoreEl && floatAnim && floatIcon && floatVal) {
+                            // Hitung poin (misal ambil dari count atau default 5)
+                            const addScore = Number(count) || 5;
+                            let currentScore = parseInt(scoreEl.innerText) || 0;
+                            currentScore += addScore;
+                            scoreEl.innerText = currentScore;
+
+                            // Tampilkan animasi gift melayang di atas kanan kotak
+                            floatIcon.src = giftUrl || '';
+                            floatVal.innerText = `+${addScore}`;
+                            floatAnim.classList.add('show');
+
+                            clearTimeout(slotTimers[targetSlotNum]);
+                            slotTimers[targetSlotNum] = setTimeout(() => {
+                                floatAnim.classList.remove('show');
+                            }, 3000); // Tampil selama 3 detik
+                        }
+                    }
+                }
             }
 
             if (type === 'UPDATE_TARGET_SLOT') {
@@ -703,18 +799,20 @@
                 const content = slotEl.querySelector('.target-display-content');
                 const avatar = slotEl.querySelector('.target-avatar');
                 const nameEl = slotEl.querySelector('.target-name');
+                const scoreEl = slotEl.querySelector('.slot-score');
 
                 if (data.clear) {
                     content.classList.remove('show');
                     placeholder.style.display = 'flex';
-                    slotEl.classList.add('empty'); // Kembalikan ke warna hitam jika dikosongkan
+                    slotEl.classList.add('empty');
+                    if (scoreEl) scoreEl.innerText = '0';
                     return;
                 }
 
                 if (data.username) {
                     placeholder.style.display = 'none';
                     content.classList.add('show');
-                    slotEl.classList.remove('empty'); // Ubah latar kotak slot utama menjadi abu-abu saat isi foto tampil
+                    slotEl.classList.remove('empty');
 
                     avatar.src = data.photo || '';
                     nameEl.innerText = data.name || '';
