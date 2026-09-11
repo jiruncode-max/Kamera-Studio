@@ -679,23 +679,16 @@
             const numCount = Number(count);
             if (numCount === 5) {
                 actionText = "Mengirim Kotak 1";
-            } else if (numCount === 10) {
-                actionText = "Mengirim Kotak 2";
             } else if (numCount === 15) {
-                actionText = "Mengirim Kotak 3";
+                actionText = "Mengirim Kotak 2";
             } else if (numCount === 20) {
-                actionText = "Mengirim Kotak 4";
+                actionText = "Mengirim Kotak 3";
             } else if (numCount === 30) {
-                actionText = "Mengirim Kotak 5";
+                actionText = "Mengirim Kotak 4";
             } else if (numCount === 99) {
-                actionText = "Mengirim Kotak 6";
+                actionText = "Mengirim Kotak 5";
             } else {
-                const textToCheck = (giftName + " " + giftUrl).toLowerCase();
-                if (textToCheck.includes('love') || textToCheck.includes('ilu')) {
-                    actionText = "Mengirim Kotak 2";
-                } else {
-                    actionText = "Mengirim Kotak 1";
-                }
+                actionText = "Mengirim Kotak 1";
             }
             return actionText;
         }
@@ -743,7 +736,7 @@
                     giftPopupContainer.classList.remove('show');
                 }, 3000);
 
-                // Tambahkan poin ke kotak target dan tampilkan icon gift saja di atas kanan
+                // Tambahkan poin ke kotak target sesuai nilai count (5, 15, 20, 30, 99, dsb)
                 const targetSlotNum = Number(slot);
                 if (!isNaN(targetSlotNum) && targetSlotNum >= 1 && targetSlotNum <= 8) {
                     const slotEl = document.getElementById(`slot-${targetSlotNum}`);
