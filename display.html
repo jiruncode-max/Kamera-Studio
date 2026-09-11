@@ -620,7 +620,7 @@
                 </div>
             </div>
             <div class="slot-box empty" id="slot-8">
-                <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span></div>
+                <div class="request-placeholder"><span class="plus-icon">+</span><span class="request-text">Permintaan</span>`</div>
                 <div class="target-display-content">
                     <div class="target-top-left">
                         <div class="star-circle">
@@ -736,7 +736,7 @@
                     giftPopupContainer.classList.remove('show');
                 }, 3000);
 
-                // Tambahkan poin ke kotak target sesuai nilai count (5, 15, 20, 30, 99, dsb)
+                // PENAMBAHAN POIN: Pastikan mengambil nilai asli dari `count` (5, 15, 20, 30, 99, dst)
                 const targetSlotNum = Number(slot);
                 if (!isNaN(targetSlotNum) && targetSlotNum >= 1 && targetSlotNum <= 8) {
                     const slotEl = document.getElementById(`slot-${targetSlotNum}`);
@@ -746,7 +746,7 @@
                         const floatIcon = slotEl.querySelector('.float-gift-icon');
 
                         if (scoreEl && floatAnim && floatIcon) {
-                            const addScore = Number(count) || 5;
+                            const addScore = Number(count) || 1; // Mengambil nilai dari tombol kontrol panel (5, 15, 20, 30, 99)
                             let currentScore = parseInt(scoreEl.innerText) || 0;
                             currentScore += addScore;
                             scoreEl.innerText = currentScore;
