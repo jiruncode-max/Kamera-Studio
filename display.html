@@ -54,7 +54,7 @@
             align-items: center; 
             justify-content: center; 
             position: relative; 
-            overflow: visible; /* Diubah jadi visible agar animasi gift melayang keluar kotak bisa terlihat */
+            overflow: visible; 
             flex: 1;
         }
 
@@ -193,21 +193,17 @@
             fill: #ffffff;
         }
 
-        /* Animasi Ikon Gift Melayang di Atas Kanan Kotak Target */
+        /* Animasi Ikon Gift Saja di Atas Kanan Kotak Target */
         .floating-gift-anim {
             position: absolute;
-            top: -10px;
-            right: -8px;
+            top: -12px;
+            right: -6px;
             display: flex;
             align-items: center;
-            gap: 2px;
-            background: rgba(20, 20, 25, 0.9);
-            border: 1.5px solid #fbbf24;
-            padding: 2px 6px;
-            border-radius: 12px;
+            justify-content: center;
             z-index: 20;
             opacity: 0;
-            transform: translateY(10px) scale(0.6);
+            transform: translateY(10px) scale(0.5);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
         }
@@ -216,14 +212,10 @@
             transform: translateY(0) scale(1);
         }
         .floating-gift-anim img {
-            width: 16px;
-            height: 16px;
+            width: 24px;
+            height: 24px;
             object-fit: contain;
-        }
-        .floating-gift-anim span {
-            font-size: 9px;
-            font-weight: 900;
-            color: #fbbf24;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
         }
 
         /* Foto Target Bulat */
@@ -420,7 +412,6 @@
                     </div>
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
-                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -449,7 +440,6 @@
                     </div>
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
-                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -478,7 +468,6 @@
                     </div>
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
-                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -507,7 +496,6 @@
                     </div>
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
-                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -558,7 +546,6 @@
                     </div>
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
-                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -587,7 +574,6 @@
                     </div>
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
-                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -616,7 +602,6 @@
                     </div>
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
-                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -645,7 +630,6 @@
                     </div>
                     <div class="floating-gift-anim">
                         <img class="float-gift-icon" src="" alt="Gift">
-                        <span class="float-gift-val">+5</span>
                     </div>
                     <div class="target-avatar-wrapper">
                         <img class="target-avatar" src="" alt="Avatar">
@@ -759,7 +743,7 @@
                     giftPopupContainer.classList.remove('show');
                 }, 3000);
 
-                // Tambahkan poin ke kotak target jika slot ditentukan (misal slot 1-8)
+                // Tambahkan poin ke kotak target dan tampilkan icon gift saja di atas kanan
                 const targetSlotNum = Number(slot);
                 if (!isNaN(targetSlotNum) && targetSlotNum >= 1 && targetSlotNum <= 8) {
                     const slotEl = document.getElementById(`slot-${targetSlotNum}`);
@@ -767,24 +751,21 @@
                         const scoreEl = slotEl.querySelector('.slot-score');
                         const floatAnim = slotEl.querySelector('.floating-gift-anim');
                         const floatIcon = slotEl.querySelector('.float-gift-icon');
-                        const floatVal = slotEl.querySelector('.float-gift-val');
 
-                        if (scoreEl && floatAnim && floatIcon && floatVal) {
-                            // Hitung poin (misal ambil dari count atau default 5)
+                        if (scoreEl && floatAnim && floatIcon) {
                             const addScore = Number(count) || 5;
                             let currentScore = parseInt(scoreEl.innerText) || 0;
                             currentScore += addScore;
                             scoreEl.innerText = currentScore;
 
-                            // Tampilkan animasi gift melayang di atas kanan kotak
+                            // Set ikon gift dan tampilkan animasi selama 3 detik
                             floatIcon.src = giftUrl || '';
-                            floatVal.innerText = `+${addScore}`;
                             floatAnim.classList.add('show');
 
                             clearTimeout(slotTimers[targetSlotNum]);
                             slotTimers[targetSlotNum] = setTimeout(() => {
                                 floatAnim.classList.remove('show');
-                            }, 3000); // Tampil selama 3 detik
+                            }, 3000);
                         }
                     }
                 }
