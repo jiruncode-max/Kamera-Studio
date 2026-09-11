@@ -871,8 +871,78 @@
 
 
         let popupTimer = null;
+        let popupComboTimer = null;
+        let popupComboCount = 0;
 
         const slotTimers = {};
+
+
+        /*
+         * Mengubah teks poin seperti:
+         * 100K    -> 100000
+         * 1.000M  -> 1000000
+         * 1.5M    -> 1500000
+         * 100.000 -> 100000
+         */
+        function parsePointValue(value) {
+            if (typeof value === 'number') {
+                return Number.isFinite(value) ? value : NaN;
+            }
+
+            if (value === null || value === undefined) return NaN;
+
+            let str = String(value).trim().toUpperCase().replace(/\s+/g, '');
+            if (!str) return NaN;
+
+            let multiplier = 1;
+
+            if (str.endsWith('M')) {
+                multiplier = 1000000;
+                str = str.slice(0, -1);
+            } else if (str.endsWith('K')) {
+                multiplier = 1000;
+                str = str.slice(0, -1);
+            }
+
+            if (str.includes('.') && str.includes(',')) {
+                str = str.replace(/\./g, '').replace(',', '.');
+            } else if (str.includes('.') && multiplier === 1) {
+                const parts = str.split('.');
+                if (parts.length === 2 && parts[1].length === 3) {
+                    str = parts.join('');
+                }
+            } else if (str.includes(',')) {
+                str = str.replace(',', '.');
+            }
+
+            const number = parseFloat(str);
+            return Number.isFinite(number) ? number * multiplier : NaN;
+        }
+
+        /*
+         * Format poin:
+         * 100000  -> 100K
+         * 1000000 -> 1.000M
+         */
+        function formatScore(value) {
+            const number = Math.max(0, Math.floor(Number(value) || 0));
+
+            if (number >= 1000000) {
+                return (number / 1000000).toLocaleString('id-ID', {
+                    minimumFractionDigits: 3,
+                    maximumFractionDigits: 3
+                }) + 'M';
+            }
+
+            if (number >= 1000) {
+                const thousands = number / 1000;
+                return Number.isInteger(thousands)
+                    ? `${thousands}K`
+                    : `${thousands.toLocaleString('id-ID', { maximumFractionDigits: 1 })}K`;
+            }
+
+            return number.toLocaleString('id-ID');
+        }
 
 
         const defaultCustomPhoto =
@@ -910,7 +980,7 @@
                 url,
                 data,
                 count,
-                giftPoints,
+                points,
                 giftUrl,
                 senderName,
                 senderUname,
@@ -984,7 +1054,7 @@
                  */
                 const giftActionMessage =
                     getGiftActionText(
-                        count,
+                        Number.isFinite(Number(points)) ? Number(points) : Number(count),
                         giftName,
                         giftUrl,
                         slot
@@ -1009,23 +1079,19 @@
 
 
                 /*
-                 * Tampilkan jumlah gift asli.
-                 *
-                 * Contoh:
-                 * count = 5  -> x5
-                 * count = 15 -> x15
-                 * count = 20 -> x20
-                 * count = 30 -> x30
-                 * count = 99 -> x99
+                 * MULTIPLIER ANIMASI POPUP.
+                 * Tidak lagi mengambil angka points/count.
+                 * Setiap tombol gift ditekan lagi:
+                 * x1 -> x2 -> x3 -> x4 -> x5 -> ...
+                 * Reset ke x1 setelah 3 detik tidak ada tekanan.
                  */
-                const popupGiftCount =
-                    Number(giftPoints ?? count);
+                popupComboCount++;
+                popupCount.innerText = `x${popupComboCount}`;
 
-                popupCount.innerText =
-                    Number.isFinite(popupGiftCount) &&
-                    popupGiftCount > 0
-                        ? `x${popupGiftCount}`
-                        : 'x0';
+                clearTimeout(popupComboTimer);
+                popupComboTimer = setTimeout(() => {
+                    popupComboCount = 0;
+                }, 3000);
 
 
                 /*
@@ -1127,49 +1193,36 @@
                             /*
                              * Ambil COUNT ASLI.
                              */
-                            // COUNT = POIN. Jangan memakai slot/kotak sebagai poin.
-                            const addScore = Number(giftPoints ?? count);
+                            // POINTS menjadi nilai poin utama.
+                            // Mendukung angka biasa maupun format 100K / 1.000M.
+                            const rawPoints =
+                                points !== undefined && points !== null && String(points).trim() !== ''
+                                    ? points
+                                    : count;
 
-                            /*
-                             * Abaikan event jika count tidak valid.
-                             * Contoh: pilih gift 5 => sender WAJIB mengirim count: 5.
-                             */
-                            if (
-                                !Number.isFinite(addScore) ||
-                                addScore <= 0
-                            ) {
+                            const addScore = parsePointValue(rawPoints);
+
+                            if (!Number.isFinite(addScore) || addScore <= 0) {
                                 console.warn(
-                                    'Count gift tidak valid:',
-                                    count
+                                    'Poin gift tidak valid:',
+                                    rawPoints
                                 );
-
                                 return;
                             }
 
 
                             /*
-                             * Ambil poin saat ini.
+                             * Ambil angka poin asli dari dataset.
+                             * Jangan parseInt dari teks 100K / 1.000M.
                              */
                             const currentScore =
-                                parseInt(
-                                    scoreEl.innerText,
-                                    10
-                                ) || 0;
+                                parsePointValue(slotEl.dataset.score || '0') || 0;
 
+                            const newScore = currentScore + addScore;
 
-                            /*
-                             * Tambahkan count asli.
-                             */
-                            const newScore =
-                                currentScore +
-                                addScore;
-
-
-                            /*
-                             * Tampilkan hasil.
-                             */
-                            scoreEl.innerText =
-                                newScore;
+                            // Simpan angka asli, lalu tampilkan versi ringkas.
+                            slotEl.dataset.score = String(newScore);
+                            scoreEl.innerText = formatScore(newScore);
 
 
                             /*
@@ -1280,9 +1333,10 @@
 
 
                     if (scoreEl) {
-                        scoreEl.innerText =
-                            '0';
+                        scoreEl.innerText = '0';
                     }
+
+                    slotEl.dataset.score = '0';
 
 
                     return;
