@@ -146,32 +146,32 @@
             width: 100%;
             height: 100%;
             position: relative;
-            padding: 8px;
+            padding: 4px;
             text-align: center;
         }
         .target-display-content.show {
             display: flex;
         }
 
-        /* Elemen Atas Kiri: Ikon Bulat Biru dengan Bintang Putih & Angka 0 (Dirapikan) */
+        /* Elemen Atas Kiri: Kotak Angka */
         .target-top-left {
             position: absolute;
-            top: 6px;
-            left: 6px;
+            top: 4px;
+            left: 4px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             background: rgba(0, 0, 0, 0.6);
-            padding: 2px 6px;
-            border-radius: 8px;
-            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 6px;
+            font-size: 9px;
             font-weight: 700;
             color: #ffffff;
             z-index: 5;
         }
         .target-top-left .star-circle {
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             background-color: #20D5EC;
             border-radius: 50%;
             display: flex;
@@ -180,80 +180,92 @@
             flex-shrink: 0;
         }
         .target-top-left svg {
-            width: 9px;
-            height: 9px;
+            width: 8px;
+            height: 8px;
             fill: #ffffff;
         }
 
-        /* Foto Target (Bulat sempurna & Crop pas) */
-        .target-avatar {
-            width: 48px;
-            height: 48px;
+        /* Foto Target Bulat Sempurna dan Proporsional */
+        .target-avatar-wrapper {
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .target-avatar {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             display: block;
         }
 
-        /* Nama Target di Bawah Kiri (Perbaikan ikon plus agar lebih rapi) */
+        /* Nama Target di Bawah Kiri (Icon Plus Warna Putih) */
         .target-bottom-left {
             position: absolute;
-            bottom: 6px;
-            left: 6px;
+            bottom: 4px;
+            left: 4px;
+            right: 4px;
             display: flex;
             align-items: center;
-            gap: 4px;
-            background: rgba(40, 40, 40, 0.85);
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-size: 9px;
+            justify-content: center;
+            gap: 2px;
+            background: rgba(30, 30, 30, 0.9);
+            padding: 2px 4px;
+            border-radius: 5px;
+            font-size: 8px;
             font-weight: 600;
             color: #ffffff;
-            max-width: 80%;
             z-index: 5;
         }
         .target-name {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            max-width: 60px;
         }
         .target-bottom-left .name-plus-icon {
-            font-size: 12px;
+            font-size: 10px;
             font-weight: 800;
             line-height: 1;
-            color: #20D5EC;
+            color: #ffffff; /* Diubah menjadi putih */
             flex-shrink: 0;
         }
 
-        /* Ikon Mikrofon di Bawah Kanan (Diperbaiki posisi dan garis coretannya) */
+        /* Ikon Mikrofon di Bawah Kanan */
         .target-bottom-right {
             position: absolute;
-            bottom: 6px;
-            right: 6px;
+            top: 4px;
+            right: 4px;
             background: rgba(0, 0, 0, 0.6);
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 5;
         }
         .target-bottom-right svg {
-            width: 10px;
-            height: 10px;
+            width: 9px;
+            height: 9px;
             fill: #ffffff;
         }
         .target-bottom-right::after {
             content: '';
             position: absolute;
-            width: 14px;
+            width: 12px;
             height: 2px;
             background-color: #ff4d4d;
             transform: rotate(-45deg);
             top: 50%;
             left: 50%;
             margin-top: -1px;
-            margin-left: -7px;
+            margin-left: -6px;
         }
 
         .giftPopupContainer {
@@ -350,7 +362,9 @@
                         </div>
                         <span>0</span>
                     </div>
-                    <img class="target-avatar" src="" alt="Avatar">
+                    <div class="target-avatar-wrapper">
+                        <img class="target-avatar" src="" alt="Avatar">
+                    </div>
                     <div class="target-bottom-left">
                         <span class="target-name">Nama</span>
                         <span class="name-plus-icon">+</span>
@@ -369,7 +383,9 @@
                         </div>
                         <span>0</span>
                     </div>
-                    <img class="target-avatar" src="" alt="Avatar">
+                    <div class="target-avatar-wrapper">
+                        <img class="target-avatar" src="" alt="Avatar">
+                    </div>
                     <div class="target-bottom-left">
                         <span class="target-name">Nama</span>
                         <span class="name-plus-icon">+</span>
@@ -388,7 +404,9 @@
                         </div>
                         <span>0</span>
                     </div>
-                    <img class="target-avatar" src="" alt="Avatar">
+                    <div class="target-avatar-wrapper">
+                        <img class="target-avatar" src="" alt="Avatar">
+                    </div>
                     <div class="target-bottom-left">
                         <span class="target-name">Nama</span>
                         <span class="name-plus-icon">+</span>
@@ -407,7 +425,9 @@
                         </div>
                         <span>0</span>
                     </div>
-                    <img class="target-avatar" src="" alt="Avatar">
+                    <div class="target-avatar-wrapper">
+                        <img class="target-avatar" src="" alt="Avatar">
+                    </div>
                     <div class="target-bottom-left">
                         <span class="target-name">Nama</span>
                         <span class="name-plus-icon">+</span>
@@ -448,7 +468,9 @@
                         </div>
                         <span>0</span>
                     </div>
-                    <img class="target-avatar" src="" alt="Avatar">
+                    <div class="target-avatar-wrapper">
+                        <img class="target-avatar" src="" alt="Avatar">
+                    </div>
                     <div class="target-bottom-left">
                         <span class="target-name">Nama</span>
                         <span class="name-plus-icon">+</span>
@@ -467,7 +489,9 @@
                         </div>
                         <span>0</span>
                     </div>
-                    <img class="target-avatar" src="" alt="Avatar">
+                    <div class="target-avatar-wrapper">
+                        <img class="target-avatar" src="" alt="Avatar">
+                    </div>
                     <div class="target-bottom-left">
                         <span class="target-name">Nama</span>
                         <span class="name-plus-icon">+</span>
@@ -486,7 +510,9 @@
                         </div>
                         <span>0</span>
                     </div>
-                    <img class="target-avatar" src="" alt="Avatar">
+                    <div class="target-avatar-wrapper">
+                        <img class="target-avatar" src="" alt="Avatar">
+                    </div>
                     <div class="target-bottom-left">
                         <span class="target-name">Nama</span>
                         <span class="name-plus-icon">+</span>
@@ -505,7 +531,9 @@
                         </div>
                         <span>0</span>
                     </div>
-                    <img class="target-avatar" src="" alt="Avatar">
+                    <div class="target-avatar-wrapper">
+                        <img class="target-avatar" src="" alt="Avatar">
+                    </div>
                     <div class="target-bottom-left">
                         <span class="target-name">Nama</span>
                         <span class="name-plus-icon">+</span>
