@@ -289,42 +289,30 @@
         }
 
         function triggerGiftPopup() {
-            const slotId = document.getElementById('popupSlot').value;
+            const slotId = Number(document.getElementById('popupSlot').value);
             const giftSelect = document.getElementById('giftChoice');
-            const giftImgUrl = giftSelect.value;
             const selectedOption = giftSelect.options[giftSelect.selectedIndex];
+            const giftImgUrl = giftSelect.value;
+            const giftName = selectedOption.getAttribute('data-name') || selectedOption.text;
+            const giftPoints = Number(selectedOption.getAttribute('data-points'));
 
-            const giftName =
-                selectedOption.getAttribute('data-name') ||
-                selectedOption.text;
-
-            // NILAI GIFT = POIN YANG DITAMBAHKAN.
-            // SLOT/KOTAK HANYA MENENTUKAN LOKASI EFEK.
-            const giftPoints = Number(
-                selectedOption.getAttribute('data-points')
-            );
+            // SLOT/KOTAK = HANYA LOKASI EFEK (1-8)
+            // GIFT = NILAI POIN YANG DITAMBAHKAN
+            if (!Number.isInteger(slotId) || slotId < 1 || slotId > 8) {
+                alert('Slot gift tidak valid.');
+                return;
+            }
 
             if (!Number.isFinite(giftPoints) || giftPoints <= 0) {
-                alert('Nilai gift tidak valid.');
+                alert('Nilai poin gift tidak valid.');
                 return;
             }
 
             channel.postMessage({
                 type: 'TRIGGER_GIFT_POPUP',
-                slot: Number(slotId),
+                slot: slotId,
+                giftPoints: giftPoints,
                 count: giftPoints,
-                points: giftPoints,
-                giftUrl: giftImgUrl,
-                giftName: giftName
-            });
-        }
-                giftCounters[key].lastTime = Date.now();
-            }
-
-            channel.postMessage({ 
-                type: 'TRIGGER_GIFT_POPUP', 
-                slot: slotId, 
-                count: giftCounters[key].count, 
                 giftUrl: giftImgUrl,
                 giftName: giftName
             });
