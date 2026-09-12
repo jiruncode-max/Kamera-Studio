@@ -27,7 +27,10 @@
             overflow: hidden;
         }
 
-        /* VIDEO ANIMASI / GREEN SCREEN DI BELAKANG KOTAK-KOTAK LAYOUT */
+        /* 
+          VIDEO BACKGROUND FULL LAYAR DI BELAKANG 
+          Menggunakan mix-blend-mode: lighten / screen agar hitam & hijau menyatu total dengan background hitam
+        */
         .bg-video-layer {
             position: absolute;
             top: 0;
@@ -35,17 +38,17 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 1; /* Berada di belakang (layer bawah) */
+            z-index: 1;
             display: none;
             pointer-events: none;
-            mix-blend-mode: screen; /* Menyatu mulus untuk background hitam/gelap */
+            mix-blend-mode: lighten; 
+            filter: brightness(1.1) contrast(1.1);
         }
 
-        /* KONTAINER UTAMA BERADA DI DEPAN LAYAR VIDEO */
         .main-container {
             display: flex; justify-content: center; align-items: flex-start;
             gap: 8px; width: 100%;
-            z-index: 10; /* Berada di depan video */
+            z-index: 10;
         }
 
         .side-column { 
@@ -55,31 +58,32 @@
             height: 324px; 
         }
 
+        /* KOTAK DIBUAT TRANSPARAN AGAR VIDEO DI BELAKANGNYA TEMBUS PANDANG DAN MENYATU */
         .box {
             width: 72px; height: 75px;
-            border: 2px solid rgba(255, 255, 255, 0.8); border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 8px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background-color: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(2px);
+            background-color: transparent; /* Tanpa background gelap agar video menyatu */
             position: relative; overflow: hidden;
         }
-        .box .plus { font-size: 16px; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
-        .box .label { font-size: 7px; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+        .box .plus { font-size: 16px; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
+        .box .label { font-size: 7px; margin-top: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
 
         .host-box {
             width: 225px; height: 324px;
-            border: 2px solid rgba(255, 255, 255, 0.8); border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 10px;
             position: relative; 
-            background-color: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(2px);
+            background-color: transparent; /* Tanpa background gelap agar video menyatu */
             overflow: hidden;
         }
 
         .host-name-bottom {
             position: absolute; bottom: 8px; left: 8px;
-            z-index: 10; background-color: rgba(0, 0, 0, 0.7); color: #fff;
+            z-index: 15; background-color: rgba(0, 0, 0, 0.6); color: #fff;
             font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.4); white-space: nowrap; max-width: 85%;
+            border: 1px solid rgba(255, 255, 255, 0.2); white-space: nowrap; max-width: 85%;
             text-overflow: ellipsis; overflow: hidden;
         }
 
@@ -99,7 +103,7 @@
         .slot-content {
             position: absolute; width: 100%; height: 100%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 5; background: rgba(0, 0, 0, 0.5);
+            z-index: 15; background: rgba(0, 0, 0, 0.3);
         }
         .slot-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
         .slot-name { font-size: 7px; font-weight: bold; text-align: center; max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
@@ -108,10 +112,10 @@
 <body>
 
     <div class="wrapper-9-16">
-        <!-- VIDEO ANIMASI DI BELAKANG (LAYER 1) -->
+        <!-- VIDEO BACKGROUND DI BELAKANG -->
         <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
 
-        <!-- KOTAK-KOTAK LAYOUT UTAMA DI DEPAN (LAYER 10) -->
+        <!-- KOTAK-KOTAK DI DEPAN DENGAN BACKGROUND TRANSPARAN -->
         <div class="main-container">
             <div class="host-box" id="hostBox">
                 <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
