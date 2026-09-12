@@ -27,6 +27,19 @@
             overflow: hidden;
         }
 
+        /* VIDEO ANIMASI LATAR BELAKANG PENUH SEPERTI SEMULA */
+        .bg-video-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            display: none;
+            pointer-events: none;
+        }
+
         .main-container {
             display: flex; justify-content: center; align-items: flex-start;
             gap: 8px; width: 100%;
@@ -60,6 +73,7 @@
             overflow: hidden;
         }
 
+        /* NAMA HOST DI BAWAH SEBELAH KIRI KOTAK HOST */
         .host-name-bottom {
             position: absolute; bottom: 8px; left: 8px;
             z-index: 10; background-color: rgba(0, 0, 0, 0.7); color: #fff;
@@ -72,20 +86,6 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover; z-index: 1; display: none;
             pointer-events: none;
-        }
-
-        /* VIDEO LATAR BELAKANG UTAMA DIPINDAHKAN KE PALING BAWAH LAYAR */
-        .bg-video-layer {
-            position: absolute;
-            bottom: 15px;
-            left: 12px;
-            width: 381px;
-            height: 324px;
-            object-fit: cover;
-            z-index: 1;
-            display: none;
-            pointer-events: none;
-            border-radius: 8px;
         }
 
         video::-webkit-media-controls,
@@ -107,6 +107,9 @@
 <body>
 
     <div class="wrapper-9-16">
+        <!-- VIDEO LATAR BELAKANG PENUH -->
+        <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
+
         <div class="main-container">
             <div class="host-box" id="hostBox">
                 <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
@@ -127,9 +130,6 @@
                 <div class="box" id="slot-8"><span class="plus">+</span><span class="label">Permintaan</span></div>
             </div>
         </div>
-
-        <!-- VIDEO LATAR UTAMA (Diposisikan di Paling Bawah Layar) -->
-        <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
     </div>
 
     <script>
