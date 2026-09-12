@@ -34,7 +34,7 @@
 
         .side-column { display: flex; flex-direction: column; gap: 6px; }
 
-        /* Kotak Sisi Kiri & Kanan Diperkecil */
+        /* Kotak Sisi Kiri & Kanan */
         .box {
             width: 100px; height: 68px;
             border: 2px solid #ffffff; border-radius: 8px;
@@ -44,7 +44,7 @@
         .box .plus { font-size: 18px; font-weight: bold; }
         .box .label { font-size: 9px; margin-top: 2px; }
 
-        /* Kotak Host di Tengah (Menyesuaikan tinggi 4 kotak samping) */
+        /* Kotak Host di Tengah */
         .host-box {
             width: 220px; height: 299px;
             border: 2px solid #ffffff; border-radius: 10px;
@@ -62,9 +62,9 @@
             object-fit: cover; z-index: 1; display: none;
         }
 
-        /* Area Green Screen di Bawah (Menempel rapi selebar grid layout) */
+        /* Area Green Screen di Bawah */
         .green-screen-container {
-            width: 536px; /* Lebar pas menyamai total grid atas (100 + 12 + 220 + 12 + 100) */
+            width: 536px; 
             height: 220px;
             background-color: #000000;
             position: relative; 
@@ -74,11 +74,11 @@
             overflow: hidden;
         }
 
-        /* Canvas untuk merender video transparan lebih rapi */
+        /* Canvas dibuat tajam tanpa pecah */
         #gsCanvas {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Agar animasi tidak terpotong */
+            object-fit: contain;
             display: none;
         }
 
@@ -119,9 +119,10 @@
             </div>
         </div>
 
-        <!-- Bagian Bawah: Video Green Screen Transparan Rapi -->
+        <!-- Bagian Bawah: Video Green Screen Transparan -->
         <div class="green-screen-container" id="gsContainer">
-            <video id="gsVideo" src="" autoplay loop muted style="display:none;"></video>
+            <!-- Atribut 'loop' dihapus agar video berhenti saat selesai -->
+            <video id="gsVideo" src="" muted style="display:none;"></video>
             <canvas id="gsCanvas"></canvas>
             <span id="gsPlaceholder" style="color: #555; font-size: 11px; z-index: 2; position: absolute;">Area Animasi Melayang</span>
         </div>
@@ -135,32 +136,37 @@
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
         const placeholder = document.getElementById('gsPlaceholder');
 
+        // Saat video dimuat ukurannya, sesuaikan resolusi canvas agar tidak pecah
+        video.addEventListener('loadedmetadata', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+        });
+
         video.addEventListener('play', () => {
             canvas.style.display = 'block';
             placeholder.style.display = 'none';
-            
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 360;
 
             function processFrame() {
-                if (video.paused || video.ended) return;
+                // Jika video sudah selesai / berhenti, hentikan proses render dan sembunyikan canvas
+                if (video.paused || video.ended) {
+                    canvas.style.display = 'none';
+                    placeholder.style.display = 'block';
+                    return;
+                }
                 
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 let frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 let data = frame.data;
 
-                // Algoritma Chroma Key yang lebih presisi agar pinggiran hijau bersih (tidak kotor)
+                // Algoritma Chroma Key (Pembersihan warna hijau agar rapi)
                 for (let i = 0; i < data.length; i += 4) {
                     let r = data[i];
                     let g = data[i + 1];
                     let b = data[i + 2];
 
-                    // Deteksi warna hijau layar standar maupun variasi bayangannya
                     if (g > 70 && g > r * 1.15 && g > b * 1.15) {
-                        // Membuat transparan total pada pixel hijau
-                        data[i + 3] = 0; 
+                        data[i + 3] = 0; // Transparan total
                     } else if (g > r && g > b) {
-                        // Mengurangi sisa bayangan hijau (spill removal) di pinggiran objek
                         let diff = g - Math.max(r, b);
                         if (diff > 20) {
                             data[i + 3] = Math.max(0, 255 - (diff * 6));
@@ -172,6 +178,12 @@
                 requestAnimationFrame(processFrame);
             }
             requestAnimationFrame(processFrame);
+        });
+
+        // Event listener saat video selesai diputar (berhenti otomatis)
+        video.addEventListener('ended', () => {
+            canvas.style.display = 'none';
+            placeholder.style.display = 'block';
         });
 
         channel.onmessage = (event) => {
@@ -190,6 +202,8 @@
             }
 
             if (type === 'UPDATE_GS_VIDEO') {
+                video.pause();
+                video.currentTime = 0;
                 video.src = url;
                 video.load();
                 video.play().catch(e => console.log(e));
