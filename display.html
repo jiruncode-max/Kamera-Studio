@@ -91,7 +91,6 @@
             z-index: 10; height: 13px;
             background-color: rgba(0, 0, 0, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            /* Kotak bagian nama/poin jadi segi panjang dengan ujung setengah bulat (pill shape) */
             border-radius: 10px;
             display: none; align-items: center;
             box-shadow: 0 1px 2px rgba(0,0,0,0.5);
@@ -99,7 +98,6 @@
             padding-right: 4px;
         }
 
-        /* Icon bulat bintang */
         .slot-star-circle-small {
             width: 9px; height: 9px;
             background-color: #1890ff;
@@ -132,7 +130,6 @@
 
         .host-box {
             width: 195px; height: 310px;
-            /* Garis tipis 1px dan sudut lancip */
             border: 1px solid rgba(255, 255, 255, 0.8); 
             border-radius: 0px;
             position: relative; 
@@ -147,30 +144,16 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* Nama Host: Segi panjang ujung setengah bulat + icon bulat bintang di dalamnya */
+        /* Nama Host: Segi panjang ujung setengah bulat tanpa ikon bintang */
         .host-name-bottom {
             position: absolute; bottom: 8px; left: 8px;
             z-index: 5; background-color: rgba(0, 0, 0, 0.75); color: #fff;
-            font-size: 10px; font-weight: bold; padding: 3px 8px; 
-            border-radius: 12px; /* Ujung setengah bulat */
+            font-size: 10px; font-weight: bold; padding: 3px 10px; 
+            border-radius: 12px; 
             border: 1px solid rgba(255, 255, 255, 0.4); 
             white-space: nowrap; max-width: 85%;
             text-overflow: ellipsis; overflow: hidden;
-            display: none; align-items: center; gap: 4px;
-        }
-        
-        .host-name-bottom .host-star-circle {
-            width: 12px; height: 12px;
-            background-color: #1890ff;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
-        .host-name-bottom .host-star-circle .star-icon {
-            font-size: 7px; color: #ffffff; line-height: 1;
-        }
-        .host-name-bottom .host-name-text {
-            overflow: hidden; text-overflow: ellipsis;
+            display: none;
         }
 
         .video-bg {
@@ -196,14 +179,21 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 5; background: transparent;
         }
-        .slot-avatar { width: 36px; height: 36px; border-radius: 0px; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
         
-        /* Nama Slot: Segi panjang ujung setengah bulat */
+        /* Foto target diubah menjadi bulat (border-radius: 50%) */
+        .slot-avatar { 
+            width: 36px; height: 36px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            margin-bottom: 2px; 
+            border: 1px solid #fff; 
+        }
+        
         .slot-name-bottom {
             position: absolute; bottom: 3px; left: 3px;
             z-index: 10; background-color: rgba(0, 0, 0, 0.75); color: #fff;
             font-size: 7.5px; font-weight: bold; padding: 2px 7px; 
-            border-radius: 10px; /* Ujung setengah bulat */
+            border-radius: 10px; 
             max-width: 72%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             border: 1px solid rgba(255, 255, 255, 0.3);
             display: flex; align-items: center; gap: 3px;
@@ -227,10 +217,7 @@
             <div class="host-box" id="hostBox">
                 <div class="host-badge-top">Host</div>
                 <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
-                <div class="host-name-bottom" id="hostNameText">
-                    <div class="host-star-circle"><span class="star-icon">★</span></div>
-                    <span class="host-name-text" id="hostNameSpan"></span>
-                </div>
+                <div class="host-name-bottom" id="hostNameText"></div>
             </div>
 
             <div class="side-column">
@@ -314,14 +301,13 @@
             const { type, data, url } = event.data;
 
             if (type === 'UPDATE_HOST_USER') {
-                const hostContainer = document.getElementById('hostNameText');
-                const hostSpan = document.getElementById('hostNameSpan');
+                const nameTag = document.getElementById('hostNameText');
                 if (data && data.trim() !== "") {
-                    hostSpan.innerText = data;
-                    hostContainer.style.display = 'flex';
+                    nameTag.innerText = data;
+                    nameTag.style.display = 'block';
                 } else {
-                    hostSpan.innerText = '';
-                    hostContainer.style.display = 'none';
+                    nameTag.innerText = '';
+                    nameTag.style.display = 'none';
                 }
             }
 
