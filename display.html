@@ -64,27 +64,28 @@
             object-fit: cover; z-index: 1; display: none;
         }
 
-        /* Area Green Screen: Dibuat Absolute Fullscreen di dalam wrapper agar bisa ditarik ke atas sesuka hati */
+        /* Area Green Screen Full layar */
         .green-screen-container {
             position: absolute;
-            top: 0; /* Mulai dari paling atas wrapper */
+            top: 0; 
             left: 0;
             width: 100%;
             height: 100%;
             background-color: transparent;
-            pointer-events: none; /* Agar klik tetap tembus ke bawah jika diperlukan */
+            pointer-events: none; 
             display: flex; 
             align-items: center; 
             justify-content: center;
             overflow: hidden;
-            z-index: 20; /* Berada di atas segalanya */
+            z-index: 20;
         }
 
-        /* Canvas transparan full layar */
+        /* Canvas: object-position diatur ke 35% agar posisi video ditarik sedikit ke atas */
         #gsCanvas {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Menyesuaikan penuh layar 9:16 */
+            object-fit: cover;
+            object-position: center 35%; /* Menggeser titik fokus video sedikit ke atas */
             display: none;
         }
 
@@ -125,7 +126,7 @@
             </div>
         </div>
 
-        <!-- Lapisan Animasi Green Screen Melayang Full Layar & Paling Atas -->
+        <!-- Lapisan Animasi Green Screen Melayang -->
         <div class="green-screen-container" id="gsContainer">
             <video id="gsVideo" src="" muted style="display:none;"></video>
             <canvas id="gsCanvas"></canvas>
