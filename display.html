@@ -75,10 +75,10 @@
             pointer-events: none;
         }
 
+        /* AREA BAWAH TANPA KOTAK, MENYATU LANGSUNG DENGAN LAYAR UTAMA */
         .bottom-video-box {
-            width: 381px;
+            width: 100%;
             height: 335px;
-            border: none;
             background: transparent;
             position: relative;
             overflow: hidden;
@@ -88,7 +88,6 @@
             z-index: 5;
         }
 
-        /* MENGHAPUS BACKGROUND HITAM/HIJAU OTOMATIS MENGGUNAKAN BLEND MODE & CHROMA KEY FILTER */
         .bg-video-layer {
             position: absolute;
             top: 0;
@@ -99,8 +98,7 @@
             z-index: 1;
             display: none;
             pointer-events: none;
-            border-radius: 10px;
-            mix-blend-mode: screen; /* Otomatis menghilangkan latar belakang hitam/gelap */
+            mix-blend-mode: screen; /* Menghilangkan background hitam/hijau otomatis */
         }
 
         video::-webkit-media-controls,
