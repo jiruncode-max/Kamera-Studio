@@ -27,16 +27,18 @@
             overflow: hidden;
         }
 
+        /* VIDEO LATAR BELAKANG UTAMA (Menempati bagian atas/area grid saja) */
         .bg-video-layer {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 15px;
+            left: 12px;
+            width: 381px;
+            height: 324px;
             object-fit: cover;
             z-index: 1;
             display: none;
             pointer-events: none;
+            border-radius: 8px;
         }
 
         .main-container {
@@ -72,7 +74,6 @@
             overflow: hidden;
         }
 
-        /* NAMA HOST DI BAGIAN BAWAH SEBELAH KIRI KOTAK */
         .host-name-bottom {
             position: absolute; bottom: 8px; left: 8px;
             z-index: 10; background-color: rgba(0, 0, 0, 0.7); color: #fff;
@@ -106,10 +107,10 @@
 <body>
 
     <div class="wrapper-9-16">
+        <!-- VIDEO LATAR UTAMA (Muncul di bawah area kotak-kotak/host) -->
         <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
 
         <div class="main-container">
-            <!-- Kotak Host Utama di Kiri dengan Nama di Bagian Bawah Kiri -->
             <div class="host-box" id="hostBox">
                 <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
                 <div class="host-name-bottom" id="hostNameText">J.K 090102</div>
