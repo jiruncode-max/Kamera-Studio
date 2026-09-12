@@ -40,30 +40,27 @@
         .side-column { 
             display: flex; 
             flex-direction: column; 
-            justify-content: space-between; 
-            height: 310px; 
+            justify-content: flex-start; 
+            gap: 8px; 
+            height: auto; 
         }
 
-        /* KOTAK 1-8: WAJIB PERSEGI SAMA SISI (88px x 88px) DENGAN SPASI (GAP/MARGIN) */
+        /* KOTAK 1-8: DIJAMIN PERSEGI SAMA SISI (88px x 88px) DENGAN SPASI RAPI */
         .box {
             width: 88px; 
             height: 88px;
+            aspect-ratio: 1 / 1;
             border: 2px solid rgba(255, 255, 255, 0.8); 
             border-radius: 9px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
             background-color: rgba(0, 0, 0, 0.6);
-            position: relative; overflow: hidden;
+            position: relative; 
+            overflow: hidden;
             transition: background-color 0.3s ease;
-            margin-bottom: 5px; /* Spasi antar kotak ke bawah */
-            margin-top: 5px;   /* Spasi antar kotak ke atas */
-        }
-        
-        .side-column .box:first-child {
-            margin-top: 0;
-        }
-        
-        .side-column .box:last-child {
-            margin-bottom: 0;
+            margin: 0;
         }
 
         .box.active-slot {
@@ -116,9 +113,10 @@
             width: 9.5px; height: 9.5px; fill: #ffffff;
         }
 
-        /* KOTAK HOST DISESUAIKAN DENGAN TINGGI KELOMPOK KOTAK SAMPING */
+        /* KOTAK HOST MENYESUAIKAN TINGGI TOTAL 4 KOTAK SAMPING + GAP (88*4 + 8*3 = 376px) */
         .host-box {
-            width: 195px; height: 310px;
+            width: 195px; 
+            height: 376px;
             border: 2px solid rgba(255, 255, 255, 0.8); 
             border-radius: 10px;
             position: relative; 
