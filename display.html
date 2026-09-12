@@ -62,6 +62,7 @@
         .video-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover; z-index: 1; display: none;
+            pointer-events: none; /* Mencegah interaksi mouse & membuang ikon link browser */
         }
 
         /* Area Green Screen Full layar */
@@ -80,7 +81,7 @@
             z-index: 20;
         }
 
-        /* MEMBUANG TOTAL SEMUA ICON / KONTROL AUDIO BAWAAN BROWSER */
+        /* MEMBUANG TOTAL SEMUA KONTROL, MENU, DAN ICON LINK BAWAAN BROWSER */
         video::-webkit-media-controls,
         video::-webkit-media-controls-enclosure,
         video::-webkit-media-controls-panel,
@@ -92,14 +93,20 @@
             opacity: 0 !important;
         }
 
-        /* Memperbaiki ketajaman video & mengatur posisi sedikit ke atas agar bawahnya bersih */
+        video {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* Posisi canvas digeser ke atas agar bagian bawahnya kosong berwarna hitam */
         #gsCanvas {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Agar video tidak pecah/terlalu dipaksa melar */
-            object-position: center 25%; /* Ditarik ke atas agar bagian bawah menyisakan ruang kosong hitam */
+            object-fit: contain; 
+            object-position: center 20%; /* Posisi video ditarik ke atas */
             display: none;
             image-rendering: high-quality;
+            pointer-events: none; /* Menghilangkan semua potensi link/ikon interaktif browser */
         }
 
         /* Tampilan Slot Aktif (Avatar & Nama) */
@@ -127,10 +134,10 @@
             <!-- Kotak Host Tengah -->
             <div class="host-box" id="hostBox">
                 <div class="host-badge" id="hostBadgeText">Host</div>
-                <video class="video-bg" id="hostVideo" autoplay loop></video>
+                <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
             </div>
 
-            <!-- Kotak Kanan: Kotak 5 s.d 8 -->
+            <!-- Kolom Kanan: Kotak 5 s.d 8 -->
             <div class="side-column">
                 <div class="box" id="slot-5"><span class="plus">+</span><span class="label">Permintaan</span></div>
                 <div class="box" id="slot-6"><span class="plus">+</span><span class="label">Permintaan</span></div>
@@ -141,7 +148,7 @@
 
         <!-- Lapisan Animasi Green Screen Melayang -->
         <div class="green-screen-container" id="gsContainer">
-            <video id="gsVideo" src="" style="display:none;"></video>
+            <video id="gsVideo" src="" style="display:none;" muted playsinline></video>
             <canvas id="gsCanvas"></canvas>
         </div>
     </div>
@@ -171,13 +178,11 @@
                 let frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 let data = frame.data;
 
-                // Algoritma Chroma Key untuk membersihkan background hijau agar jernih
                 for (let i = 0; i < data.length; i += 4) {
                     let r = data[i];
                     let g = data[i + 1];
                     let b = data[i + 2];
 
-                    // Menyaring warna hijau agar transparan sempurna
                     if (g > 80 && g > r * 1.1 && g > b * 1.1) {
                         data[i + 3] = 0; 
                     } else if (g > r && g > b) {
