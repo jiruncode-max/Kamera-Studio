@@ -61,7 +61,7 @@
         .box .plus { font-size: 16px; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
         .box .label { font-size: 7px; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
-        /* GABUNGAN KOTAK: BULAT BIRU SANGAT KECIL DI DALAMNYA ADA BINTANG, NYAMBUNG KE ANGKA 0 */
+        /* GABUNGAN KOTAK: BULAT BIRU KECIL BINTANG NYAMBUNG KE ANGKA 0 */
         .slot-star-number-group {
             position: absolute; top: 4px; left: 4px;
             z-index: 10; height: 11px;
@@ -92,9 +92,9 @@
             line-height: 1;
         }
 
-        /* ICON MIKROFON DI BAWAH KOTAK SAMPING KANAN (DIBUAT AGAK BESAR) */
+        /* ICON MIKROFON DI POJOK KANAN BAWAH (POSISI PAS & AGAK BESAR) */
         .mic-icon-bottom-right {
-            position: absolute; bottom: 4px; right: 4px;
+            position: absolute; bottom: 3px; right: 3px;
             z-index: 10; width: 16px; height: 16px;
             background-color: rgba(0, 0, 0, 0.7); border-radius: 50%;
             display: none; align-items: center; justify-content: center;
@@ -162,12 +162,20 @@
         }
         .slot-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
         
+        /* NAMA TIKTOK DI KIRI BAWAH DENGAN ICON + LEBIH BESAR DAN PAS */
         .slot-name-bottom {
-            position: absolute; bottom: 4px; left: 4px;
+            position: absolute; bottom: 3px; left: 3px;
             z-index: 10; background-color: rgba(0, 0, 0, 0.75); color: #fff;
-            font-size: 7px; font-weight: bold; padding: 2px 5px; border-radius: 4px;
-            max-width: 70%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-size: 7.5px; font-weight: bold; padding: 2px 6px; border-radius: 4px;
+            max-width: 72%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex; align-items: center; gap: 3px;
+        }
+        .slot-name-bottom .name-text {
+            overflow: hidden; text-overflow: ellipsis;
+        }
+        .slot-name-bottom .plus-icon-large {
+            font-size: 11px; font-weight: bold; color: #ffffff; line-height: 1;
         }
     </style>
 </head>
@@ -348,7 +356,10 @@
                         <div class="slot-content">
                             <img src="${data.photo}" class="slot-avatar" alt="Avatar">
                         </div>
-                        <div class="slot-name-bottom">${data.name} +</div>
+                        <div class="slot-name-bottom">
+                            <span class="name-text">${data.name}</span>
+                            <span class="plus-icon-large">+</span>
+                        </div>
                     `;
                 }
             }
