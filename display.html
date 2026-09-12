@@ -28,21 +28,19 @@
         }
 
         /* 
-          STRUKTUR LAYER:
-          - Kotak-kotak layout berada di BELAKANG (z-index: 1)
-          - Video animasi berada di DEPAN (z-index: 10) dengan mix-blend-mode 
-            agar warna hitam/hijau menyatu transparan dengan kotak-kotak di belakangnya.
+          STRUKTUR UTAMA:
+          1. Kotak-kotak layout berada di BELAKANG (z-index: 1)
+          2. Video animasi berada di ATAS KOTAK / FULL LAYAR (z-index: 20) 
+             sehingga menimpa kotak dengan efek menyatu sempurna (hitam/hijau transparan).
         */
         .main-container {
-            position: absolute;
-            top: 15px;
-            left: 12px;
+            position: relative;
             display: flex; 
             justify-content: center; 
             align-items: flex-start;
             gap: 8px; 
-            width: 381px;
-            z-index: 1; /* Kotak ada di belakang */
+            width: 100%;
+            z-index: 1; /* Kotak di layer bawah */
         }
 
         .side-column { 
@@ -54,10 +52,10 @@
 
         .box {
             width: 72px; height: 75px;
-            border: 2px solid rgba(255, 255, 255, 0.7); 
+            border: 2px solid rgba(255, 255, 255, 0.8); 
             border-radius: 8px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
             position: relative; overflow: hidden;
         }
         .box .plus { font-size: 16px; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
@@ -65,10 +63,10 @@
 
         .host-box {
             width: 225px; height: 324px;
-            border: 2px solid rgba(255, 255, 255, 0.7); 
+            border: 2px solid rgba(255, 255, 255, 0.8); 
             border-radius: 10px;
             position: relative; 
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
             overflow: hidden;
         }
 
@@ -86,7 +84,11 @@
             pointer-events: none;
         }
 
-        /* VIDEO ANIMASI DI DEPAN LAYAR (z-index: 10) */
+        /* 
+          VIDEO ANIMASI (GREEN SCREEN / LATAR HITAM) BERADA DI ATAS KOTAK (z-index: 20)
+          Menggunakan mix-blend-mode: screen agar warna latar hitam/hijau otomatis hilang 
+          dan menyatu natural di atas seluruh kotak layout.
+        */
         .bg-video-layer {
             position: absolute;
             top: 0;
@@ -94,11 +96,10 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 10; /* Video berada di depan kotak */
+            z-index: 20; /* Berada persis DI ATAS KOTAK */
             display: none;
             pointer-events: none;
-            mix-blend-mode: screen; /* Hitam/hijau otomatis tembus dan menyatu dengan kotak di belakangnya */
-            opacity: 0.95;
+            mix-blend-mode: screen; 
         }
 
         video::-webkit-media-controls,
@@ -120,7 +121,7 @@
 <body>
 
     <div class="wrapper-9-16">
-        <!-- KOTAK-KOTAK LAYOUT BERADA DI BELAKANG (LAYER 1) -->
+        <!-- 1. KOTAK-KOTAK LAYOUT DI BELAKANG -->
         <div class="main-container">
             <div class="host-box" id="hostBox">
                 <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
@@ -142,7 +143,7 @@
             </div>
         </div>
 
-        <!-- VIDEO ANIMASI GREEN SCREEN / LATAR HITAM DI DEPAN KOTAK (LAYER 10) -->
+        <!-- 2. VIDEO ANIMASI DI ATAS KOTAK DENGAN EFEK MENYATU (BLEND MODE) -->
         <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
     </div>
 
