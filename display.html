@@ -61,26 +61,18 @@
         .box .plus { font-size: 16px; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
         .box .label { font-size: 7px; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
-        /* ICON BULAT BINTANG (TERPISAH DI KIRI ATAS) */
-        .slot-star-badge {
+        /* KOTAK SEGI PANJANG GARIS HITAM DI KIRI ATAS (GANTI BULAT BIRU) */
+        .slot-star-number-badge {
             position: absolute; top: 4px; left: 4px;
-            z-index: 10; width: 14px; height: 14px;
-            background-color: #1890ff; border-radius: 50%;
-            display: none; align-items: center; justify-content: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-        .slot-star-badge .star-icon {
-            font-size: 8px; color: #ffffff; line-height: 1;
-        }
-
-        /* ANGKA 0 (TERPISAH DI SEBELAH KANAN ICON BINTANG / DI ATAS KOTAK) */
-        .slot-number-badge {
-            position: absolute; top: 4px; left: 21px;
-            z-index: 10; height: 14px; padding: 0 4px;
+            z-index: 10; height: 13px; padding: 0 4px;
             background-color: #1890ff; color: #ffffff;
-            font-size: 7px; font-weight: bold; border-radius: 4px;
-            display: none; align-items: center; justify-content: center;
+            font-size: 7px; font-weight: bold; border-radius: 3px;
+            display: none; align-items: center; gap: 2px;
+            border: 1px solid #000000;
             box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        .slot-star-number-badge .star-icon {
+            font-size: 7px; color: #ffffff; line-height: 1;
         }
 
         /* ICON MIKROFON DI BAWAH KOTAK SAMPING KANAN */
@@ -174,32 +166,28 @@
 
             <div class="side-column">
                 <div class="box" id="slot-1">
-                    <div class="slot-star-badge"><span class="star-icon">★</span></div>
-                    <div class="slot-number-badge">0</div>
+                    <div class="slot-star-number-badge"><span class="star-icon">★</span> 0</div>
                     <div class="mic-icon-bottom-right">
                         <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                     </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-2">
-                    <div class="slot-star-badge"><span class="star-icon">★</span></div>
-                    <div class="slot-number-badge">0</div>
+                    <div class="slot-star-number-badge"><span class="star-icon">★</span> 0</div>
                     <div class="mic-icon-bottom-right">
                         <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                     </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-3">
-                    <div class="slot-star-badge"><span class="star-icon">★</span></div>
-                    <div class="slot-number-badge">0</div>
+                    <div class="slot-star-number-badge"><span class="star-icon">★</span> 0</div>
                     <div class="mic-icon-bottom-right">
                         <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                     </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-4">
-                    <div class="slot-star-badge"><span class="star-icon">★</span></div>
-                    <div class="slot-number-badge">0</div>
+                    <div class="slot-star-number-badge"><span class="star-icon">★</span> 0</div>
                     <div class="mic-icon-bottom-right">
                         <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                     </div>
@@ -209,32 +197,28 @@
 
             <div class="side-column">
                 <div class="box" id="slot-5">
-                    <div class="slot-star-badge"><span class="star-icon">★</span></div>
-                    <div class="slot-number-badge">0</div>
+                    <div class="slot-star-number-badge"><span class="star-icon">★</span> 0</div>
                     <div class="mic-icon-bottom-right">
                         <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                     </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-6">
-                    <div class="slot-star-badge"><span class="star-icon">★</span></div>
-                    <div class="slot-number-badge">0</div>
+                    <div class="slot-star-number-badge"><span class="star-icon">★</span> 0</div>
                     <div class="mic-icon-bottom-right">
                         <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                     </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-7">
-                    <div class="slot-star-badge"><span class="star-icon">★</span></div>
-                    <div class="slot-number-badge">0</div>
+                    <div class="slot-star-number-badge"><span class="star-icon">★</span> 0</div>
                     <div class="mic-icon-bottom-right">
                         <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                     </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-8">
-                    <div class="slot-star-badge"><span class="star-icon">★</span></div>
-                    <div class="slot-number-badge">0</div>
+                    <div class="slot-star-number-badge"><span class="star-icon">★</span> 0</div>
                     <div class="mic-icon-bottom-right">
                         <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                     </div>
@@ -243,7 +227,6 @@
             </div>
         </div>
 
-        <!-- VIDEO ANIMASI TANPA LOOP (BERHENTI OTOMATIS SAAT SELESAI) -->
         <video class="bg-video-layer" id="bgVideoLayer" playsinline></video>
     </div>
 
@@ -251,7 +234,6 @@
         const channel = new BroadcastChannel('live_control_channel');
         const bgVideo = document.getElementById('bgVideoLayer');
 
-        // Event listener agar video otomatis berhenti (hidden) saat pemutaran selesai
         bgVideo.onended = () => {
             bgVideo.style.display = 'none';
             bgVideo.src = '';
@@ -295,18 +277,15 @@
                 const slotEl = document.getElementById(`slot-${data.slot}`);
                 if (!slotEl) return;
 
-                const starBadge = slotEl.querySelector('.slot-star-badge');
-                const numBadge = slotEl.querySelector('.slot-number-badge');
+                const badge = slotEl.querySelector('.slot-star-number-badge');
                 const mic = slotEl.querySelector('.mic-icon-bottom-right');
 
                 if (data.clear) {
                     slotEl.classList.remove('active-slot');
-                    if (starBadge) starBadge.style.display = 'none';
-                    if (numBadge) numBadge.style.display = 'none';
+                    if (badge) badge.style.display = 'none';
                     if (mic) mic.style.display = 'none';
                     slotEl.innerHTML = `
-                        <div class="slot-star-badge" style="display: none;"><span class="star-icon">★</span></div>
-                        <div class="slot-number-badge" style="display: none;">0</div>
+                        <div class="slot-star-number-badge" style="display: none;"><span class="star-icon">★</span> 0</div>
                         <div class="mic-icon-bottom-right" style="display: none;">
                             <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                         </div>
@@ -315,8 +294,7 @@
                 } else {
                     slotEl.classList.add('active-slot');
                     slotEl.innerHTML = `
-                        <div class="slot-star-badge" style="display: flex;"><span class="star-icon">★</span></div>
-                        <div class="slot-number-badge" style="display: flex;">0</div>
+                        <div class="slot-star-number-badge" style="display: flex;"><span class="star-icon">★</span> 0</div>
                         <div class="mic-icon-bottom-right" style="display: flex;">
                             <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                         </div>
