@@ -227,9 +227,14 @@
         function installTarget() {
             if (!pendingTargetData.username) return;
             const slotId = document.getElementById('targetSlot').value;
+            
+            // Mengambil teks asli dari inputan agar angka / format K/M terbaca oleh display
+            const rawInputText = document.getElementById('targetInput').value.trim();
+            const displayName = rawInputText ? rawInputText : pendingTargetData.name;
+
             const finalData = {
                 slot: slotId,
-                name: pendingTargetData.name,
+                name: displayName,
                 photo: pendingTargetData.photo,
                 clear: false
             };
