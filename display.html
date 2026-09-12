@@ -27,12 +27,6 @@
             overflow: hidden;
         }
 
-        /* 
-          STRUKTUR UTAMA:
-          1. Kotak-kotak layout berada di BELAKANG (z-index: 1)
-          2. Video animasi berada di ATAS KOTAK / FULL LAYAR (z-index: 20) 
-             sehingga menimpa kotak dengan efek menyatu sempurna (hitam/hijau transparan).
-        */
         .main-container {
             position: relative;
             display: flex; 
@@ -40,7 +34,7 @@
             align-items: flex-start;
             gap: 8px; 
             width: 100%;
-            z-index: 1; /* Kotak di layer bawah */
+            z-index: 1;
         }
 
         .side-column { 
@@ -70,6 +64,21 @@
             overflow: hidden;
         }
 
+        /* LABEL HOST DI BAGIAN ATAS DENGAN ICON BIRU DAN TEKS PUTIH */
+        .host-badge-top {
+            position: absolute; top: 8px; left: 8px;
+            z-index: 5; background-color: rgba(0, 0, 0, 0.7); color: #ffffff;
+            font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 4px;
+            display: flex; align-items: center; gap: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .host-badge-top .blue-icon {
+            width: 10px; height: 10px; background-color: #1890ff;
+            border-radius: 50%; display: inline-block;
+            box-shadow: 0 0 5px #1890ff;
+        }
+
         .host-name-bottom {
             position: absolute; bottom: 8px; left: 8px;
             z-index: 5; background-color: rgba(0, 0, 0, 0.7); color: #fff;
@@ -84,11 +93,6 @@
             pointer-events: none;
         }
 
-        /* 
-          VIDEO ANIMASI (GREEN SCREEN / LATAR HITAM) BERADA DI ATAS KOTAK (z-index: 20)
-          Menggunakan mix-blend-mode: screen agar warna latar hitam/hijau otomatis hilang 
-          dan menyatu natural di atas seluruh kotak layout.
-        */
         .bg-video-layer {
             position: absolute;
             top: 0;
@@ -96,7 +100,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 20; /* Berada persis DI ATAS KOTAK */
+            z-index: 20;
             display: none;
             pointer-events: none;
             mix-blend-mode: screen; 
@@ -121,9 +125,12 @@
 <body>
 
     <div class="wrapper-9-16">
-        <!-- 1. KOTAK-KOTAK LAYOUT DI BELAKANG -->
         <div class="main-container">
             <div class="host-box" id="hostBox">
+                <!-- Label Host di Bagian Atas dengan Icon Biru & Teks Putih -->
+                <div class="host-badge-top">
+                    <span class="blue-icon"></span> Host
+                </div>
                 <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
                 <div class="host-name-bottom" id="hostNameText">J.K 090102</div>
             </div>
@@ -143,7 +150,6 @@
             </div>
         </div>
 
-        <!-- 2. VIDEO ANIMASI DI ATAS KOTAK DENGAN EFEK MENYATU (BLEND MODE) -->
         <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
     </div>
 
