@@ -27,20 +27,6 @@
             overflow: hidden;
         }
 
-        /* VIDEO LATAR BELAKANG UTAMA (Menempati bagian atas/area grid saja) */
-        .bg-video-layer {
-            position: absolute;
-            top: 15px;
-            left: 12px;
-            width: 381px;
-            height: 324px;
-            object-fit: cover;
-            z-index: 1;
-            display: none;
-            pointer-events: none;
-            border-radius: 8px;
-        }
-
         .main-container {
             display: flex; justify-content: center; align-items: flex-start;
             gap: 8px; width: 100%;
@@ -88,6 +74,20 @@
             pointer-events: none;
         }
 
+        /* VIDEO LATAR BELAKANG UTAMA DIPINDAHKAN KE PALING BAWAH LAYAR */
+        .bg-video-layer {
+            position: absolute;
+            bottom: 15px;
+            left: 12px;
+            width: 381px;
+            height: 324px;
+            object-fit: cover;
+            z-index: 1;
+            display: none;
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
         video::-webkit-media-controls,
         video::-webkit-media-controls-enclosure,
         video::-webkit-media-controls-panel {
@@ -107,9 +107,6 @@
 <body>
 
     <div class="wrapper-9-16">
-        <!-- VIDEO LATAR UTAMA (Muncul di bawah area kotak-kotak/host) -->
-        <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
-
         <div class="main-container">
             <div class="host-box" id="hostBox">
                 <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
@@ -130,6 +127,9 @@
                 <div class="box" id="slot-8"><span class="plus">+</span><span class="label">Permintaan</span></div>
             </div>
         </div>
+
+        <!-- VIDEO LATAR UTAMA (Diposisikan di Paling Bawah Layar) -->
+        <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
     </div>
 
     <script>
