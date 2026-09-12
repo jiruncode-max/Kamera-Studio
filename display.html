@@ -80,13 +80,23 @@
             z-index: 20;
         }
 
-        /* Canvas: object-position diatur ke 35% agar posisi video ditarik sedikit ke atas */
+        /* Menghilangkan seluruh kontrol ikon audio/video bawaan browser di pojok kanan bawah */
+        video::-webkit-media-controls,
+        video::-webkit-media-controls-panel,
+        video::-webkit-media-controls-play-button,
+        video::-webkit-media-controls-start-playback-button {
+            display: none !important;
+            opacity: 0 !important;
+        }
+
+        /* Canvas: Menjaga ketajaman gambar agar tidak buram/pecah */
         #gsCanvas {
             width: 100%;
             height: 100%;
             object-fit: cover;
             object-position: center 35%;
             display: none;
+            image-rendering: -webkit-optimize-contrast; /* Memperajam tampilan */
         }
 
         /* Tampilan Slot Aktif (Avatar & Nama) */
@@ -126,8 +136,9 @@
             </div>
         </div>
 
-        <!-- Lapisan Animasi Green Screen Melayang (Tanpa atribut muted agar bersuara) -->
+        <!-- Lapisan Animasi Green Screen Melayang -->
         <div class="green-screen-container" id="gsContainer">
+            <!-- controls disembunyikan total via CSS -->
             <video id="gsVideo" src="" style="display:none;"></video>
             <canvas id="gsCanvas"></canvas>
         </div>
@@ -141,6 +152,7 @@
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
         video.addEventListener('loadedmetadata', () => {
+            // Mengikuti resolusi asli video agar tidak pecah/buram
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
         });
@@ -158,18 +170,22 @@
                 let frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 let data = frame.data;
 
-                // Algoritma Chroma Key (Pembersihan warna hijau)
+                // Algoritma Chroma Key yang lebih bersih untuk menghilangkan warna hijau background
                 for (let i = 0; i < data.length; i += 4) {
                     let r = data[i];
                     let g = data[i + 1];
                     let b = data[i + 2];
 
-                    if (g > 70 && g > r * 1.15 && g > b * 1.15) {
-                        data[i + 3] = 0; // Transparan total
-                    } else if (g > r && g > b) {
-                        let diff = g - Math.max(r, b);
-                        if (diff > 20) {
-                            data[i + 3] = Math.max(0, 255 - (diff * 6));
+                    // Deteksi warna hijau layar agar transparan bersih tanpa sisa abu-abu kotor
+                    if (g > 65 && g > r * 1.08 && g > b * 1.08) {
+                        data[i + 3] = 0; // Transparan penuh
+                    } else {
+                        // Membersihkan sisa bayangan hijau di pinggiran objek (spill suppression)
+                        if (g > r && g > b) {
+                            let greenExcess = g - Math.max(r, b);
+                            if (greenExcess > 15) {
+                                data[i + 1] = Math.min(r, b); // Menetralkan warna hijau sisa
+                            }
                         }
                     }
                 }
