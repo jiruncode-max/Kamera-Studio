@@ -27,7 +27,7 @@
             overflow: hidden;
         }
 
-        /* VIDEO ANIMASI DIJADIKAN SATU FULL BACKGROUND DI BELAKANG SEMUA ELEMEN */
+        /* VIDEO ANIMASI / GREEN SCREEN DI BELAKANG KOTAK-KOTAK LAYOUT */
         .bg-video-layer {
             position: absolute;
             top: 0;
@@ -35,16 +35,17 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 1;
+            z-index: 1; /* Berada di belakang (layer bawah) */
             display: none;
             pointer-events: none;
-            mix-blend-mode: screen; /* Otomatis menghilangkan warna hitam/gelap agar menyatu */
+            mix-blend-mode: screen; /* Menyatu mulus untuk background hitam/gelap */
         }
 
+        /* KONTAINER UTAMA BERADA DI DEPAN LAYAR VIDEO */
         .main-container {
             display: flex; justify-content: center; align-items: flex-start;
             gap: 8px; width: 100%;
-            z-index: 5;
+            z-index: 10; /* Berada di depan video */
         }
 
         .side-column { 
@@ -107,9 +108,10 @@
 <body>
 
     <div class="wrapper-9-16">
-        <!-- VIDEO ANIMASI MENJADI SATU KESATUAN FULL LATAR BELAKANG TANPA KOTAK PEMBATAS -->
+        <!-- VIDEO ANIMASI DI BELAKANG (LAYER 1) -->
         <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
 
+        <!-- KOTAK-KOTAK LAYOUT UTAMA DI DEPAN (LAYER 10) -->
         <div class="main-container">
             <div class="host-box" id="hostBox">
                 <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
