@@ -28,10 +28,23 @@
             overflow: hidden;
         }
 
+        /* VIDEO LATAR BELAKANG UTAMA (Di layer paling belakang layar 9:16) */
+        .bg-video-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Menutupi seluruh layar 9:16 dengan pas */
+            z-index: 1;        /* Berada di bawah segalanya */
+            display: none;
+            pointer-events: none;
+        }
+
         .main-container {
             display: flex; justify-content: center; align-items: flex-start;
             gap: 10px; width: 100%;
-            z-index: 2;
+            z-index: 5; /* Berada di atas video latar */
         }
 
         .side-column { display: flex; flex-direction: column; gap: 8px; }
@@ -65,38 +78,12 @@
             pointer-events: none;
         }
 
-        /* Area Container Animasi */
-        .green-screen-container {
-            position: absolute;
-            top: 0; 
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: transparent;
-            pointer-events: none; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            overflow: hidden;
-            z-index: 20;
-        }
-
         /* Membuang kontrol bawaan browser */
         video::-webkit-media-controls,
         video::-webkit-media-controls-enclosure,
         video::-webkit-media-controls-panel {
             display: none !important;
             opacity: 0 !important;
-        }
-
-        /* Canvas untuk menghapus latar hitam secara presisi */
-        #gsCanvas {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            object-position: center 20%; /* Posisi digeser ke atas agar bawahnya ada ruang kosong hitam */
-            display: none;
-            pointer-events: none;
         }
 
         /* Tampilan Slot Aktif (Avatar & Nama) */
@@ -112,6 +99,9 @@
 <body>
 
     <div class="wrapper-9-16">
+        <!-- VIDEO LATAR BELAKANG UTAMA (Di belakang kotak-kotak) -->
+        <video class="bg-video-layer" id="bgVideoLayer" autoplay loop muted playsinline></video>
+
         <div class="main-container">
             <!-- Kolom Kiri: Kotak 1 s.d 4 -->
             <div class="side-column">
@@ -135,64 +125,11 @@
                 <div class="box" id="slot-8"><span class="plus">+</span><span class="label">Permintaan</span></div>
             </div>
         </div>
-
-        <!-- Lapisan Video Latar Hitam yang diproses transparan -->
-        <div class="green-screen-container" id="gsContainer">
-            <video id="gsVideo" src="" style="display:none;" muted playsinline></video>
-            <canvas id="gsCanvas"></canvas>
-        </div>
     </div>
 
     <script>
         const channel = new BroadcastChannel('live_control_channel');
-
-        const video = document.getElementById('gsVideo');
-        const canvas = document.getElementById('gsCanvas');
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-
-        video.addEventListener('loadedmetadata', () => {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-        });
-
-        video.addEventListener('play', () => {
-            canvas.style.display = 'block';
-
-            function processFrame() {
-                if (video.paused || video.ended) {
-                    canvas.style.display = 'none';
-                    return;
-                }
-                
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                let frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                let data = frame.data;
-
-                // Algoritma menghapus Latar Hitam (Black Chroma Key / Luma Key)
-                for (let i = 0; i < data.length; i += 4) {
-                    let r = data[i];
-                    let g = data[i + 1];
-                    let b = data[i + 2];
-
-                    // Jika warna RGB rendah (mendekati hitam), ubah menjadi transparan penuh
-                    if (r < 30 && g < 30 && b < 30) {
-                        data[i + 3] = 0; // Transparan
-                    } else if (r < 60 && g < 60 && b < 60) {
-                        // Membuat transparan bertahap di pinggiran (anti-aliasing) agar tidak kaku
-                        let avg = (r + g + b) / 3;
-                        data[i + 3] = Math.floor((avg / 60) * 255);
-                    }
-                }
-                
-                ctx.putImageData(frame, 0, 0);
-                requestAnimationFrame(processFrame);
-            }
-            requestAnimationFrame(processFrame);
-        });
-
-        video.addEventListener('ended', () => {
-            canvas.style.display = 'none';
-        });
+        const bgVideo = document.getElementById('bgVideoLayer');
 
         channel.onmessage = (event) => {
             const { type, data, url } = event.data;
@@ -209,12 +146,14 @@
                 videoEl.play().catch(e => console.log(e));
             }
 
+            // Memutar video latar belakang hitam di layer paling belakang
             if (type === 'UPDATE_GS_VIDEO') {
-                video.pause();
-                video.currentTime = 0;
-                video.src = url;
-                video.load();
-                video.play().catch(e => console.log(e));
+                bgVideo.pause();
+                bgVideo.currentTime = 0;
+                bgVideo.src = url;
+                bgVideo.style.display = 'block';
+                bgVideo.load();
+                bgVideo.play().catch(e => console.log(e));
             }
 
             if (type === 'UPDATE_TARGET_SLOT') {
