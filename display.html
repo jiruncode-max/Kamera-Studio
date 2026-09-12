@@ -40,32 +40,25 @@
         .side-column { 
             display: flex; 
             flex-direction: column; 
-            justify-content: flex-start; 
-            gap: 6px; 
-            flex-shrink: 0;
+            justify-content: space-between; 
+            height: 310px; 
         }
 
-        /* KOTAK 1-8: DIKUNCI AGAR BENAR-BENAR PERSEGI SAMA SISI SEMPURNA */
         .box {
-            width: 86px !important; 
-            height: 86px !important;
-            min-width: 86px !important;
-            min-height: 86px !important;
-            max-width: 86px !important;
-            max-height: 86px !important;
-            flex: 0 0 86px !important;
+            width: 88px; 
+            height: 88px;
             border: 2px solid rgba(255, 255, 255, 0.8); 
             border-radius: 9px;
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             background-color: rgba(0, 0, 0, 0.6);
-            position: relative; 
-            overflow: hidden;
+            position: relative; overflow: hidden;
             transition: background-color 0.3s ease;
-            margin: 0;
+            margin-bottom: 5px; 
+            margin-top: 5px;   
         }
+        
+        .side-column .box:first-child { margin-top: 0; }
+        .side-column .box:last-child { margin-bottom: 0; }
 
         .box.active-slot {
             background-color: rgba(100, 100, 100, 0.85);
@@ -74,7 +67,6 @@
         .box .plus { font-size: 16px; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
         .box .label { font-size: 7px; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
-        /* GABUNGAN KOTAK: BULAT BIRU KECIL BINTANG NYAMBUNG KE ANGKA 0 */
         .slot-star-number-group {
             position: absolute; top: 4px; left: 4px;
             z-index: 10; height: 11px;
@@ -105,7 +97,6 @@
             line-height: 1;
         }
 
-        /* ICON MIKROFON: BULAT DENGAN GARIS HITAM */
         .mic-icon-bottom-right {
             position: absolute; bottom: 3px; right: 3px;
             z-index: 10; width: 17px; height: 17px;
@@ -117,11 +108,8 @@
             width: 9.5px; height: 9.5px; fill: #ffffff;
         }
 
-        /* KOTAK HOST DISESUAIKAN DENGAN TINGGI 4 KOTAK (86 * 4 + gap 6*3 = 362px) */
         .host-box {
-            width: 190px; 
-            height: 362px;
-            flex-shrink: 0;
+            width: 195px; height: 310px;
             border: 2px solid rgba(255, 255, 255, 0.8); 
             border-radius: 10px;
             position: relative; 
@@ -152,23 +140,15 @@
         }
 
         .bg-video-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 20;
-            display: none;
-            pointer-events: none;
-            mix-blend-mode: screen; 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; z-index: 20; display: none;
+            pointer-events: none; mix-blend-mode: screen; 
         }
 
         video::-webkit-media-controls,
         video::-webkit-media-controls-enclosure,
         video::-webkit-media-controls-panel {
-            display: none !important;
-            opacity: 0 !important;
+            display: none !important; opacity: 0 !important;
         }
 
         .slot-content {
@@ -176,9 +156,8 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 5; background: transparent;
         }
-        .slot-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
+        .slot-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
         
-        /* KOTAK NAMA TARGET */
         .slot-name-bottom {
             position: absolute; bottom: 3px; left: 3px;
             z-index: 10; background-color: rgba(0, 0, 0, 0.75); color: #fff;
@@ -187,12 +166,8 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             display: flex; align-items: center; gap: 3px;
         }
-        .slot-name-bottom .name-text {
-            overflow: hidden; text-overflow: ellipsis;
-        }
-        .slot-name-bottom .plus-icon-large {
-            font-size: 11px; font-weight: bold; color: #ffffff; line-height: 1;
-        }
+        .slot-name-bottom .name-text { overflow: hidden; text-overflow: ellipsis; }
+        .slot-name-bottom .plus-icon-large { font-size: 11px; font-weight: bold; color: #ffffff; line-height: 1; }
     </style>
 </head>
 <body>
@@ -205,6 +180,7 @@
                 <div class="host-name-bottom" id="hostNameText"></div>
             </div>
 
+            <!-- Side Column 1 -->
             <div class="side-column">
                 <div class="box" id="slot-1">
                     <div class="slot-star-number-group">
@@ -248,6 +224,7 @@
                 </div>
             </div>
 
+            <!-- Side Column 2 -->
             <div class="side-column">
                 <div class="box" id="slot-5">
                     <div class="slot-star-number-group">
@@ -304,6 +281,25 @@
             bgVideo.src = '';
         };
 
+        // Fungsi untuk mendeteksi angka dan pengali (K/M) dari nama
+        function parsePointsFromName(filename) {
+            if (!filename) return 0;
+            const regex = /([\d.,]+)([km])?/i;
+            const match = filename.match(regex);
+            if (!match) return 0;
+            
+            let numStr = match[1].replace(/\./g, '').replace(/,/g, '.');
+            const modifier = match[2] ? match[2].toLowerCase() : '';
+            
+            let number = parseFloat(numStr);
+            if (isNaN(number)) return 0;
+
+            if (modifier === 'k') number *= 1_000;
+            else if (modifier === 'm') number *= 1_000_000;
+
+            return Math.round(number);
+        }
+
         channel.onmessage = (event) => {
             const { type, data, url } = event.data;
 
@@ -342,13 +338,8 @@
                 const slotEl = document.getElementById(`slot-${data.slot}`);
                 if (!slotEl) return;
 
-                const groupBadge = slotEl.querySelector('.slot-star-number-group');
-                const mic = slotEl.querySelector('.mic-icon-bottom-right');
-
                 if (data.clear) {
                     slotEl.classList.remove('active-slot');
-                    if (groupBadge) groupBadge.style.display = 'none';
-                    if (mic) mic.style.display = 'none';
                     slotEl.innerHTML = `
                         <div class="slot-star-number-group" style="display: none;">
                             <div class="slot-star-circle-small"><span class="star-icon">★</span></div>
@@ -360,11 +351,14 @@
                         <span class="plus">+</span><span class="label">Permintaan</span>
                     `;
                 } else {
+                    // Ekstrak angka otomatis dari data nama
+                    const calculatedPoints = parsePointsFromName(data.name || '');
+
                     slotEl.classList.add('active-slot');
                     slotEl.innerHTML = `
                         <div class="slot-star-number-group" style="display: flex;">
                             <div class="slot-star-circle-small"><span class="star-icon">★</span></div>
-                            <div class="slot-number-text">0</div>
+                            <div class="slot-number-text">${calculatedPoints}</div>
                         </div>
                         <div class="mic-icon-bottom-right" style="display: flex;">
                             <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
