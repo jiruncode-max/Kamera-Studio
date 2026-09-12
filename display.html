@@ -61,15 +61,29 @@
         .box .plus { font-size: 16px; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
         .box .label { font-size: 7px; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
-        /* ICON BULAT BIRU ANGKA 0 DI BAGIAN KIRI ATAS KOTAK TARGET */
+        /* ICON BULAT BIRU KIRI ATAS: BINTANG PUTIH + ANGKA 0 */
         .slot-badge-top-left {
             position: absolute; top: 4px; left: 4px;
-            z-index: 10; width: 14px; height: 14px;
+            z-index: 10; height: 14px; padding: 0 4px;
             background-color: #1890ff; color: #ffffff;
-            font-size: 8px; font-weight: bold; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            font-size: 7px; font-weight: bold; border-radius: 7px;
+            display: none; align-items: center; gap: 2px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-            display: none; /* Awal tersembunyi, muncul saat slot aktif */
+        }
+        .slot-badge-top-left .star-icon {
+            font-size: 8px; color: #ffffff; line-height: 1;
+        }
+
+        /* ICON MIKROFON DI BAWAH KOTAK SAMPING KANAN */
+        .mic-icon-bottom-right {
+            position: absolute; bottom: 4px; right: 4px;
+            z-index: 10; width: 12px; height: 12px;
+            background-color: rgba(0, 0, 0, 0.7); border-radius: 50%;
+            display: none; align-items: center; justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .mic-icon-bottom-right svg {
+            width: 7px; height: 7px; fill: #ffffff;
         }
 
         .host-box {
@@ -134,7 +148,7 @@
             position: absolute; bottom: 4px; left: 4px;
             z-index: 10; background-color: rgba(0, 0, 0, 0.75); color: #fff;
             font-size: 7px; font-weight: bold; padding: 2px 5px; border-radius: 4px;
-            max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            max-width: 70%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
     </style>
@@ -151,38 +165,62 @@
 
             <div class="side-column">
                 <div class="box" id="slot-1">
-                    <div class="slot-badge-top-left">0</div>
+                    <div class="slot-badge-top-left"><span class="star-icon">★</span> 0</div>
+                    <div class="mic-icon-bottom-right">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                    </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-2">
-                    <div class="slot-badge-top-left">0</div>
+                    <div class="slot-badge-top-left"><span class="star-icon">★</span> 0</div>
+                    <div class="mic-icon-bottom-right">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                    </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-3">
-                    <div class="slot-badge-top-left">0</div>
+                    <div class="slot-badge-top-left"><span class="star-icon">★</span> 0</div>
+                    <div class="mic-icon-bottom-right">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                    </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-4">
-                    <div class="slot-badge-top-left">0</div>
+                    <div class="slot-badge-top-left"><span class="star-icon">★</span> 0</div>
+                    <div class="mic-icon-bottom-right">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                    </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
             </div>
 
             <div class="side-column">
                 <div class="box" id="slot-5">
-                    <div class="slot-badge-top-left">0</div>
+                    <div class="slot-badge-top-left"><span class="star-icon">★</span> 0</div>
+                    <div class="mic-icon-bottom-right">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                    </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-6">
-                    <div class="slot-badge-top-left">0</div>
+                    <div class="slot-badge-top-left"><span class="star-icon">★</span> 0</div>
+                    <div class="mic-icon-bottom-right">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                    </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-7">
-                    <div class="slot-badge-top-left">0</div>
+                    <div class="slot-badge-top-left"><span class="star-icon">★</span> 0</div>
+                    <div class="mic-icon-bottom-right">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                    </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
                 <div class="box" id="slot-8">
-                    <div class="slot-badge-top-left">0</div>
+                    <div class="slot-badge-top-left"><span class="star-icon">★</span> 0</div>
+                    <div class="mic-icon-bottom-right">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                    </div>
                     <span class="plus">+</span><span class="label">Permintaan</span>
                 </div>
             </div>
@@ -234,18 +272,26 @@
                 if (!slotEl) return;
 
                 const badge = slotEl.querySelector('.slot-badge-top-left');
+                const mic = slotEl.querySelector('.mic-icon-bottom-right');
 
                 if (data.clear) {
                     slotEl.classList.remove('active-slot');
                     if (badge) badge.style.display = 'none';
+                    if (mic) mic.style.display = 'none';
                     slotEl.innerHTML = `
-                        <div class="slot-badge-top-left" style="display: none;">0</div>
+                        <div class="slot-badge-top-left" style="display: none;"><span class="star-icon">★</span> 0</div>
+                        <div class="mic-icon-bottom-right" style="display: none;">
+                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                        </div>
                         <span class="plus">+</span><span class="label">Permintaan</span>
                     `;
                 } else {
                     slotEl.classList.add('active-slot');
                     slotEl.innerHTML = `
-                        <div class="slot-badge-top-left" style="display: flex;">0</div>
+                        <div class="slot-badge-top-left" style="display: flex;"><span class="star-icon">★</span> 0</div>
+                        <div class="mic-icon-bottom-right" style="display: flex;">
+                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                        </div>
                         <div class="slot-content">
                             <img src="${data.photo}" class="slot-avatar" alt="Avatar">
                         </div>
