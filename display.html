@@ -27,14 +27,15 @@
             overflow: hidden;
         }
 
-        /* EFEK VIDEO ANIMASI DIPERKECIL (CONTAIN) AGAR TIDAK NABRAK KOTAK & RASIO ASLI AMAN */
+        /* EFEK VIDEO ANIMASI DIPERKECIL TAPI TETAP FULL LAYAR 9:16 (MENGGUNAKAN SCALE) */
         .bg-video-layer {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
+            transform: scale(0.85); /* Ubah angka 0.85 ini jika ingin memperkecil atau memperbesar lagi */
             z-index: 1;
             display: none;
             pointer-events: none;
