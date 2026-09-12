@@ -51,7 +51,14 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             background-color: rgba(0, 0, 0, 0.6);
             position: relative; overflow: hidden;
+            transition: background-color 0.3s ease;
         }
+
+        /* SAAT FOTO TARGET MUNCUL: KOTAK JADI WARNA ABU-ABU */
+        .box.active-slot {
+            background-color: rgba(100, 100, 100, 0.85);
+        }
+
         .box .plus { font-size: 16px; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
         .box .label { font-size: 7px; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
@@ -64,7 +71,6 @@
             overflow: hidden;
         }
 
-        /* KOTAK BIRU DENGAN TEKS PUTIH DI ATAS UNTUK TULISAN "Host" */
         .host-badge-top {
             position: absolute; top: 8px; left: 8px;
             z-index: 5; background-color: #1890ff; color: #ffffff;
@@ -78,6 +84,7 @@
             font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.4); white-space: nowrap; max-width: 85%;
             text-overflow: ellipsis; overflow: hidden;
+            display: none; /* Awal kosong tidak ditampilkan */
         }
 
         .video-bg {
@@ -109,10 +116,18 @@
         .slot-content {
             position: absolute; width: 100%; height: 100%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 5; background: rgba(0, 0, 0, 0.5);
+            z-index: 5; background: transparent;
         }
-        .slot-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
-        .slot-name { font-size: 7px; font-weight: bold; text-align: center; max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+        .slot-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
+        
+        /* NAMA TARGET DI BAGIAN KIRI BAWAH KOTAK DENGAN AKHIRAN + */
+        .slot-name-bottom {
+            position: absolute; bottom: 4px; left: 4px;
+            z-index: 10; background-color: rgba(0, 0, 0, 0.75); color: #fff;
+            font-size: 7px; font-weight: bold; padding: 2px 5px; border-radius: 4px;
+            max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -120,10 +135,9 @@
     <div class="wrapper-9-16">
         <div class="main-container">
             <div class="host-box" id="hostBox">
-                <!-- Kotak Biru dengan Teks Putih untuk tulisan Host -->
                 <div class="host-badge-top">Host</div>
                 <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
-                <div class="host-name-bottom" id="hostNameText">J.K 090102</div>
+                <div class="host-name-bottom" id="hostNameText"></div>
             </div>
 
             <div class="side-column">
@@ -153,7 +167,13 @@
 
             if (type === 'UPDATE_HOST_USER') {
                 const nameTag = document.getElementById('hostNameText');
-                nameTag.innerText = data ? data : 'J.K 090102';
+                if (data && data.trim() !== "") {
+                    nameTag.innerText = data;
+                    nameTag.style.display = 'block';
+                } else {
+                    nameTag.innerText = '';
+                    nameTag.style.display = 'none';
+                }
             }
 
             if (type === 'UPDATE_HOST_VIDEO') {
@@ -181,13 +201,15 @@
                 if (!slotEl) return;
 
                 if (data.clear) {
+                    slotEl.classList.remove('active-slot');
                     slotEl.innerHTML = `<span class="plus">+</span><span class="label">Permintaan</span>`;
                 } else {
+                    slotEl.classList.add('active-slot');
                     slotEl.innerHTML = `
                         <div class="slot-content">
                             <img src="${data.photo}" class="slot-avatar" alt="Avatar">
-                            <span class="slot-name">${data.name}</span>
                         </div>
+                        <div class="slot-name-bottom">${data.name} +</div>
                     `;
                 }
             }
