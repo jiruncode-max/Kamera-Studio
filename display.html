@@ -32,7 +32,7 @@
             display: flex; 
             justify-content: center; 
             align-items: flex-start;
-            gap: 8px; 
+            gap: 6px; 
             width: 100%;
             z-index: 1;
         }
@@ -41,13 +41,14 @@
             display: flex; 
             flex-direction: column; 
             justify-content: space-between; 
-            height: 324px; 
+            height: 310px; 
         }
 
+        /* KOTAK 1-8 DIUBAH JADI AGAK BESAR & TETAP SAMA SISI (PERSEGI) */
         .box {
-            width: 72px; height: 75px;
+            width: 79px; height: 79px;
             border: 2px solid rgba(255, 255, 255, 0.8); 
-            border-radius: 8px;
+            border-radius: 9px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             background-color: rgba(0, 0, 0, 0.6);
             position: relative; overflow: hidden;
@@ -92,7 +93,7 @@
             line-height: 1;
         }
 
-        /* ICON MIKROFON: BULAT DENGAN GARIS HITAM, UKURAN DISESUAIKAN PAS DI POJOK KANAN BAWAH */
+        /* ICON MIKROFON: BULAT DENGAN GARIS HITAM, UKURAN SAMA DENGAN ICON + NAMA TARGET */
         .mic-icon-bottom-right {
             position: absolute; bottom: 3px; right: 3px;
             z-index: 10; width: 17px; height: 17px;
@@ -104,8 +105,9 @@
             width: 9.5px; height: 9.5px; fill: #ffffff;
         }
 
+        /* KOTAK HOST DIUBAH AGAK KECIL AGAR PAS DENGAN KOTAK SISI YANG DIPERBESAR */
         .host-box {
-            width: 225px; height: 324px;
+            width: 211px; height: 310px;
             border: 2px solid rgba(255, 255, 255, 0.8); 
             border-radius: 10px;
             position: relative; 
@@ -160,7 +162,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 5; background: transparent;
         }
-        .slot-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
+        .slot-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
         
         /* KOTAK NAMA TARGET: SEGI PANJANG DENGAN UJUNG SETENGAH BULAT (PILL SHAPE) */
         .slot-name-bottom {
