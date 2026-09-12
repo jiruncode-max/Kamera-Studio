@@ -23,9 +23,21 @@
             justify-content: flex-start;
             position: relative;
             padding: 15px 12px;
-            gap: 10px;
             border: 1px solid #222;
             overflow: hidden;
+        }
+
+        /* VIDEO ANIMASI DI <body> ATAU PALING BELAKANG DENGAN UKURAN FULL 9:16 */
+        .bg-video-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            display: none;
+            pointer-events: none;
         }
 
         .main-container {
@@ -75,32 +87,6 @@
             pointer-events: none;
         }
 
-        /* KOTAK VIDEO ANIMASI DI BAWAH TANPA GARIS BORDER DAN TANPA BACKGROUND */
-        .bottom-video-box {
-            width: 381px;
-            height: 350px;
-            border: none;
-            background: transparent;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-        }
-
-        .bg-video-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            z-index: 1;
-            display: none;
-            pointer-events: none;
-        }
-
         video::-webkit-media-controls,
         video::-webkit-media-controls-enclosure,
         video::-webkit-media-controls-panel {
@@ -120,6 +106,9 @@
 <body>
 
     <div class="wrapper-9-16">
+        <!-- VIDEO ANIMASI DIURUTKAN DI PALING BAWAH (HTML) SEHINGGA MENJADI LATAR BELAKANG FULL LAYAR -->
+        <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
+
         <div class="main-container">
             <div class="host-box" id="hostBox">
                 <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
@@ -139,10 +128,6 @@
                 <div class="box" id="slot-7"><span class="plus">+</span><span class="label">Permintaan</span></div>
                 <div class="box" id="slot-8"><span class="plus">+</span><span class="label">Permintaan</span></div>
             </div>
-        </div>
-
-        <div class="bottom-video-box">
-            <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
         </div>
     </div>
 
