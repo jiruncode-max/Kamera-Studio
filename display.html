@@ -54,13 +54,23 @@
             transition: background-color 0.3s ease;
         }
 
-        /* SAAT FOTO TARGET MUNCUL: KOTAK JADI WARNA ABU-ABU */
         .box.active-slot {
             background-color: rgba(100, 100, 100, 0.85);
         }
 
         .box .plus { font-size: 16px; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
         .box .label { font-size: 7px; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+
+        /* ICON BULAT BIRU ANGKA 0 DI BAGIAN KIRI ATAS KOTAK TARGET */
+        .slot-badge-top-left {
+            position: absolute; top: 4px; left: 4px;
+            z-index: 10; width: 14px; height: 14px;
+            background-color: #1890ff; color: #ffffff;
+            font-size: 8px; font-weight: bold; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            display: none; /* Awal tersembunyi, muncul saat slot aktif */
+        }
 
         .host-box {
             width: 225px; height: 324px;
@@ -84,7 +94,7 @@
             font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.4); white-space: nowrap; max-width: 85%;
             text-overflow: ellipsis; overflow: hidden;
-            display: none; /* Awal kosong tidak ditampilkan */
+            display: none;
         }
 
         .video-bg {
@@ -120,7 +130,6 @@
         }
         .slot-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
         
-        /* NAMA TARGET DI BAGIAN KIRI BAWAH KOTAK DENGAN AKHIRAN + */
         .slot-name-bottom {
             position: absolute; bottom: 4px; left: 4px;
             z-index: 10; background-color: rgba(0, 0, 0, 0.75); color: #fff;
@@ -141,17 +150,41 @@
             </div>
 
             <div class="side-column">
-                <div class="box" id="slot-1"><span class="plus">+</span><span class="label">Permintaan</span></div>
-                <div class="box" id="slot-2"><span class="plus">+</span><span class="label">Permintaan</span></div>
-                <div class="box" id="slot-3"><span class="plus">+</span><span class="label">Permintaan</span></div>
-                <div class="box" id="slot-4"><span class="plus">+</span><span class="label">Permintaan</span></div>
+                <div class="box" id="slot-1">
+                    <div class="slot-badge-top-left">0</div>
+                    <span class="plus">+</span><span class="label">Permintaan</span>
+                </div>
+                <div class="box" id="slot-2">
+                    <div class="slot-badge-top-left">0</div>
+                    <span class="plus">+</span><span class="label">Permintaan</span>
+                </div>
+                <div class="box" id="slot-3">
+                    <div class="slot-badge-top-left">0</div>
+                    <span class="plus">+</span><span class="label">Permintaan</span>
+                </div>
+                <div class="box" id="slot-4">
+                    <div class="slot-badge-top-left">0</div>
+                    <span class="plus">+</span><span class="label">Permintaan</span>
+                </div>
             </div>
 
             <div class="side-column">
-                <div class="box" id="slot-5"><span class="plus">+</span><span class="label">Permintaan</span></div>
-                <div class="box" id="slot-6"><span class="plus">+</span><span class="label">Permintaan</span></div>
-                <div class="box" id="slot-7"><span class="plus">+</span><span class="label">Permintaan</span></div>
-                <div class="box" id="slot-8"><span class="plus">+</span><span class="label">Permintaan</span></div>
+                <div class="box" id="slot-5">
+                    <div class="slot-badge-top-left">0</div>
+                    <span class="plus">+</span><span class="label">Permintaan</span>
+                </div>
+                <div class="box" id="slot-6">
+                    <div class="slot-badge-top-left">0</div>
+                    <span class="plus">+</span><span class="label">Permintaan</span>
+                </div>
+                <div class="box" id="slot-7">
+                    <div class="slot-badge-top-left">0</div>
+                    <span class="plus">+</span><span class="label">Permintaan</span>
+                </div>
+                <div class="box" id="slot-8">
+                    <div class="slot-badge-top-left">0</div>
+                    <span class="plus">+</span><span class="label">Permintaan</span>
+                </div>
             </div>
         </div>
 
@@ -200,12 +233,19 @@
                 const slotEl = document.getElementById(`slot-${data.slot}`);
                 if (!slotEl) return;
 
+                const badge = slotEl.querySelector('.slot-badge-top-left');
+
                 if (data.clear) {
                     slotEl.classList.remove('active-slot');
-                    slotEl.innerHTML = `<span class="plus">+</span><span class="label">Permintaan</span>`;
+                    if (badge) badge.style.display = 'none';
+                    slotEl.innerHTML = `
+                        <div class="slot-badge-top-left" style="display: none;">0</div>
+                        <span class="plus">+</span><span class="label">Permintaan</span>
+                    `;
                 } else {
                     slotEl.classList.add('active-slot');
                     slotEl.innerHTML = `
+                        <div class="slot-badge-top-left" style="display: flex;">0</div>
                         <div class="slot-content">
                             <img src="${data.photo}" class="slot-avatar" alt="Avatar">
                         </div>
