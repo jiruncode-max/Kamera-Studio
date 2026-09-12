@@ -25,11 +25,13 @@
             position: relative;
             padding: 15px 12px;
             border: 1px solid #222;
+            overflow: hidden;
         }
 
         .main-container {
             display: flex; justify-content: center; align-items: flex-start;
             gap: 10px; width: 100%;
+            z-index: 2; /* Agar berada di atas jika diperlukan */
         }
 
         .side-column { display: flex; flex-direction: column; gap: 8px; }
@@ -44,7 +46,7 @@
         .box .plus { font-size: 18px; font-weight: bold; }
         .box .label { font-size: 8px; margin-top: 2px; }
 
-        /* Kotak Host di Tengah (Menyesuaikan tinggi total 4 kotak samping) */
+        /* Kotak Host di Tengah */
         .host-box {
             width: 225px; height: 324px;
             border: 2px solid #ffffff; border-radius: 10px;
@@ -62,24 +64,23 @@
             object-fit: cover; z-index: 1; display: none;
         }
 
-        /* Area Green Screen di Bawah: Dibuat selebar container utama agar presisi */
+        /* Area Green Screen: Tanpa Kotak / Border, Ditarik ke Atas */
         .green-screen-container {
             width: 100%; 
-            height: 280px;
-            background-color: #000000;
+            height: 320px;
+            background-color: transparent;
             position: relative; 
-            margin-top: 10px;
-            border-radius: 10px;
+            margin-top: -15px; /* Ditarik ke atas agar lebih menyatu */
             display: flex; align-items: center; justify-content: center;
             overflow: hidden;
-            border: 2px solid #ffffff;
+            z-index: 5; /* Agar tampil di atas atau melayang bebas */
         }
 
-        /* Canvas disesuaikan agar sama lebar dan panjang dengan wadahnya secara rapi */
+        /* Canvas transparan tanpa kotak */
         #gsCanvas {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             display: none;
         }
 
@@ -120,11 +121,11 @@
             </div>
         </div>
 
-        <!-- Bagian Bawah: Video Green Screen Transparan -->
+        <!-- Bagian Animasi Green Screen Tanpa Kotak & Ditarik ke Atas -->
         <div class="green-screen-container" id="gsContainer">
             <video id="gsVideo" src="" muted style="display:none;"></video>
             <canvas id="gsCanvas"></canvas>
-            <span id="gsPlaceholder" style="color: #666; font-size: 11px; z-index: 2; position: absolute;">Area Animasi Melayang</span>
+            <span id="gsPlaceholder" style="display:none;"></span>
         </div>
     </div>
 
@@ -143,12 +144,10 @@
 
         video.addEventListener('play', () => {
             canvas.style.display = 'block';
-            placeholder.style.display = 'none';
 
             function processFrame() {
                 if (video.paused || video.ended) {
                     canvas.style.display = 'none';
-                    placeholder.style.display = 'block';
                     return;
                 }
                 
@@ -156,7 +155,7 @@
                 let frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 let data = frame.data;
 
-                // Algoritma Chroma Key (Pembersihan warna hijau agar rapi & tidak pecah)
+                // Algoritma Chroma Key (Pembersihan warna hijau)
                 for (let i = 0; i < data.length; i += 4) {
                     let r = data[i];
                     let g = data[i + 1];
@@ -180,7 +179,6 @@
 
         video.addEventListener('ended', () => {
             canvas.style.display = 'none';
-            placeholder.style.display = 'block';
         });
 
         channel.onmessage = (event) => {
