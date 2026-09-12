@@ -28,7 +28,7 @@
             overflow: hidden;
         }
 
-        /* VIDEO LATAR BELAKANG UTAMA (MenemBUS ke seluruh layar termasuk di bawah kotak) */
+        /* VIDEO LATAR BELAKANG UTAMA (Bersuara) */
         .bg-video-layer {
             position: absolute;
             top: 0;
@@ -43,30 +43,37 @@
 
         .main-container {
             display: flex; justify-content: center; align-items: flex-start;
-            gap: 10px; width: 100%;
+            gap: 8px; width: 100%;
             z-index: 5;
         }
 
-        .side-column { display: flex; flex-direction: column; gap: 8px; }
+        /* Kolom kanan dibuat memiliki tinggi yang sama persis dengan kotak host (324px) 
+           dan menggunakan space-between agar posisinya otomatis sejajar atas & bawah */
+        .side-column { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            height: 324px; 
+        }
 
-        /* Kotak Sisi Kiri & Kanan (Dibuat Semi-Transparan agar video belakangnya tembus) */
+        /* Kotak Sisi Kanan (Ukuran tinggi disesuaikan agar 4 kotak pas memanjang 324px) */
         .box {
-            width: 75px; height: 75px;
+            width: 72px; height: 75px;
             border: 2px solid rgba(255, 255, 255, 0.8); border-radius: 8px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background-color: rgba(0, 0, 0, 0.4); /* Hitam transparan agar video belakang kelihatan */
-            backdrop-filter: blur(2px); /* Efek blur tipis ala kaca */
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
             position: relative; overflow: hidden;
         }
-        .box .plus { font-size: 18px; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
-        .box .label { font-size: 8px; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+        .box .plus { font-size: 16px; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+        .box .label { font-size: 7px; margin-top: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
-        /* Kotak Host di Tengah (Semi-Transparan) */
+        /* Kotak Host (Di Kiri) dengan tinggi tetap 324px */
         .host-box {
             width: 225px; height: 324px;
             border: 2px solid rgba(255, 255, 255, 0.8); border-radius: 10px;
             position: relative; 
-            background-color: rgba(0, 0, 0, 0.4); /* Semi-transparan */
+            background-color: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(2px);
             overflow: hidden;
         }
@@ -91,24 +98,30 @@
             opacity: 0 !important;
         }
 
-        /* Tampilan Slot Aktif (Avatar & Nama) - Semi transparan juga saat terisi */
+        /* Tampilan Slot Aktif (Avatar & Nama) */
         .slot-content {
             position: absolute; width: 100%; height: 100%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 5; background: rgba(0, 0, 0, 0.5);
         }
-        .slot-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
-        .slot-name { font-size: 8px; font-weight: bold; text-align: center; max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+        .slot-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
+        .slot-name { font-size: 7px; font-weight: bold; text-align: center; max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
     </style>
 </head>
 <body>
 
     <div class="wrapper-9-16">
-        <!-- VIDEO LATAR BELAKANG UTAMA MENEMBUS KE SELURUH LAYAR -->
-        <video class="bg-video-layer" id="bgVideoLayer" autoplay loop muted playsinline></video>
+        <!-- VIDEO LATAR UTAMA (Bersuara) -->
+        <video class="bg-video-layer" id="bgVideoLayer" autoplay loop playsinline></video>
 
         <div class="main-container">
-            <!-- Kolom Kiri: Kotak 1 s.d 4 -->
+            <!-- Kolom Kiri: Kotak Host Utama -->
+            <div class="host-box" id="hostBox">
+                <div class="host-badge" id="hostBadgeText">Host</div>
+                <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
+            </div>
+
+            <!-- Kolom Kanan 1: Kotak Slot 1 s.d 4 (Sejajar & Rata Atas-Bawah) -->
             <div class="side-column">
                 <div class="box" id="slot-1"><span class="plus">+</span><span class="label">Permintaan</span></div>
                 <div class="box" id="slot-2"><span class="plus">+</span><span class="label">Permintaan</span></div>
@@ -116,13 +129,7 @@
                 <div class="box" id="slot-4"><span class="plus">+</span><span class="label">Permintaan</span></div>
             </div>
 
-            <!-- Kotak Host Tengah -->
-            <div class="host-box" id="hostBox">
-                <div class="host-badge" id="hostBadgeText">Host</div>
-                <video class="video-bg" id="hostVideo" autoplay loop muted playsinline></video>
-            </div>
-
-            <!-- Kotak Kanan: Kotak 5 s.d 8 -->
+            <!-- Kolom Kanan 2: Kotak Slot 5 s.d 8 (Sejajar & Rata Atas-Bawah) -->
             <div class="side-column">
                 <div class="box" id="slot-5"><span class="plus">+</span><span class="label">Permintaan</span></div>
                 <div class="box" id="slot-6"><span class="plus">+</span><span class="label">Permintaan</span></div>
@@ -157,7 +164,12 @@
                 bgVideo.src = url;
                 bgVideo.style.display = 'block';
                 bgVideo.load();
-                bgVideo.play().catch(e => console.log(e));
+                bgVideo.muted = false; 
+                bgVideo.play().catch(e => {
+                    console.log("Autoplay dengan suara diblokir browser, mencoba mute sementara...", e);
+                    bgVideo.muted = true;
+                    bgVideo.play();
+                });
             }
 
             if (type === 'UPDATE_TARGET_SLOT') {
