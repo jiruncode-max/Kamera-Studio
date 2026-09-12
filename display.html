@@ -31,7 +31,7 @@
         .main-container {
             display: flex; justify-content: center; align-items: flex-start;
             gap: 10px; width: 100%;
-            z-index: 2; /* Agar berada di atas jika diperlukan */
+            z-index: 2;
         }
 
         .side-column { display: flex; flex-direction: column; gap: 8px; }
@@ -64,23 +64,27 @@
             object-fit: cover; z-index: 1; display: none;
         }
 
-        /* Area Green Screen: Tanpa Kotak / Border, Ditarik ke Atas */
+        /* Area Green Screen: Dibuat Absolute Fullscreen di dalam wrapper agar bisa ditarik ke atas sesuka hati */
         .green-screen-container {
-            width: 100%; 
-            height: 320px;
+            position: absolute;
+            top: 0; /* Mulai dari paling atas wrapper */
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: transparent;
-            position: relative; 
-            margin-top: -15px; /* Ditarik ke atas agar lebih menyatu */
-            display: flex; align-items: center; justify-content: center;
+            pointer-events: none; /* Agar klik tetap tembus ke bawah jika diperlukan */
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
             overflow: hidden;
-            z-index: 5; /* Agar tampil di atas atau melayang bebas */
+            z-index: 20; /* Berada di atas segalanya */
         }
 
-        /* Canvas transparan tanpa kotak */
+        /* Canvas transparan full layar */
         #gsCanvas {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover; /* Menyesuaikan penuh layar 9:16 */
             display: none;
         }
 
@@ -121,11 +125,10 @@
             </div>
         </div>
 
-        <!-- Bagian Animasi Green Screen Tanpa Kotak & Ditarik ke Atas -->
+        <!-- Lapisan Animasi Green Screen Melayang Full Layar & Paling Atas -->
         <div class="green-screen-container" id="gsContainer">
             <video id="gsVideo" src="" muted style="display:none;"></video>
             <canvas id="gsCanvas"></canvas>
-            <span id="gsPlaceholder" style="display:none;"></span>
         </div>
     </div>
 
@@ -135,7 +138,6 @@
         const video = document.getElementById('gsVideo');
         const canvas = document.getElementById('gsCanvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        const placeholder = document.getElementById('gsPlaceholder');
 
         video.addEventListener('loadedmetadata', () => {
             canvas.width = video.videoWidth;
