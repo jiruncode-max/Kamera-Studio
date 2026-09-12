@@ -18,11 +18,11 @@
         h2 { border-bottom: 2px solid #334155; padding-bottom: 10px; margin-top: 0; font-size: 1.2rem; color: #38bdf8; }
         .form-group { margin-bottom: 20px; background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; }
         label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.9rem; color: #94a3b8; }
-        input[type="text"], select, input[type="file"] {
+        input[type="text"], input[type="number"], select, input[type="file"] {
             width: 100%; padding: 10px; background: #020617;
             border: 1px solid #475569; color: white; border-radius: 6px; box-sizing: border-box; margin-bottom: 8px; outline: none;
         }
-        input[type="text"]:focus { border-color: #38bdf8; }
+        input[type="text"]:focus, input[type="number"]:focus { border-color: #38bdf8; }
         .btn-action {
             background: #ef4444; color: white; border: none; padding: 8px 12px;
             border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; font-size: 0.85rem;
@@ -90,6 +90,9 @@
 
             <label style="margin-top:10px;">Username / Link TikTok Target:</label>
             <input type="text" placeholder="Masukkan username target..." id="targetInput">
+
+            <label style="margin-top:10px;">Poin Manual (Opsional, akan ditambahkan ke badge):</label>
+            <input type="number" id="manualPointInput" placeholder="Contoh: 1000 atau 50" value="0">
             
             <div id="targetCardInline" class="target-card-inline">
                 <img id="previewImg" class="preview-img" alt="Avatar">
@@ -157,6 +160,7 @@
         }
 
         const targetInput = document.getElementById('targetInput');
+        const manualPointInput = document.getElementById('manualPointInput');
         const statusMsg = document.getElementById('statusMsg');
         const previewImg = document.getElementById('previewImg');
         const targetCardInline = document.getElementById('targetCardInline');
@@ -228,9 +232,14 @@
             if (!pendingTargetData.username) return;
             const slotId = document.getElementById('targetSlot').value;
             
-            // Mengambil teks asli dari inputan agar angka / format K/M terbaca oleh display
-            const rawInputText = document.getElementById('targetInput').value.trim();
-            const displayName = rawInputText ? rawInputText : pendingTargetData.name;
+            // Ambil nama asli/username dan tambahkan poin manual ke format teks agar terbaca parser display
+            let baseName = pendingTargetData.name;
+            let manualVal = parseInt(manualPointInput.value) || 0;
+            
+            let displayName = baseName;
+            if (manualVal > 0) {
+                displayName = `${baseName}_${manualVal}`;
+            }
 
             const finalData = {
                 slot: slotId,
@@ -238,6 +247,7 @@
                 photo: pendingTargetData.photo,
                 clear: false
             };
+            
             channel.postMessage({ type: 'UPDATE_TARGET_SLOT', data: finalData });
             statusMsg.innerText = `Kotak ${slotId} Berhasil Dipasang!`;
         }
@@ -245,6 +255,7 @@
         function clearTarget() {
             const slotId = document.getElementById('targetSlot').value;
             targetInput.value = '';
+            manualPointInput.value = '0';
             targetCardInline.classList.remove('show');
             statusMsg.innerText = 'Siap';
             statusMsg.className = 'status-msg';
