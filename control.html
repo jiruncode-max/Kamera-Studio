@@ -53,25 +53,25 @@
     <div class="control-panel">
         <h2>Control Panel (Pro System)</h2>
         
-        <!-- Input Nama Host (Komal) -->
+        <!-- Input Nama Host -->
         <div class="form-group">
-            <label for="hostUserInput">Nama Host (Komal):</label>
-            <input type="text" id="hostUserInput" placeholder="Masukkan teks nama host...">
+            <label for="hostUserInput">Nama Host (Tampil di Bawah Kotak):</label>
+            <input type="text" id="hostUserInput" placeholder="Masukkan nama host...">
             <button class="btn-action btn-play" onclick="updateHostUser()">Ubah Nama Host</button>
         </div>
 
         <!-- Input Video Host -->
         <div class="form-group">
-            <label for="hostVideoFile">Upload Video Host (Background):</label>
+            <label for="hostVideoFile">Upload Video Host (Dalam Kotak):</label>
             <input type="file" id="hostVideoFile" accept="video/*">
             <button class="btn-action btn-play" onclick="playHostVideo()">Putar Video Host</button>
         </div>
 
-        <!-- Input Video Green Screen Animasi di Bawah -->
+        <!-- Input Video Background Utama (Bersuara) -->
         <div class="form-group" style="border-color: #10b981;">
-            <label for="gsVideoFile" style="color: #34d399;">Upload Video Animasi Green Screen:</label>
+            <label for="gsVideoFile" style="color: #34d399;">Upload Video Latar Belakang (Bersuara):</label>
             <input type="file" id="gsVideoFile" accept="video/*">
-            <button class="btn-action btn-play" onclick="playGreenScreenVideo()">Tampilkan Animasi Transparan</button>
+            <button class="btn-action btn-play" onclick="playGreenScreenVideo()">Tampilkan Video Latar Belakang</button>
         </div>
 
         <!-- Input Target Permintaan -->
@@ -271,7 +271,7 @@
         });
 
         function playGreenScreenVideo() {
-            if (!gsVideoUrl) return alert('Pilih file video green screen dulu!');
+            if (!gsVideoUrl) return alert('Pilih file video latar belakang dulu!');
             channel.postMessage({ type: 'UPDATE_GS_VIDEO', url: gsVideoUrl });
         }
     </script>
