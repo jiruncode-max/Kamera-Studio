@@ -44,15 +44,26 @@
             height: 310px; 
         }
 
-        /* KOTAK 1-8: SAMA SISI, TINGGI DIKURANGI SIGNIFIKAN AGAR TIDAK BERDEMPETAN */
+        /* KOTAK 1-8: WAJIB PERSEGI SAMA SISI (88px x 88px) DENGAN SPASI (GAP/MARGIN) */
         .box {
-            width: 79px; height: 68px;
+            width: 88px; 
+            height: 88px;
             border: 2px solid rgba(255, 255, 255, 0.8); 
             border-radius: 9px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             background-color: rgba(0, 0, 0, 0.6);
             position: relative; overflow: hidden;
             transition: background-color 0.3s ease;
+            margin-bottom: 5px; /* Spasi antar kotak ke bawah */
+            margin-top: 5px;   /* Spasi antar kotak ke atas */
+        }
+        
+        .side-column .box:first-child {
+            margin-top: 0;
+        }
+        
+        .side-column .box:last-child {
+            margin-bottom: 0;
         }
 
         .box.active-slot {
@@ -93,7 +104,7 @@
             line-height: 1;
         }
 
-        /* ICON MIKROFON: BULAT DENGAN GARIS HITAM, UKURAN SAMA DENGAN ICON + NAMA TARGET */
+        /* ICON MIKROFON: BULAT DENGAN GARIS HITAM */
         .mic-icon-bottom-right {
             position: absolute; bottom: 3px; right: 3px;
             z-index: 10; width: 17px; height: 17px;
@@ -105,9 +116,9 @@
             width: 9.5px; height: 9.5px; fill: #ffffff;
         }
 
-        /* KOTAK HOST DIUBAH AGAK KECIL AGAR PAS DENGAN KOTAK SISI YANG DIPERBESAR */
+        /* KOTAK HOST DISESUAIKAN DENGAN TINGGI KELOMPOK KOTAK SAMPING */
         .host-box {
-            width: 211px; height: 310px;
+            width: 195px; height: 310px;
             border: 2px solid rgba(255, 255, 255, 0.8); 
             border-radius: 10px;
             position: relative; 
@@ -162,9 +173,9 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 5; background: transparent;
         }
-        .slot-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
+        .slot-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; margin-bottom: 2px; border: 1px solid #fff; }
         
-        /* KOTAK NAMA TARGET: SEGI PANJANG DENGAN UJUNG SETENGAH BULAT (PILL SHAPE) */
+        /* KOTAK NAMA TARGET */
         .slot-name-bottom {
             position: absolute; bottom: 3px; left: 3px;
             z-index: 10; background-color: rgba(0, 0, 0, 0.75); color: #fff;
